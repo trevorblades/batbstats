@@ -1,0 +1,26 @@
+{
+  "engines": {
+    "node": "8"
+  },
+  "xo": {
+    "space": true,
+    "prettier": true,
+    "rules": {
+      "camelcase": "off"
+    }
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "DATABASE_URL=postgres://localhost/batbstats PORT=3000 nodemon server.js"
+  },
+  "dependencies": {
+    "express": "^4.16.3",
+    "pascalcase": "^0.1.1",
+    "pg": "^7.4.3",
+    "sequelize": "^4.37.10"
+  },
+  "devDependencies": {
+    "nodemon": "^1.17.5",
+    "xo": "^0.21.1"
+  }
+}
