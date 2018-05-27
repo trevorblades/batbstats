@@ -1,12 +1,28 @@
-import React, {Fragment} from 'react';
+import PropTypes from 'prop-types';
+import React, {Component, Fragment} from 'react';
+import compose from 'recompose/compose';
+import {connect} from 'react-redux';
 import {hot} from 'react-hot-loader';
+import {load as loadSkaters} from '../actions/skaters';
 import Header from './header';
 
-const App = () => (
-  <Fragment>
-    <Header />
-    <div>hello</div>
-  </Fragment>
-);
+class App extends Component {
+  static propTypes = {
+    dispatch: PropTypes.func.isRequired
+  };
 
-export default hot(module)(App);
+  componentDidMount() {
+    this.props.dispatch(loadSkaters());
+  }
+
+  render() {
+    return (
+      <Fragment>
+        <Header />
+        <div>hello</div>
+      </Fragment>
+    );
+  }
+}
+
+export default compose(hot(module), connect())(App);

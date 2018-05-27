@@ -35,10 +35,13 @@
   "dependencies": {
     "@material-ui/core": "^1.1.0",
     "@material-ui/icons": "^1.1.0",
+    "frisbee": "^2.0.4",
+    "prop-types": "^15.6.1",
     "react": "^16.4.0",
     "react-dom": "^16.4.0",
     "react-hot-loader": "^4.2.0",
     "react-redux": "^5.0.7",
+    "recompose": "^0.27.1",
     "redux": "^4.0.0",
     "redux-actions": "^2.3.2",
     "redux-devtools-extension": "^2.13.2",
