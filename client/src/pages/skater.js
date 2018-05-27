@@ -44,11 +44,13 @@ class Skater extends Component {
 
     return (
       <div>
-        <Typography variant="subheading">
-          {this.props.skater.first_name}
-        </Typography>
-        <Typography variant="headline">
-          {this.props.skater.last_name}
+        {this.props.skater.last_name && (
+          <Typography variant="subheading">
+            {this.props.skater.first_name}
+          </Typography>
+        )}
+        <Typography variant="title">
+          {this.props.skater.last_name || this.props.skater.first_name}
         </Typography>
         {this.props.skater.stance && (
           <Typography>{upperFirst(this.props.skater.stance)}</Typography>
