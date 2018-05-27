@@ -1,20 +1,29 @@
-import CssBaseline from '@material-ui/core/CssBaseline';
-import React, {Fragment} from 'react';
-import {MuiThemeProvider} from '@material-ui/core/styles';
+import JssProvider from 'react-jss/lib/JssProvider';
+import React from 'react';
+import {
+  MuiThemeProvider,
+  createGenerateClassName,
+  jssPreset
+} from '@material-ui/core/styles';
 import {Provider} from 'react-redux';
+import {create} from 'jss';
 import App from './components/app';
 import store from './store';
 import theme from './theme';
 
+const generateClassName = createGenerateClassName();
+const jss = create(jssPreset());
+// We define a custom insertion point that JSS will look for injecting the styles in the DOM
+jss.options.insertionPoint = 'jss-insertion-point';
+
 const Root = () => (
-  <Provider store={store}>
+  <JssProvider jss={jss} generateClassName={generateClassName}>
     <MuiThemeProvider theme={theme}>
-      <Fragment>
-        <CssBaseline />
+      <Provider store={store}>
         <App />
-      </Fragment>
+      </Provider>
     </MuiThemeProvider>
-  </Provider>
+  </JssProvider>
 );
 
 export default Root;
