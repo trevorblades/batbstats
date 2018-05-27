@@ -9,12 +9,10 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
   const skater = await Skater.findById(req.params.id, {
-    include: [
-      {
-        model: Attempt,
-        include: [Trick]
-      }
-    ]
+    include: {
+      model: Attempt,
+      include: Trick
+    }
   });
   res.send(skater);
 });
