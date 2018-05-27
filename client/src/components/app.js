@@ -5,7 +5,7 @@ import {hot} from 'react-hot-loader';
 import theme from '../theme';
 import Pages from '../pages';
 import Header from './header';
-import Sidebar from './sidebar';
+import SkaterList from './skater-list';
 
 const Container = styled.div({
   display: 'flex',
@@ -16,6 +16,12 @@ const Container = styled.div({
 const InnerContainer = styled.div({
   display: 'flex',
   flexGrow: 1
+});
+
+const Sidebar = styled.div({
+  width: 360,
+  overflow: 'auto',
+  backgroundColor: theme.palette.common.white
 });
 
 const Content = styled.div({
@@ -34,7 +40,9 @@ class App extends Component {
         />
         <Header />
         <InnerContainer>
-          <Sidebar />
+          <Sidebar>
+            <SkaterList />
+          </Sidebar>
           <Content>
             <Pages />
           </Content>

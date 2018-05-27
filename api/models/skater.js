@@ -5,7 +5,8 @@ module.exports = (sequelize, DataTypes) => {
     first_name: DataTypes.STRING,
     last_name: DataTypes.STRING,
     stance: DataTypes.ENUM(STANCES),
-    birth_date: DataTypes.DATE
+    birth_date: DataTypes.DATE,
+    hometown: DataTypes.STRING
   });
 
   Skater.associate = models => {

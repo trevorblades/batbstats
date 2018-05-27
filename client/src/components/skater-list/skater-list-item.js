@@ -3,7 +3,6 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import PropTypes from 'prop-types';
 import React, {Component} from 'react';
-import upperFirst from 'lodash/upperFirst';
 import {withRouter} from 'react-router-dom';
 
 class SkaterListItem extends Component {
@@ -27,7 +26,7 @@ class SkaterListItem extends Component {
         </Avatar>
         <ListItemText
           primary={fullName}
-          secondary={upperFirst(this.props.skater.stance)}
+          secondary={this.props.skater.hometown}
         />
       </ListItem>
     );

@@ -2,6 +2,8 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 import Typography from '@material-ui/core/Typography';
+import differenceInYears from 'date-fns/differenceInYears';
+import upperFirst from 'lodash/upperFirst';
 import {connect} from 'react-redux';
 import {load as loadSkater} from '../actions/skater';
 import NotFound from './not-found';
@@ -48,7 +50,19 @@ class Skater extends Component {
         <Typography variant="headline">
           {this.props.skater.last_name}
         </Typography>
-        <Typography variant="title">
+        {this.props.skater.stance && (
+          <Typography>{upperFirst(this.props.skater.stance)}</Typography>
+        )}
+        {this.props.skater.hometown && (
+          <Typography>{this.props.skater.hometown}</Typography>
+        )}
+        {this.props.skater.birth_date && (
+          <Typography>
+            {differenceInYears(Date.now(), this.props.skater.birth_date)} years
+            old
+          </Typography>
+        )}
+        <Typography>
           {this.props.skater.attempts.length} trick attempts
         </Typography>
       </div>
