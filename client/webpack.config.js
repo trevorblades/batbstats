@@ -20,7 +20,7 @@ module.exports = {
   },
   plugins: [
     new HtmlPlugin({
-      title: 'BATB Stats',
+      title: 'Batblytics',
       template: 'index.html'
     })
   ]

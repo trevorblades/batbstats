@@ -2,15 +2,22 @@ import Avatar from '@material-ui/core/Avatar';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import ListSubheader from '@material-ui/core/ListSubheader';
 import PropTypes from 'prop-types';
 import React, {Component} from 'react';
-import styled from 'react-emotion';
+import styled, {css} from 'react-emotion';
 import upperFirst from 'lodash/upperFirst';
 import {connect} from 'react-redux';
+import theme from '../theme';
 
 const Container = styled.div({
   width: 360,
-  overflow: 'auto'
+  overflow: 'auto',
+  backgroundColor: theme.palette.common.white
+});
+
+const inheritBackgroundColor = css({
+  backgroundColor: 'inherit'
 });
 
 class Sidebar extends Component {
@@ -21,7 +28,14 @@ class Sidebar extends Component {
   render() {
     return (
       <Container>
-        <List>
+        <List
+          className={inheritBackgroundColor}
+          subheader={
+            <ListSubheader className={inheritBackgroundColor}>
+              All skaters
+            </ListSubheader>
+          }
+        >
           {this.props.skaters.map(skater => {
             const names = [skater.first_name, skater.last_name].filter(Boolean);
             const fullName = names.join(' ');

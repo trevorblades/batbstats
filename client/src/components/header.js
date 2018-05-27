@@ -7,7 +7,7 @@ const Header = () => (
   <AppBar position="static" elevation={0}>
     <Toolbar>
       <Typography color="inherit" variant="title">
-        BATB Stats
+        Batblytics
       </Typography>
     </Toolbar>
   </AppBar>
