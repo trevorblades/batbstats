@@ -1,8 +1,11 @@
+const {STANCES} = require('../common');
+
 module.exports = (sequelize, DataTypes) => {
   const Skater = sequelize.define('skater', {
     first_name: DataTypes.STRING,
     last_name: DataTypes.STRING,
-    stance: DataTypes.ENUM(['goofy', 'regular']) // eslint-disable-line new-cap
+    stance: DataTypes.ENUM(STANCES), // eslint-disable-line new-cap
+    birth_date: DataTypes.DATE
   });
 
   Skater.associate = models => {

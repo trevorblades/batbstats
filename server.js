@@ -1,8 +1,8 @@
 const express = require('express');
-const db = require('./models');
+const {sequelize} = require('./models');
 
 const app = express();
-db.sequelize
+sequelize
   .sync()
   .then(() =>
     app.listen(process.env.PORT, () =>
