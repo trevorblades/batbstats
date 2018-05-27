@@ -55,6 +55,7 @@
     "redux": "^4.0.0",
     "redux-actions": "^2.3.2",
     "redux-devtools-extension": "^2.13.2",
-    "redux-loop": "^4.3.3"
+    "redux-loop": "^4.3.3",
+    "reselect": "^3.0.1"
   }
 }

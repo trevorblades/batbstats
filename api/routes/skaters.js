@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const {Skater, Trick, Attempt} = require('../models');
+const {Skater, Game, Trick, Attempt} = require('../models');
 
 router.get('/', async (req, res) => {
   const skaters = await Skater.findAll();
@@ -9,8 +9,11 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   const skater = await Skater.findById(req.params.id, {
     include: {
-      model: Attempt,
-      include: Trick
+      model: Game,
+      include: {
+        model: Attempt,
+        include: Trick
+      }
     }
   });
   res.send(skater);
