@@ -1,10 +1,12 @@
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Divider from '@material-ui/core/Divider';
 import PropTypes from 'prop-types';
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import {connect} from 'react-redux';
 import {load as loadSkater} from '../../actions/skater';
 import NotFound from '../not-found';
-import Bio from './bio';
+import Header from './header';
+import Dashboard from './dashboard';
 
 class Skater extends Component {
   static propTypes = {
@@ -34,7 +36,13 @@ class Skater extends Component {
       return <NotFound />;
     }
 
-    return <Bio skater={this.props.skater} />;
+    return (
+      <Fragment>
+        <Header skater={this.props.skater} />
+        <Divider />
+        <Dashboard />
+      </Fragment>
+    );
   }
 }
 

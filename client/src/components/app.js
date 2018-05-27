@@ -21,13 +21,13 @@ const InnerContainer = styled.div({
 const Sidebar = styled.div({
   width: 360,
   overflow: 'auto',
-  backgroundColor: theme.palette.common.white
+  backgroundColor: theme.palette.grey[50]
 });
 
 const Content = styled.div({
   flexGrow: 1,
-  padding: theme.spacing.unit * 3,
-  backgroundColor: theme.palette.grey[50]
+  backgroundColor: theme.palette.common.white,
+  position: 'relative'
 });
 
 class App extends Component {
