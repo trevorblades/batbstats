@@ -6,7 +6,8 @@
     "space": true,
     "prettier": true,
     "rules": {
-      "camelcase": "off"
+      "camelcase": "off",
+      "new-cap": "off"
     }
   },
   "scripts": {

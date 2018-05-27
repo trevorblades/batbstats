@@ -4,7 +4,7 @@ module.exports = (sequelize, DataTypes) => {
   const Skater = sequelize.define('skater', {
     first_name: DataTypes.STRING,
     last_name: DataTypes.STRING,
-    stance: DataTypes.ENUM(STANCES), // eslint-disable-line new-cap
+    stance: DataTypes.ENUM(STANCES),
     birth_date: DataTypes.DATE
   });
 

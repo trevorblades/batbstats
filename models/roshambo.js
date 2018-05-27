@@ -3,7 +3,7 @@ const {ROSHAMBO_MOVES} = require('../common');
 module.exports = (sequelize, DataTypes) => {
   const Roshambo = sequelize.define('roshambo', {
     round: DataTypes.INTEGER,
-    move: DataTypes.ENUM(ROSHAMBO_MOVES) // eslint-disable-line new-cap
+    move: DataTypes.ENUM(ROSHAMBO_MOVES)
   });
 
   Roshambo.associate = models => {
