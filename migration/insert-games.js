@@ -1,5 +1,5 @@
-const {ROSHAMBO_MOVES} = require('./common');
-const {Game, Roshambo, Attempt} = require('./models');
+const {ROSHAMBO_MOVES} = require('../common');
+const {Game, Roshambo, Attempt} = require('../api/models');
 
 function marshallAttempts(gameId, skater1, skater2, tricks) {
   const attempts = [];
