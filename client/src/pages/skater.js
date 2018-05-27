@@ -48,6 +48,9 @@ class Skater extends Component {
         <Typography variant="headline">
           {this.props.skater.last_name}
         </Typography>
+        <Typography variant="title">
+          {this.props.skater.attempts.length} trick attempts
+        </Typography>
       </div>
     );
   }
