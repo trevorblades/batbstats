@@ -7,4 +7,9 @@ router.get('/', async (req, res) => {
   res.send(skaters);
 });
 
+router.get('/:id', async (req, res) => {
+  const skater = await Skater.findById(req.params.id);
+  res.send(skater);
+});
+
 module.exports = router;

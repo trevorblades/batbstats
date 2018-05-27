@@ -1,5 +1,6 @@
 import JssProvider from 'react-jss/lib/JssProvider';
 import React from 'react';
+import {BrowserRouter} from 'react-router-dom';
 import {
   MuiThemeProvider,
   createGenerateClassName,
@@ -20,7 +21,9 @@ const Root = () => (
   <JssProvider jss={jss} generateClassName={generateClassName}>
     <MuiThemeProvider theme={theme}>
       <Provider store={store}>
-        <App />
+        <BrowserRouter basename="/">
+          <App />
+        </BrowserRouter>
       </Provider>
     </MuiThemeProvider>
   </JssProvider>

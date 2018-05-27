@@ -1,14 +1,12 @@
-import Avatar from '@material-ui/core/Avatar';
 import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 import styled, {css} from 'react-emotion';
-import upperFirst from 'lodash/upperFirst';
 import {connect} from 'react-redux';
-import theme from '../theme';
+import theme from '../../theme';
+import {load as loadSkaters} from '../../actions/skaters';
+import SkaterListItem from './skater-list-item';
 
 const Container = styled.div({
   width: 360,
@@ -22,8 +20,13 @@ const inheritBackgroundColor = css({
 
 class Sidebar extends Component {
   static propTypes = {
+    dispatch: PropTypes.func.isRequired,
     skaters: PropTypes.array.isRequired
   };
+
+  componentDidMount() {
+    this.props.dispatch(loadSkaters());
+  }
 
   render() {
     return (
@@ -36,21 +39,9 @@ class Sidebar extends Component {
             </ListSubheader>
           }
         >
-          {this.props.skaters.map(skater => {
-            const names = [skater.first_name, skater.last_name].filter(Boolean);
-            const fullName = names.join(' ');
-            return (
-              <ListItem key={skater.id}>
-                <Avatar alt={fullName} src={skater.avatar}>
-                  {fullName.charAt(0).toUpperCase()}
-                </Avatar>
-                <ListItemText
-                  primary={fullName}
-                  secondary={upperFirst(skater.stance)}
-                />
-              </ListItem>
-            );
-          })}
+          {this.props.skaters.map(skater => (
+            <SkaterListItem key={skater.id} skater={skater} />
+          ))}
         </List>
       </Container>
     );

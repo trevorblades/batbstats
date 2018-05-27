@@ -1,10 +1,15 @@
 const path = require('path');
 const HtmlPlugin = require('html-webpack-plugin');
+const webpack = require('webpack');
+
+const publicPath = '/';
+const title = 'Batblytics';
 
 module.exports = {
   context: path.join(__dirname, 'src'),
   entry: ['babel-polyfill', './index.js'],
   output: {
+    publicPath,
     path: path.resolve(__dirname, 'build'),
     filename: '[name].[hash].js'
   },
@@ -20,8 +25,12 @@ module.exports = {
   },
   plugins: [
     new HtmlPlugin({
-      title: 'Batblytics',
+      title,
       template: 'index.html'
+    }),
+    new webpack.DefinePlugin({
+      'process.env.PUBLIC_PATH': JSON.stringify(publicPath),
+      'process.env.TITLE': JSON.stringify(title)
     })
   ]
 };
