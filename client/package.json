@@ -1,0 +1,47 @@
+{
+  "xo": {
+    "space": true,
+    "prettier": true,
+    "extends": "xo-react",
+    "parser": "babel-eslint",
+    "env": [
+      "browser"
+    ],
+    "rules": {
+      "camelcase": "off",
+      "react/require-default-props": "off"
+    }
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack-dev-server --hot  --history-api-fallback --mode development"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.0.0-beta.49",
+    "@babel/preset-env": "^7.0.0-beta.49",
+    "@babel/preset-react": "^7.0.0-beta.49",
+    "@babel/preset-stage-0": "^7.0.0-beta.49",
+    "babel-eslint": "^8.2.3",
+    "babel-loader": "^8.0.0-beta.3",
+    "babel-polyfill": "^6.26.0",
+    "eslint-config-xo-react": "^0.16.0",
+    "eslint-plugin-react": "^7.8.2",
+    "html-webpack-plugin": "^3.2.0",
+    "webpack": "^4.9.1",
+    "webpack-cli": "^2.1.4",
+    "webpack-dev-server": "^3.1.4",
+    "xo": "^0.21.1"
+  },
+  "dependencies": {
+    "@material-ui/core": "^1.1.0",
+    "@material-ui/icons": "^1.1.0",
+    "react": "^16.4.0",
+    "react-dom": "^16.4.0",
+    "react-hot-loader": "^4.2.0",
+    "react-redux": "^5.0.7",
+    "redux": "^4.0.0",
+    "redux-actions": "^2.3.2",
+    "redux-devtools-extension": "^2.13.2",
+    "redux-loop": "^4.3.3"
+  }
+}

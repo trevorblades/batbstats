@@ -1,4 +1,4 @@
-const {STANCES} = require('../common');
+const {STANCES} = require('../../common');
 
 module.exports = (sequelize, DataTypes) => {
   const Skater = sequelize.define('skater', {

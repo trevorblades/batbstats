@@ -2,6 +2,10 @@
   "engines": {
     "node": "8"
   },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "DATABASE_URL=postgres://localhost/batbstats PORT=3000 nodemon index.js"
+  },
   "xo": {
     "space": true,
     "prettier": true,
@@ -9,10 +13,6 @@
       "camelcase": "off",
       "new-cap": "off"
     }
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "DATABASE_URL=postgres://localhost/batbstats PORT=3000 nodemon index.js"
   },
   "dependencies": {
     "express": "^4.16.3",

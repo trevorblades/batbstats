@@ -1,4 +1,4 @@
-const {ROSHAMBO_MOVES} = require('../common');
+const {ROSHAMBO_MOVES} = require('../../common');
 
 module.exports = (sequelize, DataTypes) => {
   const Roshambo = sequelize.define('roshambo', {
