@@ -1,7 +1,6 @@
-const express = require('express');
+const router = require('express').Router();
 const {Skater, Trick, Attempt} = require('../models');
 
-const router = express.Router();
 router.get('/', async (req, res) => {
   const skaters = await Skater.findAll();
   res.send(skaters);
