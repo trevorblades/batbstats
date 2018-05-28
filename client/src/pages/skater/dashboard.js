@@ -15,7 +15,7 @@ const Container = styled.div({
 class Dashboard extends Component {
   static propTypes = {
     attempts: PropTypes.array.isRequired,
-    redos: PropTypes.object.isRequired,
+    redos: PropTypes.number.isRequired,
     skater: PropTypes.object.isRequired,
     successRate: PropTypes.number.isRequired
   };
