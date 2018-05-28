@@ -3,13 +3,8 @@ import List from '@material-ui/core/List';
 import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {css} from 'react-emotion';
 import {load as loadSkaters} from '../../actions/skaters';
 import SkaterListItem from './skater-list-item';
-
-const inheritBackgroundColor = css({
-  backgroundColor: 'inherit'
-});
 
 class SkaterList extends Component {
   static propTypes = {
@@ -28,7 +23,7 @@ class SkaterList extends Component {
     }
 
     return (
-      <List className={inheritBackgroundColor}>
+      <List>
         {this.props.skaters.map(skater => (
           <SkaterListItem key={skater.id} skater={skater} />
         ))}
