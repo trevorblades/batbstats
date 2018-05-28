@@ -48,6 +48,26 @@ class Header extends Component {
     skater: PropTypes.object.isRequired
   };
 
+  renderDetails() {
+    const details = [
+      this.props.skater.hometown,
+      this.props.skater.stance && upperFirst(this.props.skater.stance),
+      this.props.age && `${this.props.age} years old`
+    ].filter(Boolean);
+
+    if (details.length === 0) {
+      return null;
+    }
+
+    return (
+      <Details>
+        {details.map((detail, index) => (
+          <Detail key={index.toString()}>{detail}</Detail>
+        ))}
+      </Details>
+    );
+  }
+
   render() {
     return (
       <Container>
@@ -66,22 +86,15 @@ class Header extends Component {
             </Typography>
           </div>
         </Heading>
-        <Details>
-          {this.props.skater.hometown && (
-            <Detail>{this.props.skater.hometown}</Detail>
-          )}
-          {this.props.skater.stance && (
-            <Detail>{upperFirst(this.props.skater.stance)}</Detail>
-          )}
-          {this.props.age && <Detail>{this.props.age} years old</Detail>}
-        </Details>
+        {this.renderDetails()}
       </Container>
     );
   }
 }
 
 const mapStateToProps = state => ({
-  age: getAge(state)
+  age: getAge(state),
+  skater: state.skater.properties
 });
 
 export default connect(mapStateToProps)(Header);

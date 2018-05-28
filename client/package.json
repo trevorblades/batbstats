@@ -41,6 +41,7 @@
     "frisbee": "^2.0.4",
     "jss": "^9.8.1",
     "lodash": "^4.17.10",
+    "pluralize": "^7.0.0",
     "polished": "^1.9.2",
     "prop-types": "^15.6.1",
     "react": "^16.4.0",

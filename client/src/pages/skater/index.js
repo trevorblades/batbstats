@@ -38,7 +38,7 @@ class Skater extends Component {
 
     return (
       <Fragment>
-        <Header skater={this.props.skater} />
+        <Header />
         <Divider />
         <Dashboard />
       </Fragment>

@@ -1,6 +1,7 @@
 import differenceInYears from 'date-fns/differenceInYears';
 import filter from 'lodash/filter';
 import flatMap from 'lodash/flatMap';
+import sumBy from 'lodash/sumBy';
 import {createSelector} from 'reselect';
 
 const getSkater = state => state.skater.properties;
@@ -16,5 +17,10 @@ export const getAttempts = createSelector(getSkater, skater =>
 
 export const getSuccessRate = createSelector(getAttempts, attempts => {
   const successfulAttempts = filter(attempts, 'successful');
-  return successfulAttempts.length / attempts.length;
+  const attemptCount = attempts.length;
+  return attemptCount && successfulAttempts.length / attemptCount;
 });
+
+export const getRedos = createSelector(getAttempts, attempts =>
+  sumBy(attempts, 'redos')
+);

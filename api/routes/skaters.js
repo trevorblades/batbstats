@@ -12,7 +12,10 @@ router.get('/:id', async (req, res) => {
       model: Game,
       include: {
         model: Attempt,
-        include: Trick
+        include: Trick,
+        where: {
+          skater_id: req.params.id
+        }
       }
     }
   });
