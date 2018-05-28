@@ -5,8 +5,9 @@ import React, {Component, Fragment} from 'react';
 import {connect} from 'react-redux';
 import {load as loadSkater} from '../../actions/skater';
 import NotFound from '../not-found';
+import Games from './games';
 import Header from './header';
-import Dashboard from './dashboard';
+import Overview from './overview';
 
 class Skater extends Component {
   static propTypes = {
@@ -40,7 +41,9 @@ class Skater extends Component {
       <Fragment>
         <Header />
         <Divider />
-        <Dashboard />
+        <Overview />
+        <Divider />
+        <Games />
       </Fragment>
     );
   }

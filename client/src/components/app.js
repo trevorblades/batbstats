@@ -27,6 +27,7 @@ const Sidebar = styled.div({
 const Content = styled.div({
   flexGrow: 1,
   backgroundColor: theme.palette.common.white,
+  overflow: 'auto',
   position: 'relative'
 });
 

@@ -12,11 +12,11 @@ const Container = styled.div({
   padding: theme.spacing.unit * 3
 });
 
-class Dashboard extends Component {
+class Overview extends Component {
   static propTypes = {
     attempts: PropTypes.array.isRequired,
+    games: PropTypes.array.isRequired,
     redos: PropTypes.number.isRequired,
-    skater: PropTypes.object.isRequired,
     successRate: PropTypes.number.isRequired
   };
 
@@ -24,7 +24,7 @@ class Dashboard extends Component {
     return (
       <Container>
         <Typography>
-          {pluralize('game', this.props.skater.games.length, true)} played
+          {pluralize('game', this.props.games.length, true)} played
         </Typography>
         <Typography>
           {pluralize('trick', this.props.attempts.length, true)} attempted
@@ -40,9 +40,9 @@ class Dashboard extends Component {
 
 const mapStateToProps = state => ({
   attempts: getAttempts(state),
+  games: state.skater.properties.games,
   redos: getRedos(state),
-  skater: state.skater.properties,
   successRate: getSuccessRate(state)
 });
 
-export default connect(mapStateToProps)(Dashboard);
+export default connect(mapStateToProps)(Overview);

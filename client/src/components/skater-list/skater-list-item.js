@@ -4,6 +4,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 import {withRouter} from 'react-router-dom';
+import {getFullName} from '../../util/skater';
 
 class SkaterListItem extends Component {
   static propTypes = {
@@ -14,11 +15,7 @@ class SkaterListItem extends Component {
   onClick = () => this.props.history.push(`/skaters/${this.props.skater.id}`);
 
   render() {
-    const names = [
-      this.props.skater.first_name,
-      this.props.skater.last_name
-    ].filter(Boolean);
-    const fullName = names.join(' ');
+    const fullName = getFullName(this.props.skater);
     return (
       <ListItem key={this.props.skater.id} button onClick={this.onClick}>
         <Avatar alt={fullName} src={this.props.skater.avatar}>
