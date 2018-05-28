@@ -1,5 +1,13 @@
 const router = require('express').Router();
-const {Skater, Game, Event, Attempt, Trick, Sequelize} = require('../models');
+const {
+  Skater,
+  Game,
+  Event,
+  Roshambo,
+  Attempt,
+  Trick,
+  Sequelize
+} = require('../models');
 
 router.get('/', async (req, res) => {
   const skaters = await Skater.findAll();
@@ -12,6 +20,7 @@ router.get('/:id', async (req, res) => {
       model: Game,
       include: [
         Event,
+        Roshambo,
         {
           model: Skater,
           where: {

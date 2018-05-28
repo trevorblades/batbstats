@@ -18,6 +18,7 @@ const flexAlignCenter = css({
 
 const Container = styled.div(flexAlignCenter, {
   flexDirection: 'column',
+  flexShrink: 0,
   padding: theme.spacing.unit * 3
 });
 

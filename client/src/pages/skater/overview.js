@@ -3,9 +3,7 @@ import React, {Component, Fragment} from 'react';
 import Typography from '@material-ui/core/Typography';
 import pluralize from 'pluralize';
 import round from 'lodash/round';
-import styled from 'react-emotion';
 import {connect} from 'react-redux';
-import theme from '../../theme';
 import {
   getAttempts,
   getFlipPercent,
@@ -14,11 +12,7 @@ import {
   getRedos
 } from '../../selectors/skater';
 
-const Container = styled.div({
-  padding: theme.spacing.unit * 3
-});
-
-class Tricks extends Component {
+class Overview extends Component {
   static propTypes = {
     attempts: PropTypes.array.isRequired,
     flipPercent: PropTypes.number.isRequired,
@@ -31,23 +25,20 @@ class Tricks extends Component {
   render() {
     return (
       <Fragment>
-        <Container>
-          <Typography>
-            {pluralize('game', this.props.games.length, true)} played
-          </Typography>
-          <Typography>
-            {pluralize('total trick', this.props.attempts.length, true)}{' '}
-            attempted
-          </Typography>
-          <Typography>
-            {round(this.props.offensivePercent * 100, 2)} % offensive
-          </Typography>
-          <Typography>
-            {round(this.props.successRate * 100, 2)} % success rate
-          </Typography>
-          <Typography>{pluralize('redo', this.props.redos, true)}</Typography>
-          <Typography>{this.props.flipPercent}</Typography>
-        </Container>
+        <Typography>
+          {pluralize('game', this.props.games.length, true)} played
+        </Typography>
+        <Typography>
+          {pluralize('total trick', this.props.attempts.length, true)} attempted
+        </Typography>
+        <Typography>
+          {round(this.props.offensivePercent * 100, 2)} % offensive
+        </Typography>
+        <Typography>
+          {round(this.props.successRate * 100, 2)} % success rate
+        </Typography>
+        <Typography>{pluralize('redo', this.props.redos, true)}</Typography>
+        <Typography>{this.props.flipPercent}</Typography>
       </Fragment>
     );
   }
@@ -62,4 +53,4 @@ const mapStateToProps = state => ({
   successRate: getSuccessRate(state)
 });
 
-export default connect(mapStateToProps)(Tricks);
+export default connect(mapStateToProps)(Overview);

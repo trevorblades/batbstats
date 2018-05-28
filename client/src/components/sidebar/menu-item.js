@@ -29,7 +29,7 @@ class MenuItem extends Component {
   render() {
     return (
       <StyledLink exact={this.props.exact} to={this.props.to}>
-        <Typography color="inherit" variant="subheading">
+        <Typography color="inherit" variant="body2">
           {this.props.children}
         </Typography>
       </StyledLink>

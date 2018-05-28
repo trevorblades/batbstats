@@ -10,6 +10,8 @@ import Skater from './skater';
 
 const Container = withProps({square: true})(
   styled(Paper)({
+    display: 'flex',
+    flexDirection: 'column',
     flexGrow: 1,
     overflow: 'auto'
   })
@@ -20,7 +22,7 @@ const Pages = () => (
     <Switch>
       <Route exact component={Dashboard} path="/" />
       <Route exact component={Skaters} path="/skaters" />
-      <Route exact component={Skater} path="/skaters/:id" />
+      <Route exact component={Skater} path="/skaters/:id/:view?" />
       <Route component={NotFound} />
     </Switch>
   </Container>
