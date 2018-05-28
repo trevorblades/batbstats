@@ -1,6 +1,5 @@
 import CircularProgress from '@material-ui/core/CircularProgress';
 import List from '@material-ui/core/List';
-import ListSubheader from '@material-ui/core/ListSubheader';
 import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
@@ -29,14 +28,7 @@ class SkaterList extends Component {
     }
 
     return (
-      <List
-        className={inheritBackgroundColor}
-        subheader={
-          <ListSubheader className={inheritBackgroundColor}>
-            All skaters
-          </ListSubheader>
-        }
-      >
+      <List className={inheritBackgroundColor}>
         {this.props.skaters.map(skater => (
           <SkaterListItem key={skater.id} skater={skater} />
         ))}
