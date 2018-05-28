@@ -1,8 +1,5 @@
-import Divider from '@material-ui/core/Divider';
 import PropTypes from 'prop-types';
 import React, {Component, Fragment} from 'react';
-import Tab from '@material-ui/core/Tab';
-import Tabs from '@material-ui/core/Tabs';
 import Typography from '@material-ui/core/Typography';
 import pluralize from 'pluralize';
 import round from 'lodash/round';
@@ -21,7 +18,7 @@ const Container = styled.div({
   padding: theme.spacing.unit * 3
 });
 
-class Overview extends Component {
+class Tricks extends Component {
   static propTypes = {
     attempts: PropTypes.array.isRequired,
     flipPercent: PropTypes.number.isRequired,
@@ -34,12 +31,6 @@ class Overview extends Component {
   render() {
     return (
       <Fragment>
-        <Tabs centered value={0}>
-          <Tab label="Totals" />
-          <Tab label="Offense" />
-          <Tab label="Defense" />
-        </Tabs>
-        <Divider />
         <Container>
           <Typography>
             {pluralize('game', this.props.games.length, true)} played
@@ -71,4 +62,4 @@ const mapStateToProps = state => ({
   successRate: getSuccessRate(state)
 });
 
-export default connect(mapStateToProps)(Overview);
+export default connect(mapStateToProps)(Tricks);

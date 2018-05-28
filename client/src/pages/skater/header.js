@@ -9,20 +9,20 @@ import {connect} from 'react-redux';
 import {size} from 'polished';
 import theme from '../../theme';
 import {getAge} from '../../selectors/skater';
-
-const Container = styled.div({
-  padding: theme.spacing.unit * 3
-});
+import {getFullName} from '../../util/skater';
 
 const flexAlignCenter = css({
   display: 'flex',
   alignItems: 'center'
 });
 
-const Heading = styled.div(flexAlignCenter);
+const Container = styled.div(flexAlignCenter, {
+  flexDirection: 'column',
+  padding: theme.spacing.unit * 3
+});
 
-const StyledAvatar = styled(Avatar)(size(48), {
-  marginRight: theme.spacing.unit
+const StyledAvatar = styled(Avatar)(size(64), {
+  marginBottom: theme.spacing.unit * 2
 });
 
 const Details = styled.div(flexAlignCenter, {
@@ -71,21 +71,12 @@ class Header extends Component {
   render() {
     return (
       <Container>
-        <Heading>
-          <StyledAvatar src={this.props.skater.avatar}>
-            {this.props.skater.first_name.charAt(0).toUpperCase()}
-          </StyledAvatar>
-          <div>
-            {this.props.skater.last_name && (
-              <Typography variant="subheading">
-                {this.props.skater.first_name}
-              </Typography>
-            )}
-            <Typography variant="title">
-              {this.props.skater.last_name || this.props.skater.first_name}
-            </Typography>
-          </div>
-        </Heading>
+        <StyledAvatar src={this.props.skater.avatar}>
+          {this.props.skater.first_name.charAt(0).toUpperCase()}
+        </StyledAvatar>
+        <Typography variant="title">
+          {getFullName(this.props.skater)}
+        </Typography>
         {this.renderDetails()}
       </Container>
     );

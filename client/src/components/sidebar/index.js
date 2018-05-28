@@ -17,7 +17,7 @@ const Container = styled.div(flexAlignCenter, {
   width: 250,
   padding: theme.spacing.unit * 3,
   color: theme.palette.grey[500],
-  backgroundColor: theme.palette.grey[100],
+  backgroundColor: theme.palette.grey[50],
   overflow: 'auto'
 });
 
@@ -29,7 +29,10 @@ const Menu = styled.nav(flexAlignCenter, {
   marginTop: theme.spacing.unit * 2
 });
 
-const Colophon = withProps({color: 'inherit'})(
+const Colophon = withProps({
+  color: 'inherit',
+  variant: 'caption'
+})(
   styled(Typography)({
     marginTop: 'auto'
   })
