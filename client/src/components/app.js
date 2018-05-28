@@ -1,55 +1,28 @@
+import CssBaseline from '@material-ui/core/CssBaseline';
 import Helmet from 'react-helmet';
-import React, {Component} from 'react';
+import React, {Fragment} from 'react';
 import styled from 'react-emotion';
 import {hot} from 'react-hot-loader';
-import theme from '../theme';
 import Pages from '../pages';
-import Header from './header';
-import SkaterList from './skater-list';
+import Sidebar from './sidebar';
 
 const Container = styled.div({
   display: 'flex',
-  flexDirection: 'column',
   height: '100%'
 });
 
-const InnerContainer = styled.div({
-  display: 'flex',
-  flexGrow: 1
-});
-
-const Sidebar = styled.div({
-  width: 360,
-  overflow: 'auto',
-  backgroundColor: theme.palette.grey[50]
-});
-
-const Content = styled.div({
-  flexGrow: 1,
-  overflow: 'auto',
-  backgroundColor: theme.palette.common.white
-});
-
-class App extends Component {
-  render() {
-    return (
-      <Container>
-        <Helmet
-          defaultTitle={process.env.TITLE}
-          titleTemplate={`%s · ${process.env.TITLE}`}
-        />
-        <Header />
-        <InnerContainer>
-          <Sidebar>
-            <SkaterList />
-          </Sidebar>
-          <Content>
-            <Pages />
-          </Content>
-        </InnerContainer>
-      </Container>
-    );
-  }
-}
+const App = () => (
+  <Fragment>
+    <Helmet
+      defaultTitle={process.env.TITLE}
+      titleTemplate={`%s · ${process.env.TITLE}`}
+    />
+    <CssBaseline />
+    <Container>
+      <Sidebar />
+      <Pages />
+    </Container>
+  </Fragment>
+);
 
 export default hot(module)(App);

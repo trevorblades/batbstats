@@ -1,8 +1,7 @@
 import {injectGlobal} from 'emotion';
-import {normalize} from 'polished';
 
 export default () => {
-  injectGlobal(normalize(), {
+  injectGlobal({
     [['html', 'body', '#root']]: {
       height: '100%'
     }
