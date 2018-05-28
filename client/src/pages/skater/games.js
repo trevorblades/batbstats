@@ -24,15 +24,13 @@ class Games extends Component {
           </TableRow>
         </TableHead>
         <TableBody>
-          {this.props.games.map(game => {
-            return (
-              <TableRow key={game.id}>
-                <TableCell>{getFullName(game.skaters[0])}</TableCell>
-                <TableCell>{game.event.name}</TableCell>
-                <TableCell numeric>{game.round}</TableCell>
-              </TableRow>
-            );
-          })}
+          {this.props.games.map(game => (
+            <TableRow key={game.id} hover>
+              <TableCell>{getFullName(game.skaters[0])}</TableCell>
+              <TableCell>{game.event.name}</TableCell>
+              <TableCell numeric>{game.round}</TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
     );

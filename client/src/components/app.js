@@ -1,6 +1,8 @@
 import Helmet from 'react-helmet';
+import Paper from '@material-ui/core/Paper';
 import React, {Component} from 'react';
 import styled from 'react-emotion';
+import withProps from 'recompose/withProps';
 import {hot} from 'react-hot-loader';
 import theme from '../theme';
 import Pages from '../pages';
@@ -24,12 +26,12 @@ const Sidebar = styled.div({
   backgroundColor: theme.palette.grey[50]
 });
 
-const Content = styled.div({
-  flexGrow: 1,
-  backgroundColor: theme.palette.common.white,
-  overflow: 'auto',
-  position: 'relative'
-});
+const Content = withProps({square: true})(
+  styled(Paper)({
+    flexGrow: 1,
+    overflow: 'auto'
+  })
+);
 
 class App extends Component {
   render() {
