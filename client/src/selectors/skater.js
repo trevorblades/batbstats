@@ -1,6 +1,7 @@
 import differenceInYears from 'date-fns/differenceInYears';
 import filter from 'lodash/filter';
 import flatMap from 'lodash/flatMap';
+import map from 'lodash/map';
 import sumBy from 'lodash/sumBy';
 import {createSelector} from 'reselect';
 
@@ -16,11 +17,50 @@ export const getAttempts = createSelector(getSkater, skater =>
 );
 
 export const getSuccessRate = createSelector(getAttempts, attempts => {
-  const successfulAttempts = filter(attempts, 'successful');
   const attemptCount = attempts.length;
-  return attemptCount && successfulAttempts.length / attemptCount;
+  if (!attemptCount) {
+    return 0;
+  }
+
+  const successfulAttempts = filter(attempts, 'successful');
+  return successfulAttempts.length / attemptCount;
 });
 
 export const getRedos = createSelector(getAttempts, attempts =>
   sumBy(attempts, 'redos')
 );
+
+const getOffensiveAttempts = createSelector(getAttempts, attempts =>
+  filter(attempts, 'offense')
+);
+
+export const getOffensivePercent = createSelector(
+  getAttempts,
+  getOffensiveAttempts,
+  (attempts, offensiveAttempts) => {
+    const attemptCount = attempts.length;
+    if (!attemptCount) {
+      return 0;
+    }
+
+    return offensiveAttempts.length / attemptCount;
+  }
+);
+
+const getOffensiveTricks = createSelector(
+  getOffensiveAttempts,
+  offensiveAttempts => map(offensiveAttempts, 'trick')
+);
+
+export const getFlipPercent = createSelector(getOffensiveTricks, tricks => {
+  const trickCount = tricks.length;
+  if (!trickCount) {
+    return 0;
+  }
+
+  const totalFlip = tricks.reduce(
+    (score, {flip}) => (flip ? score + (flip > 0 ? 1 : -1) : score),
+    0
+  );
+  return totalFlip / trickCount;
+});

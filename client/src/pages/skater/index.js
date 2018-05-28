@@ -42,7 +42,6 @@ class Skater extends Component {
         <Header />
         <Divider />
         <Overview />
-        <Divider />
         <Games />
       </Fragment>
     );

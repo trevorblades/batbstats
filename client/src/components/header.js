@@ -4,7 +4,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 
 const Header = () => (
-  <AppBar position="static" elevation={0}>
+  <AppBar position="static" elevation={0} color="default">
     <Toolbar>
       <Typography color="inherit" variant="title">
         Batblytics
