@@ -16,13 +16,11 @@ router.get('/:id', async (req, res) => {
         Roshambo,
         {
           model: Attempt,
-          include: Trick,
-          where: {
-            skater_id: req.params.id
-          }
+          include: Trick
         }
       ]
-    }
+    },
+    order: [[Game, Attempt, 'id']]
   });
 
   res.send(skater);
