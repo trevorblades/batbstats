@@ -12,7 +12,6 @@ import Typography from '@material-ui/core/Typography';
 import styled from 'react-emotion';
 import withProps from 'recompose/withProps';
 import {withRouter} from 'react-router-dom';
-import thumb from '../../../assets/thumb.jpg';
 import {getFullName} from '../../../util/skater';
 
 const Results = styled.div({
@@ -33,6 +32,7 @@ const Result = withProps({
 })(Typography);
 
 const LETTERS = 'skate'.toUpperCase().split('');
+const req = require.context('../../../assets/events');
 
 class GameCard extends Component {
   static propTypes = {
@@ -76,13 +76,14 @@ class GameCard extends Component {
   }
 
   render() {
+    const {event} = this.props.game;
     return (
       <Grid key={this.props.game.id} item xs={4}>
         <Card>
           <CardHeader
-            title={this.props.game.event.name}
+            title={event.name}
             subheader={`Round ${this.props.game.round}`}
-            avatar={<Avatar src={thumb} />}
+            avatar={<Avatar src={req(`./${event.id}.jpg`)} />}
           />
           <Divider />
           <CardContent>{this.renderResults()}</CardContent>
