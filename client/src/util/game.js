@@ -15,6 +15,21 @@ const counters = {
   [ROSHAMBO_MOVE_SCISSORS]: ROSHAMBO_MOVE_ROCK
 };
 
+export function getRoundName(round) {
+  switch (round) {
+    case 6:
+      return 'Championship Battle';
+    case 5:
+      return 'Third Place Battle';
+    case 4:
+      return 'Semifinal';
+    case 3:
+      return 'Quarterfinal';
+    default:
+      return `Round ${round}`;
+  }
+}
+
 export function getRoshamboWinner(game) {
   const rounds = values(groupBy(game.roshambos, 'round'));
   for (let i = 0; i < rounds.length; i++) {

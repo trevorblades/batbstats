@@ -12,6 +12,7 @@ import Typography from '@material-ui/core/Typography';
 import styled from 'react-emotion';
 import withProps from 'recompose/withProps';
 import {withRouter} from 'react-router-dom';
+import {getRoundName} from '../../../util/game';
 import {getFullName} from '../../../util/skater';
 
 const Results = styled.div({
@@ -82,8 +83,8 @@ class GameCard extends Component {
         <Card>
           <CardHeader
             title={event.name}
-            subheader={`Round ${this.props.game.round}`}
-            avatar={<Avatar src={req(`./${event.id}.jpg`)} />}
+            subheader={getRoundName(this.props.game.round)}
+            avatar={<Avatar alt={event.name} src={req(`./${event.id}.jpg`)} />}
           />
           <Divider />
           <CardContent>{this.renderResults()}</CardContent>
