@@ -1,6 +1,7 @@
 import AppBar from '@material-ui/core/AppBar';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Divider from '@material-ui/core/Divider';
+import Helmet from 'react-helmet';
 import PropTypes from 'prop-types';
 import React, {Component, Fragment} from 'react';
 import Tab from '@material-ui/core/Tab';
@@ -11,6 +12,7 @@ import {Switch, Route} from 'react-router-dom';
 import {connect} from 'react-redux';
 import NotFound from '../not-found';
 import theme from '../../theme';
+import {getFullName} from '../../util/skater';
 import {load as loadSkater} from '../../actions/skater';
 import Games from './games';
 import Header from './header';
@@ -68,6 +70,9 @@ class Skater extends Component {
 
     return (
       <Fragment>
+        <Helmet>
+          <title>{getFullName(this.props.skater)}</title>
+        </Helmet>
         <Header />
         <TabMenu>
           <Tabs
