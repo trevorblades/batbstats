@@ -19,9 +19,11 @@ export const getWins = createSelector(
   getSkater,
   getResults,
   (skater, results) => {
-    const wins = results.filter(
-      result => result[0].id === skater.id || result.letters === 5
-    );
+    const wins = results.filter(result => {
+      const participant = result[0];
+      const didLose = participant.letters === 5;
+      return participant.id === skater.id ? !didLose : didLose;
+    });
     return wins.length;
   }
 );

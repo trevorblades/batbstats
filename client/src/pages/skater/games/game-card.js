@@ -11,6 +11,7 @@ import React, {Component} from 'react';
 import Typography from '@material-ui/core/Typography';
 import styled from 'react-emotion';
 import withProps from 'recompose/withProps';
+import {withRouter} from 'react-router-dom';
 import thumb from '../../../assets/thumb.jpg';
 import {getFullName} from '../../../util/skater';
 import {getResults} from '../../../util/game';
@@ -36,8 +37,11 @@ const letters = 'skate'.toUpperCase().split('');
 
 class GameCard extends Component {
   static propTypes = {
-    game: PropTypes.object.isRequired
+    game: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired
   };
+
+  onClick = () => this.props.history.push(`/games/${this.props.game.id}`);
 
   render() {
     const skaters = getResults(this.props.game);
@@ -79,7 +83,9 @@ class GameCard extends Component {
             </Results>
           </CardContent>
           <CardActions>
-            <Button size="small">Learn More</Button>
+            <Button size="small" onClick={this.onClick}>
+              Learn More
+            </Button>
           </CardActions>
         </Card>
       </Grid>
@@ -87,4 +93,4 @@ class GameCard extends Component {
   }
 }
 
-export default GameCard;
+export default withRouter(GameCard);
