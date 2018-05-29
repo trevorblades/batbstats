@@ -5,6 +5,7 @@ import pluralize from 'pluralize';
 import round from 'lodash/round';
 import {connect} from 'react-redux';
 import {
+  getGames,
   getAttempts,
   getFlipPercent,
   getOffensivePercent,
@@ -47,7 +48,7 @@ class Overview extends Component {
 const mapStateToProps = state => ({
   attempts: getAttempts(state),
   flipPercent: getFlipPercent(state),
-  games: state.skater.properties.games,
+  games: getGames(state),
   offensivePercent: getOffensivePercent(state),
   redos: getRedos(state),
   successRate: getSuccessRate(state)

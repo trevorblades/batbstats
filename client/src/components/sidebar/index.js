@@ -48,6 +48,7 @@ const Sidebar = () => (
           Dashboard
         </MenuItem>
         <MenuItem to="/skaters">Skaters</MenuItem>
+        <MenuItem to="/games">Games</MenuItem>
       </Menu>
     </Content>
     <Colophon>© Trevor Blades</Colophon>

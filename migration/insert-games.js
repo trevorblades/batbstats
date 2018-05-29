@@ -5,14 +5,16 @@ function marshallAttempts(gameId, skater1, skater2, tricks) {
   const attempts = [];
   tricks.forEach(trick => {
     trick.attempts.forEach((attempt, index) => {
-      attempts.push({
-        successful: Boolean(attempt.result),
-        offense: trick.setter === index,
-        redos: attempt.redos,
-        game_id: gameId,
-        trick_id: trick.id,
-        skater_id: index ? skater2 : skater1
-      });
+      if (attempt.result !== -1) {
+        attempts.push({
+          successful: Boolean(attempt.result),
+          offense: trick.setter === index,
+          redos: attempt.redos,
+          game_id: gameId,
+          trick_id: trick.id,
+          skater_id: index ? skater2 : skater1
+        });
+      }
     });
   });
 

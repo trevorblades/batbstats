@@ -14,7 +14,6 @@ import withProps from 'recompose/withProps';
 import {withRouter} from 'react-router-dom';
 import thumb from '../../../assets/thumb.jpg';
 import {getFullName} from '../../../util/skater';
-import {getResults} from '../../../util/game';
 
 const Results = styled.div({
   display: 'flex',
@@ -33,7 +32,7 @@ const Result = withProps({
   color: 'inherit'
 })(Typography);
 
-const letters = 'skate'.toUpperCase().split('');
+const LETTERS = 'skate'.toUpperCase().split('');
 
 class GameCard extends Component {
   static propTypes = {
@@ -43,8 +42,40 @@ class GameCard extends Component {
 
   onClick = () => this.props.history.push(`/games/${this.props.game.id}`);
 
+  renderResults() {
+    const {letters} = this.props.game;
+    return (
+      <Results>
+        {this.props.game.skaters.map(skater => {
+          const lettersAgainst = letters[skater.id];
+          const didLose = lettersAgainst === 5;
+          return (
+            <Skater key={skater.id}>
+              <Name>{getFullName(skater)}</Name>
+              <Result
+                style={{
+                  textDecoration: didLose ? 'line-through' : 'none'
+                }}
+              >
+                {LETTERS.map((letter, index) => (
+                  <span
+                    key={letter}
+                    style={{
+                      opacity: index > lettersAgainst - 1 ? 0.5 : 1
+                    }}
+                  >
+                    {letter}.
+                  </span>
+                ))}
+              </Result>
+            </Skater>
+          );
+        })}
+      </Results>
+    );
+  }
+
   render() {
-    const skaters = getResults(this.props.game);
     return (
       <Grid key={this.props.game.id} item xs={4}>
         <Card>
@@ -54,34 +85,7 @@ class GameCard extends Component {
             avatar={<Avatar src={thumb} />}
           />
           <Divider />
-          <CardContent>
-            <Results>
-              {skaters.map(skater => {
-                const loser = skater.letters === 5;
-                return (
-                  <Skater key={skater.id}>
-                    <Name>{getFullName(skater)}</Name>
-                    <Result
-                      style={{
-                        textDecoration: loser ? 'line-through' : 'none'
-                      }}
-                    >
-                      {letters.map((letter, index) => (
-                        <span
-                          key={letter}
-                          style={{
-                            opacity: index > skater.letters - 1 ? 0.5 : 1
-                          }}
-                        >
-                          {letter}.
-                        </span>
-                      ))}
-                    </Result>
-                  </Skater>
-                );
-              })}
-            </Results>
-          </CardContent>
+          <CardContent>{this.renderResults()}</CardContent>
           <CardActions>
             <Button size="small" onClick={this.onClick}>
               Learn More

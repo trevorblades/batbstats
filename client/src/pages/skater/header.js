@@ -48,12 +48,13 @@ class Header extends Component {
     age: PropTypes.number,
     games: PropTypes.array.isRequired,
     skater: PropTypes.object.isRequired,
-    wins: PropTypes.number.isRequired
+    wins: PropTypes.array.isRequired
   };
 
   renderDetails() {
+    const winCount = this.props.wins.length;
     const details = [
-      `${this.props.wins}-${this.props.games.length - this.props.wins}`,
+      `${winCount}-${this.props.games.length - winCount}`,
       this.props.skater.hometown,
       this.props.skater.stance && upperFirst(this.props.skater.stance),
       this.props.age && `${this.props.age} years old`

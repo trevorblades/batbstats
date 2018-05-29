@@ -1,4 +1,5 @@
 import eq from 'lodash/eq';
+import fromPairs from 'lodash/fromPairs';
 import groupBy from 'lodash/groupBy';
 import map from 'lodash/map';
 import values from 'lodash/values';
@@ -14,58 +15,41 @@ const counters = {
   [ROSHAMBO_MOVE_SCISSORS]: ROSHAMBO_MOVE_ROCK
 };
 
-export function getResults(game) {
-  let attacker;
-  let defender;
+export function getRoshamboWinner(game) {
   const rounds = values(groupBy(game.roshambos, 'round'));
-
-  // First, we loop through the roshambo rounds to see who sets first
-  rounds.forEach(round => {
+  for (let i = 0; i < rounds.length; i++) {
+    const round = rounds[i];
     const moves = map(round, 'move');
     if (eq(moves)) {
-      return;
-    }
-
-    const attackerIndex = counters[moves[0]] === moves[1] ? 1 : 0;
-    attacker = round[attackerIndex].skater_id;
-    defender = round[attackerIndex ? 0 : 1].skater_id;
-  });
-
-  let index = 0;
-  let playing = true;
-  const letters = {
-    [attacker]: 0,
-    [defender]: 0
-  };
-
-  const attempts = groupBy(game.attempts, 'skater_id');
-  while (playing) {
-    const offense = attempts[attacker][index];
-    if (offense.successful) {
-      const defense = attempts[defender][index];
-      if (!defense.successful) {
-        letters[defender]++;
-        if (letters[defender] === 5) {
-          playing = false;
-        }
-      }
-
-      index++;
       continue;
     }
 
-    const nextAttacker = defender;
-    defender = attacker;
-    attacker = nextAttacker;
-
-    index++;
-    if (!attempts[attacker][index]) {
-      playing = false;
-    }
+    return round[counters[moves[0]] === moves[1] ? 1 : 0].skater_id;
   }
+}
 
-  return game.skaters.map(skater => ({
-    ...skater,
-    letters: letters[skater.id]
-  }));
+export function getLetters(game) {
+  let trick;
+  const letters = fromPairs(game.skaters.map(skater => [skater.id, 0]));
+  game.attempts.forEach(attempt => {
+    if (!trick) {
+      if (attempt.successful) {
+        trick = attempt;
+      }
+      return;
+    }
+
+    if (attempt.offense) {
+      if (attempt.successful) {
+        trick = attempt;
+      }
+      return;
+    }
+
+    if (!attempt.successful) {
+      letters[attempt.skater_id]++;
+    }
+  });
+
+  return letters;
 }
