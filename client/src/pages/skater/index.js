@@ -7,7 +7,7 @@ import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import styled from 'react-emotion';
 import withProps from 'recompose/withProps';
-import {Switch, Route, Redirect} from 'react-router-dom';
+import {Switch, Route} from 'react-router-dom';
 import {connect} from 'react-redux';
 import NotFound from '../not-found';
 import theme from '../../theme';
@@ -28,9 +28,7 @@ const TabMenu = withProps({
   position: 'sticky'
 })(AppBar);
 
-const defaultView = 'overview';
-const validSubviews = ['games', 'roshambo'];
-
+const defaultTab = 'overview';
 class Skater extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -52,7 +50,7 @@ class Skater extends Component {
 
   onTabChange = (event, value) => {
     let path = `/skaters/${this.props.match.params.id}`;
-    if (value !== 'overview') {
+    if (value !== defaultTab) {
       path += `/${value}`;
     }
     this.props.history.push(path);
@@ -68,21 +66,16 @@ class Skater extends Component {
       return <NotFound />;
     }
 
-    const {id, view} = this.props.match.params;
-    if (view && !validSubviews.includes(view)) {
-      return <Redirect to={`/skaters/${id}`} />;
-    }
-
     return (
       <Fragment>
         <Header />
         <TabMenu>
           <Tabs
             centered
-            value={view || defaultView}
+            value={this.props.match.params.tab || defaultTab}
             onChange={this.onTabChange}
           >
-            <Tab label="Overview" value={defaultView} />
+            <Tab label="Overview" value={defaultTab} />
             <Tab label="Games" value="games" />
             <Tab label="Roshambo" value="roshambo" />
           </Tabs>
