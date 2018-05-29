@@ -1,3 +1,4 @@
+import AppBar from '@material-ui/core/AppBar';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Divider from '@material-ui/core/Divider';
 import PropTypes from 'prop-types';
@@ -5,6 +6,7 @@ import React, {Component, Fragment} from 'react';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import styled from 'react-emotion';
+import withProps from 'recompose/withProps';
 import {Switch, Route, Redirect} from 'react-router-dom';
 import {connect} from 'react-redux';
 import NotFound from '../not-found';
@@ -19,6 +21,12 @@ const Content = styled.div({
   padding: theme.spacing.unit * 3,
   backgroundColor: theme.palette.grey[50]
 });
+
+const TabMenu = withProps({
+  elevation: 0,
+  color: 'inherit',
+  position: 'sticky'
+})(AppBar);
 
 const defaultView = 'overview';
 const validSubviews = ['games', 'roshambo'];
@@ -68,12 +76,18 @@ class Skater extends Component {
     return (
       <Fragment>
         <Header />
-        <Tabs centered value={view || defaultView} onChange={this.onTabChange}>
-          <Tab label="Overview" value={defaultView} />
-          <Tab label="Games" value="games" />
-          <Tab label="Roshambo" value="roshambo" />
-        </Tabs>
-        <Divider />
+        <TabMenu>
+          <Tabs
+            centered
+            value={view || defaultView}
+            onChange={this.onTabChange}
+          >
+            <Tab label="Overview" value={defaultView} />
+            <Tab label="Games" value="games" />
+            <Tab label="Roshambo" value="roshambo" />
+          </Tabs>
+          <Divider />
+        </TabMenu>
         <Content>
           <Switch>
             <Route exact component={Overview} path="/skaters/:id" />

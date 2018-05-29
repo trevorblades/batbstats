@@ -4,20 +4,16 @@ import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
+import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
 import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 import Typography from '@material-ui/core/Typography';
 import styled from 'react-emotion';
 import withProps from 'recompose/withProps';
-import theme from '../../../theme';
 import thumb from '../../../assets/thumb.jpg';
 import {getFullName} from '../../../util/skater';
 import {getResults} from '../../../util/game';
-
-const StyledCardContent = styled(CardContent)({
-  backgroundColor: theme.palette.grey[50]
-});
 
 const Results = styled.div({
   display: 'flex',
@@ -53,34 +49,36 @@ class GameCard extends Component {
             subheader={`Round ${this.props.game.round}`}
             avatar={<Avatar src={thumb} />}
           />
-          <StyledCardContent>
+          <Divider />
+          <CardContent>
             <Results>
-              {skaters.map(skater => (
-                <Skater key={skater.id}>
-                  <Name>{getFullName(skater)}</Name>
-                  <Result
-                    style={{
-                      textDecoration:
-                        skater.letters === 5 ? 'line-through' : 'none'
-                    }}
-                  >
-                    {letters.map((letter, index) => (
-                      <span
-                        key={letter}
-                        style={{
-                          opacity: index > skater.letters - 1 ? 0.5 : 1
-                        }}
-                      >
-                        {letter}.
-                      </span>
-                    ))}
-                  </Result>
-                </Skater>
-              ))}
+              {skaters.map(skater => {
+                const loser = skater.letters === 5;
+                return (
+                  <Skater key={skater.id}>
+                    <Name>{getFullName(skater)}</Name>
+                    <Result
+                      style={{
+                        textDecoration: loser ? 'line-through' : 'none'
+                      }}
+                    >
+                      {letters.map((letter, index) => (
+                        <span
+                          key={letter}
+                          style={{
+                            opacity: index > skater.letters - 1 ? 0.5 : 1
+                          }}
+                        >
+                          {letter}.
+                        </span>
+                      ))}
+                    </Result>
+                  </Skater>
+                );
+              })}
             </Results>
-          </StyledCardContent>
+          </CardContent>
           <CardActions>
-            <Button size="small">Watch</Button>
             <Button size="small">Learn More</Button>
           </CardActions>
         </Card>

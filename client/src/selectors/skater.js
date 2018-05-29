@@ -4,6 +4,7 @@ import flatMap from 'lodash/flatMap';
 import map from 'lodash/map';
 import sumBy from 'lodash/sumBy';
 import {createSelector} from 'reselect';
+import {getResults as getResultsUtil} from '../util/game';
 
 const getSkater = state => state.skater.properties;
 export const getAge = createSelector(
@@ -12,8 +13,21 @@ export const getAge = createSelector(
     skater.birth_date && differenceInYears(Date.now(), skater.birth_date)
 );
 
-export const getAttempts = createSelector(getSkater, skater =>
-  flatMap(skater.games, 'attempts')
+const getGames = createSelector(getSkater, skater => skater.games);
+const getResults = createSelector(getGames, games => games.map(getResultsUtil));
+export const getWins = createSelector(
+  getSkater,
+  getResults,
+  (skater, results) => {
+    const wins = results.filter(
+      result => result[0].id === skater.id || result.letters === 5
+    );
+    return wins.length;
+  }
+);
+
+export const getAttempts = createSelector(getGames, games =>
+  flatMap(games, 'attempts')
 );
 
 export const getSuccessRate = createSelector(getAttempts, attempts => {

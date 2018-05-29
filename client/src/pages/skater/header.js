@@ -8,7 +8,7 @@ import withProps from 'recompose/withProps';
 import {connect} from 'react-redux';
 import {size} from 'polished';
 import theme from '../../theme';
-import {getAge} from '../../selectors/skater';
+import {getAge, getWins} from '../../selectors/skater';
 import {getFullName} from '../../util/skater';
 
 const flexAlignCenter = css({
@@ -46,19 +46,18 @@ const Detail = withProps({
 class Header extends Component {
   static propTypes = {
     age: PropTypes.number,
-    skater: PropTypes.object.isRequired
+    games: PropTypes.array.isRequired,
+    skater: PropTypes.object.isRequired,
+    wins: PropTypes.number.isRequired
   };
 
   renderDetails() {
     const details = [
+      `${this.props.wins}-${this.props.games.length - this.props.wins}`,
       this.props.skater.hometown,
       this.props.skater.stance && upperFirst(this.props.skater.stance),
       this.props.age && `${this.props.age} years old`
     ].filter(Boolean);
-
-    if (details.length === 0) {
-      return null;
-    }
 
     return (
       <Details>
@@ -84,9 +83,14 @@ class Header extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  age: getAge(state),
-  skater: state.skater.properties
-});
+const mapStateToProps = state => {
+  const {games, ...skater} = state.skater.properties;
+  return {
+    games,
+    skater,
+    age: getAge(state),
+    wins: getWins(state)
+  };
+};
 
 export default connect(mapStateToProps)(Header);
