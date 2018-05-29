@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlPlugin = require('html-webpack-plugin');
+const WebappPlugin = require('webapp-webpack-plugin');
 const webpack = require('webpack');
 
 const publicPath = '/';
@@ -36,6 +37,7 @@ module.exports = {
       title,
       template: 'index.html'
     }),
+    new WebappPlugin('./assets/favicon.svg'),
     new webpack.DefinePlugin({
       'process.env.PUBLIC_PATH': JSON.stringify(publicPath),
       'process.env.TITLE': JSON.stringify(title)

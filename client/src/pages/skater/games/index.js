@@ -11,7 +11,6 @@ class Games extends Component {
   };
 
   render() {
-    console.log(this.props.games);
     return (
       <Grid container spacing={24}>
         {this.props.games.map(game => <GameCard key={game.id} game={game} />)}
