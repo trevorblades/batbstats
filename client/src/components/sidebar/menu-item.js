@@ -11,11 +11,11 @@ const StyledLink = styled(NavLink)({
   ':not(:last-child)': {
     marginBottom: theme.spacing.unit
   },
-  '&.active': {
-    color: theme.palette.grey[900]
-  },
-  ':not(.active):hover': {
-    color: theme.palette.grey[700]
+  ':not(.active)': {
+    opacity: 0.5,
+    ':hover': {
+      opacity: 0.75
+    }
   }
 });
 

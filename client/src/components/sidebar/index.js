@@ -17,7 +17,7 @@ const Container = styled.div(flexAlignCenter, {
   flexShrink: 0,
   width: 250,
   padding: theme.spacing.unit * 3,
-  color: theme.palette.grey[600],
+  color: theme.palette.primary[500],
   backgroundColor: theme.palette.grey[100],
   overflow: 'auto'
 });
@@ -42,7 +42,7 @@ const Colophon = withProps({
 const Sidebar = () => (
   <Container>
     <Content>
-      <Logo {...size(100)} fill={theme.palette.primary[500]} />
+      <Logo {...size(100)} fill="currentColor" />
       <Menu>
         <MenuItem exact to="/">
           Dashboard

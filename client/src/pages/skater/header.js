@@ -27,7 +27,7 @@ const StyledAvatar = styled(Avatar)(size(64), {
 });
 
 const Details = styled.div(flexAlignCenter, {
-  marginTop: theme.spacing.unit,
+  marginTop: theme.spacing.unit / 2,
   color: theme.palette.grey[400]
 });
 
