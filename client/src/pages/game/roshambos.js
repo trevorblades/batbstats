@@ -8,6 +8,13 @@ const Container = styled.div({
   display: 'flex'
 });
 
+const Column = styled.div({
+  width: '50%',
+  ':last-child': {
+    textAlign: 'right'
+  }
+});
+
 class Roshambos extends Component {
   static propTypes = {
     roshambos: PropTypes.object.isRequired,
@@ -18,11 +25,11 @@ class Roshambos extends Component {
     return (
       <Container>
         {this.props.game.skaters.map(skater => (
-          <div key={skater.id}>
+          <Column key={skater.id}>
             {this.props.roshambos[skater.id].map(roshambo => (
               <div key={roshambo.id}>{roshambo.move}</div>
             ))}
-          </div>
+          </Column>
         ))}
       </Container>
     );

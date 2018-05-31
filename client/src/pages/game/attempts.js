@@ -8,6 +8,13 @@ const Container = styled.div({
   display: 'flex'
 });
 
+const Column = styled.div({
+  width: '50%',
+  ':last-child': {
+    textAlign: 'right'
+  }
+});
+
 class Attempts extends Component {
   static propTypes = {
     attempts: PropTypes.object.isRequired,
@@ -18,11 +25,11 @@ class Attempts extends Component {
     return (
       <Container>
         {this.props.game.skaters.map(skater => (
-          <div key={skater.id}>
+          <Column key={skater.id}>
             {this.props.attempts[skater.id].map(attempt => (
               <div key={attempt.id}>{attempt.trick.name}</div>
             ))}
-          </div>
+          </Column>
         ))}
       </Container>
     );
