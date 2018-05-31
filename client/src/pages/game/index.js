@@ -8,6 +8,7 @@ import theme from '../../theme';
 import {load as loadGame} from '../../actions/game';
 import Attempts from './attempts';
 import Header from './header';
+import Roshambos from './roshambos';
 
 const Container = styled.div({
   padding: theme.spacing.unit * 3
@@ -36,6 +37,7 @@ class Game extends Component {
     return (
       <Container>
         <Header />
+        <Roshambos />
         <Attempts />
       </Container>
     );

@@ -2,15 +2,15 @@ import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 import styled from 'react-emotion';
 import {connect} from 'react-redux';
-import {getAttempts} from '../../selectors/game';
+import {getRoshambos} from '../../selectors/game';
 
 const Container = styled.div({
   display: 'flex'
 });
 
-class Attempts extends Component {
+class Roshambos extends Component {
   static propTypes = {
-    attempts: PropTypes.object.isRequired,
+    roshambos: PropTypes.object.isRequired,
     game: PropTypes.object.isRequired
   };
 
@@ -19,8 +19,8 @@ class Attempts extends Component {
       <Container>
         {this.props.game.skaters.map(skater => (
           <div key={skater.id}>
-            {this.props.attempts[skater.id].map(attempt => (
-              <div key={attempt.id}>{attempt.trick.name}</div>
+            {this.props.roshambos[skater.id].map(roshambo => (
+              <div key={roshambo.id}>{roshambo.move}</div>
             ))}
           </div>
         ))}
@@ -30,8 +30,8 @@ class Attempts extends Component {
 }
 
 const mapStateToProps = state => ({
-  attempts: getAttempts(state),
+  roshambos: getRoshambos(state),
   game: state.game.properties
 });
 
-export default connect(mapStateToProps)(Attempts);
+export default connect(mapStateToProps)(Roshambos);
