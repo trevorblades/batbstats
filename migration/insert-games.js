@@ -8,7 +8,7 @@ function marshallAttempts(gameId, skater1, skater2, tricks) {
     trick.attempts.forEach((attempt, index) => {
       if (attempt.result !== -1) {
         const offense = trick.setter === index;
-        roundAttempts[offense ? 0 : 1] = {
+        roundAttempt = {
           successful: Boolean(attempt.result),
           offense,
           redos: attempt.redos,
@@ -16,6 +16,13 @@ function marshallAttempts(gameId, skater1, skater2, tricks) {
           trick_id: trick.id,
           skater_id: index ? skater2 : skater1
         };
+
+        if (offense) {
+          roundAttempts.unshift(roundAttempt);
+          return;
+        }
+
+        roundAttempts.push(roundAttempt);
       }
     });
 
@@ -332,6 +339,5 @@ module.exports = async function() {
       })
   );
 
-  const inserted = await Promise.all(requests);
-  console.log(inserted.length);
+  return await Promise.all(requests);
 };
