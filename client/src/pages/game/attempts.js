@@ -1,43 +1,38 @@
 import PropTypes from 'prop-types';
 import React, {Component} from 'react';
+import map from 'lodash/map';
 import styled from 'react-emotion';
 import {connect} from 'react-redux';
-import {getAttempts} from '../../selectors/game';
 
-const Container = styled.div({
-  display: 'flex'
-});
-
-const Column = styled.div({
+const Attempt = styled.div(props => ({
   width: '50%',
-  ':last-child': {
-    textAlign: 'right'
-  }
-});
+  marginLeft: props.right ? '50%' : 0,
+  textAlign: props.right ? 'left' : 'right'
+}));
 
 class Attempts extends Component {
   static propTypes = {
-    attempts: PropTypes.object.isRequired,
     game: PropTypes.object.isRequired
   };
 
   render() {
+    const skaterIds = map(this.props.game.skaters, 'id');
     return (
-      <Container>
-        {this.props.game.skaters.map(skater => (
-          <Column key={skater.id}>
-            {this.props.attempts[skater.id].map(attempt => (
-              <div key={attempt.id}>{attempt.trick.name}</div>
-            ))}
-          </Column>
+      <div>
+        {this.props.game.attempts.map(attempt => (
+          <Attempt
+            key={attempt.id}
+            right={skaterIds.indexOf(attempt.skater_id)}
+          >
+            {attempt.trick.name}
+          </Attempt>
         ))}
-      </Container>
+      </div>
     );
   }
 }
 
 const mapStateToProps = state => ({
-  attempts: getAttempts(state),
   game: state.game.properties
 });
 

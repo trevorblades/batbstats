@@ -10,7 +10,7 @@ const Container = styled.div({
 
 const Column = styled.div({
   width: '50%',
-  ':last-child': {
+  ':not(:last-child)': {
     textAlign: 'right'
   }
 });

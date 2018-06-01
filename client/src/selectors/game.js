@@ -8,10 +8,6 @@ export const getRoshambos = createSelector(getGame, game =>
   groupBy(game.roshambos, 'skater_id')
 );
 
-export const getAttempts = createSelector(getGame, game =>
-  groupBy(game.attempts, 'skater_id')
-);
-
 export const getTitle = createSelector(getGame, game =>
   map(game.skaters, getFullName).join(' vs. ')
 );
