@@ -7,14 +7,14 @@ import {connect} from 'react-redux';
 import {getFullName} from '../../util/skater';
 import {getTitle} from '../../selectors/game';
 
-const Container = styled.div({
+const Names = styled.div({
   display: 'flex'
 });
 
 const Name = styled(Typography)({
   flexGrow: 1,
   width: 0,
-  ':last-child': {
+  ':first-child': {
     textAlign: 'right'
   }
 });
@@ -31,11 +31,16 @@ class Header extends Component {
         <Helmet>
           <title>{this.props.title}</title>
         </Helmet>
-        <Container>
-          <Name>{getFullName(this.props.game.skaters[0])}</Name>
-          <Typography variant="title">{this.props.game.event.name}</Typography>
-          <Name>{getFullName(this.props.game.skaters[1])}</Name>
-        </Container>
+        <div>
+          <Typography align="center" variant="title">
+            {this.props.game.event.name}
+          </Typography>
+          <Names>
+            {this.props.game.skaters.map(skater => (
+              <Name key={skater.id}>{getFullName(skater)}</Name>
+            ))}
+          </Names>
+        </div>
       </Fragment>
     );
   }
