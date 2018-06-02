@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 import styled from 'react-emotion';
 import {connect} from 'react-redux';
-import {getRoshambos} from '../../selectors/game';
+import {getRoshamboRounds} from '../../selectors/game';
 
 const Container = styled.div({
   display: 'flex'
@@ -17,7 +17,7 @@ const Column = styled.div({
 
 class Roshambos extends Component {
   static propTypes = {
-    roshambos: PropTypes.object.isRequired,
+    roshamboRounds: PropTypes.object.isRequired,
     game: PropTypes.object.isRequired
   };
 
@@ -26,8 +26,12 @@ class Roshambos extends Component {
       <Container>
         {this.props.game.skaters.map(skater => (
           <Column key={skater.id}>
-            {this.props.roshambos[skater.id].map(roshambo => (
-              <div key={roshambo.id}>{roshambo.move}</div>
+            {this.props.roshamboRounds.map((roshambos, index) => (
+              <div key={index.toString()}>
+                {roshambos.map(roshambo => (
+                  <div key={roshambo.id}>{roshambo.move}</div>
+                ))}
+              </div>
             ))}
           </Column>
         ))}
@@ -37,7 +41,7 @@ class Roshambos extends Component {
 }
 
 const mapStateToProps = state => ({
-  roshambos: getRoshambos(state),
+  roshamboRounds: getRoshamboRounds(state),
   game: state.game.properties
 });
 

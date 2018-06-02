@@ -4,9 +4,10 @@ import {createSelector} from 'reselect';
 import {getFullName} from '../util/skater';
 
 const getGame = state => state.game.properties;
-export const getRoshambos = createSelector(getGame, game =>
-  groupBy(game.roshambos, 'skater_id')
-);
+export const getRoshamboRounds = createSelector(getGame, game => {
+  const groups = groupBy(game.roshambos, 'round');
+  return Object.keys(groups).map(key => groups[key]);
+});
 
 export const getTitle = createSelector(getGame, game =>
   map(game.skaters, getFullName).join(' vs. ')
