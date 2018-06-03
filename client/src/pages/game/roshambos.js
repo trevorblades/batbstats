@@ -21,13 +21,17 @@ const Container = styled.div({
 });
 
 const Column = styled.div({
+  display: 'flex',
+  justifyContent: 'flex-end',
   width: '50%',
-  textAlign: 'right',
   ':last-child': {
-    textAlign: 'left',
+    justifyContent: 'flex-start',
     svg: {
       transform: 'scaleX(-1)'
     }
+  },
+  svg: {
+    display: 'block'
   }
 });
 

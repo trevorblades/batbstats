@@ -1,6 +1,6 @@
 import CircularProgress from '@material-ui/core/CircularProgress';
 import PropTypes from 'prop-types';
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import map from 'lodash/map';
 import styled from 'react-emotion';
 import {connect} from 'react-redux';
@@ -39,7 +39,7 @@ class Game extends Component {
 
     const skaterIds = map(this.props.game.skaters, 'id');
     return (
-      <div>
+      <Fragment>
         <Header />
         <Content>
           <Roshambos />
@@ -53,7 +53,7 @@ class Game extends Component {
             ))}
           </div>
         </Content>
-      </div>
+      </Fragment>
     );
   }
 }

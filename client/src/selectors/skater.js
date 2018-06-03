@@ -4,7 +4,7 @@ import flatMap from 'lodash/flatMap';
 import map from 'lodash/map';
 import sumBy from 'lodash/sumBy';
 import {createSelector} from 'reselect';
-import {getRoshamboWinner, getLetters} from '../util/game';
+import {getLetters} from '../util/game';
 
 const getSkater = state => state.skater.properties;
 export const getAge = createSelector(
@@ -16,7 +16,6 @@ export const getAge = createSelector(
 export const getGames = createSelector(getSkater, skater =>
   skater.games.map(game => ({
     ...game,
-    roshamboWinner: getRoshamboWinner(game),
     letters: getLetters(game)
   }))
 );

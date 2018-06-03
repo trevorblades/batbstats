@@ -8,9 +8,11 @@ import {size} from 'polished';
 import theme from '../../theme';
 
 const Container = styled.div(props => ({
+  display: 'flex',
+  alignItems: 'center',
   width: '50%',
   marginLeft: props.right ? '50%' : 0,
-  textAlign: props.right ? 'left' : 'right'
+  justifyContent: props.right ? 'flex-start' : 'flex-end'
 }));
 
 const iconClassName = css(size(theme.spacing.unit * 2));
@@ -39,12 +41,10 @@ class Attempt extends Component {
     return (
       <Container right={this.props.right}>
         <Typography>{this.props.attempt.trick.name}</Typography>
-        <div>
-          {this.props.attempt.successful && (
-            <CheckCircleIcon className={iconClassName} />
-          )}
-          {this.renderRedos()}
-        </div>
+        {this.props.attempt.successful && (
+          <CheckCircleIcon className={iconClassName} />
+        )}
+        {this.renderRedos()}
       </Container>
     );
   }
