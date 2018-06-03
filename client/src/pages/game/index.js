@@ -48,7 +48,7 @@ class Game extends Component {
               <Attempt
                 key={attempt.id}
                 attempt={attempt}
-                right={skaterIds.indexOf(attempt.skater_id)}
+                right={Boolean(skaterIds.indexOf(attempt.skater_id))}
               />
             ))}
           </div>

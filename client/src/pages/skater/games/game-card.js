@@ -37,8 +37,7 @@ const req = require.context('../../../assets/events');
 
 class GameCard extends Component {
   static propTypes = {
-    game: PropTypes.object.isRequired,
-    history: PropTypes.object.isRequired
+    game: PropTypes.object.isRequired
   };
 
   renderResults() {

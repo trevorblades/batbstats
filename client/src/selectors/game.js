@@ -7,19 +7,20 @@ import {ROSHAMBO_COUNTERS} from '../../../api/common';
 import {getFullName} from '../util/skater';
 
 const getGame = state => state.game.properties;
-export const getRoshamboRounds = createSelector(getGame, game => {
-  const rounds = values(groupBy(game.roshambos, 'round'));
-  rounds.forEach(round => {
+export const getRoshamboRounds = createSelector(getGame, game =>
+  values(groupBy(game.roshambos, 'round'))
+);
+
+export const getRoshamboWinner = createSelector(getRoshamboRounds, rounds => {
+  for (let i = 0; i < rounds.length; i++) {
+    const round = rounds[i];
     const moves = map(round, 'move');
     if (eq(moves)) {
-      return;
+      continue;
     }
 
-    const loserIndex = Number(ROSHAMBO_COUNTERS[moves[1]] === moves[0]);
-    round[loserIndex].loser = true;
-  });
-
-  return rounds;
+    return round[ROSHAMBO_COUNTERS[moves[0]] === moves[1] ? 1 : 0].skater_id;
+  }
 });
 
 export const getTitle = createSelector(getGame, game =>

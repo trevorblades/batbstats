@@ -12,7 +12,7 @@ import {
   ROSHAMBO_MOVE_PAPER,
   ROSHAMBO_MOVE_SCISSORS
 } from '../../../../api/common';
-import {getRoshamboRounds} from '../../selectors/game';
+import {getRoshamboRounds, getRoshamboWinner} from '../../selectors/game';
 
 const Container = styled.div({
   display: 'flex'
@@ -35,19 +35,23 @@ const icons = {
 
 class Roshambos extends Component {
   static propTypes = {
-    roshamboRounds: PropTypes.array.isRequired
+    rounds: PropTypes.array.isRequired,
+    winner: PropTypes.number.isRequired
   };
 
   render() {
-    return this.props.roshamboRounds.map((roshambos, index) => (
+    return this.props.rounds.map((round, index, array) => (
       <Container key={index.toString()}>
-        {roshambos.map(roshambo => {
+        {round.map(roshambo => {
           const Icon = icons[roshambo.move];
+          const didLose =
+            index === array.length - 1 &&
+            roshambo.skater_id !== this.props.winner;
           return (
             <Column key={roshambo.id}>
               <Icon
                 className={iconClassName}
-                fill={roshambo.loser && theme.palette.grey[100]}
+                fill={didLose ? theme.palette.grey[100] : null}
               />
             </Column>
           );
@@ -58,7 +62,8 @@ class Roshambos extends Component {
 }
 
 const mapStateToProps = state => ({
-  roshamboRounds: getRoshamboRounds(state)
+  rounds: getRoshamboRounds(state),
+  winner: getRoshamboWinner(state)
 });
 
 export default connect(mapStateToProps)(Roshambos);
