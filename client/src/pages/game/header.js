@@ -1,20 +1,33 @@
+import AppBar from '@material-ui/core/AppBar';
+import Divider from '@material-ui/core/Divider';
 import Helmet from 'react-helmet';
 import PropTypes from 'prop-types';
-import React, {Component, Fragment} from 'react';
+import React, {Component} from 'react';
 import Typography from '@material-ui/core/Typography';
 import styled from 'react-emotion';
+import withProps from 'recompose/withProps';
 import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
+import theme from '../../theme';
 import {getFullName} from '../../util/skater';
 import {getTitle} from '../../selectors/game';
+
+const Container = withProps({
+  elevation: 0,
+  color: 'inherit',
+  position: 'sticky'
+})(AppBar);
+
+const InnerContainer = styled.div({
+  padding: theme.spacing.unit * 2
+});
 
 const Names = styled.div({
   display: 'flex'
 });
 
 const Name = styled(Typography)({
-  flexGrow: 1,
-  width: 0,
+  width: '50%',
   ':first-child': {
     textAlign: 'right'
   }
@@ -28,12 +41,12 @@ class Header extends Component {
 
   render() {
     return (
-      <Fragment>
+      <Container>
         <Helmet>
           <title>{this.props.title}</title>
         </Helmet>
-        <div>
-          <Typography align="center" variant="title">
+        <InnerContainer>
+          <Typography align="center" variant="subheading">
             {this.props.game.event.name}
           </Typography>
           <Names>
@@ -43,8 +56,9 @@ class Header extends Component {
               </Name>
             ))}
           </Names>
-        </div>
-      </Fragment>
+        </InnerContainer>
+        <Divider />
+      </Container>
     );
   }
 }

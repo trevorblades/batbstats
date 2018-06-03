@@ -11,8 +11,10 @@ import Attempt from './attempt';
 import Header from './header';
 import Roshambos from './roshambos';
 
-const Container = styled.div({
-  padding: theme.spacing.unit * 3
+const Content = styled.div({
+  flexGrow: 1,
+  padding: theme.spacing.unit * 3,
+  backgroundColor: theme.palette.grey[50]
 });
 
 class Game extends Component {
@@ -37,19 +39,21 @@ class Game extends Component {
 
     const skaterIds = map(this.props.game.skaters, 'id');
     return (
-      <Container>
+      <div>
         <Header />
-        <Roshambos />
-        <div>
-          {this.props.game.attempts.map(attempt => (
-            <Attempt
-              key={attempt.id}
-              attempt={attempt}
-              right={skaterIds.indexOf(attempt.skater_id)}
-            />
-          ))}
-        </div>
-      </Container>
+        <Content>
+          <Roshambos />
+          <div>
+            {this.props.game.attempts.map(attempt => (
+              <Attempt
+                key={attempt.id}
+                attempt={attempt}
+                right={skaterIds.indexOf(attempt.skater_id)}
+              />
+            ))}
+          </div>
+        </Content>
+      </div>
     );
   }
 }

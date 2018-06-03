@@ -38,10 +38,10 @@ class Attempt extends Component {
   render() {
     return (
       <Container right={this.props.right}>
-        {this.props.attempt.trick.name}
+        <Typography>{this.props.attempt.trick.name}</Typography>
         <div>
           {this.props.attempt.successful && (
-            <CheckCircleIcon color="secondary" className={iconClassName} />
+            <CheckCircleIcon className={iconClassName} />
           )}
           {this.renderRedos()}
         </div>

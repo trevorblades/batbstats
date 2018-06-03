@@ -8,3 +8,9 @@ module.exports.ROSHAMBO_MOVES = [
   module.exports.ROSHAMBO_MOVE_PAPER,
   module.exports.ROSHAMBO_MOVE_SCISSORS
 ];
+
+module.exports.ROSHAMBO_COUNTERS = {
+  [module.exports.ROSHAMBO_MOVE_ROCK]: module.exports.ROSHAMBO_MOVE_PAPER,
+  [module.exports.ROSHAMBO_MOVE_PAPER]: module.exports.ROSHAMBO_MOVE_SCISSORS,
+  [module.exports.ROSHAMBO_MOVE_SCISSORS]: module.exports.ROSHAMBO_MOVE_ROCK
+};

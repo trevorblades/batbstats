@@ -7,13 +7,7 @@ import {
   ROSHAMBO_MOVE_ROCK,
   ROSHAMBO_MOVE_PAPER,
   ROSHAMBO_MOVE_SCISSORS
-} from '../../../common';
-
-const counters = {
-  [ROSHAMBO_MOVE_ROCK]: ROSHAMBO_MOVE_PAPER,
-  [ROSHAMBO_MOVE_PAPER]: ROSHAMBO_MOVE_SCISSORS,
-  [ROSHAMBO_MOVE_SCISSORS]: ROSHAMBO_MOVE_ROCK
-};
+} from '../../../api/common';
 
 export function getRoundName(round) {
   switch (round) {
@@ -29,6 +23,12 @@ export function getRoundName(round) {
       return `Round ${round}`;
   }
 }
+
+const counters = {
+  [ROSHAMBO_MOVE_ROCK]: ROSHAMBO_MOVE_PAPER,
+  [ROSHAMBO_MOVE_PAPER]: ROSHAMBO_MOVE_SCISSORS,
+  [ROSHAMBO_MOVE_SCISSORS]: ROSHAMBO_MOVE_ROCK
+};
 
 export function getRoshamboWinner(game) {
   const rounds = values(groupBy(game.roshambos, 'round'));
