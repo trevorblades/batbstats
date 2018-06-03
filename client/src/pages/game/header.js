@@ -9,6 +9,7 @@ import withProps from 'recompose/withProps';
 import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
 import theme from '../../theme';
+import {getRoundName} from '../../util/game';
 import {getFullName} from '../../util/skater';
 import {getTitle} from '../../selectors/game';
 
@@ -47,7 +48,7 @@ class Header extends Component {
         </Helmet>
         <InnerContainer>
           <Typography align="center" variant="subheading">
-            {this.props.game.event.name}
+            {this.props.game.event.name} {getRoundName(this.props.game.round)}
           </Typography>
           <Names>
             {this.props.game.skaters.map(skater => (
