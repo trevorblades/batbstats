@@ -16,6 +16,10 @@ const Container = styled.div({
   alignItems: 'center'
 });
 
+const Attempts = styled.div({
+  width: '100%'
+});
+
 const Row = styled.div({
   display: 'flex'
 });
@@ -34,7 +38,7 @@ const Column = styled.div({
 
 const Line = styled.div(props => ({
   width: 4,
-  margin: `0 ${theme.spacing.unit * 2}px`,
+  margin: `0 ${theme.spacing.unit * 1.5}px`,
   backgroundColor: theme.palette[props.primary ? 'primary' : 'secondary'][500]
 }));
 
@@ -57,35 +61,42 @@ class Timeline extends Component {
     let setter = this.props.roshamboWinner;
     const skaterIds = map(this.props.game.skaters, 'id');
     const firstId = skaterIds[0];
-    return this.props.game.attempts.map(attempt => {
-      const columns = [
-        <Column key="first">
-          <Attempt attempt={attempt} />
-        </Column>,
-        <Line key="line" primary={setter.id === firstId} />,
-        <Column key="last" />
-      ];
+    return (
+      <Attempts>
+        {this.props.game.attempts.map(attempt => {
+          const isRight = attempt.skater_id !== firstId;
+          const columns = [
+            <Column key="first">
+              <Attempt attempt={attempt} right={isRight} />
+            </Column>,
+            <Line key="line" primary={setter.id === firstId} />,
+            <Column key="last" />
+          ];
 
-      if (attempt.skater_id !== firstId) {
-        columns.reverse();
-      }
+          if (isRight) {
+            columns.reverse();
+          }
 
-      let changed;
-      if (attempt.offense) {
-        if (!attempt.successful) {
-          const currentIndex = skaterIds.indexOf(attempt.skater_id);
-          setter = this.props.game.skaters[currentIndex ? 0 : 1];
-          changed = true;
-        }
-      }
+          let changed;
+          if (attempt.offense) {
+            if (!attempt.successful) {
+              const currentIndex = skaterIds.indexOf(attempt.skater_id);
+              setter = this.props.game.skaters[currentIndex ? 0 : 1];
+              changed = true;
+            }
+          }
 
-      return (
-        <Fragment key={attempt.id}>
-          <Row>{columns}</Row>
-          {changed && <Caption>{setter.first_name}&apos;s turn to set</Caption>}
-        </Fragment>
-      );
-    });
+          return (
+            <Fragment key={attempt.id}>
+              <Row>{columns}</Row>
+              {changed && (
+                <Caption>{setter.first_name}&apos;s turn to set</Caption>
+              )}
+            </Fragment>
+          );
+        })}
+      </Attempts>
+    );
   }
 
   render() {

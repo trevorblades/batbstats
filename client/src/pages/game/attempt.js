@@ -8,18 +8,23 @@ import styled, {css} from 'react-emotion';
 import {size} from 'polished';
 import theme from '../../theme';
 
-const Container = styled.div({
+const Container = styled.div(props => ({
   display: 'flex',
-  alignItems: 'center'
-});
+  flexDirection: props.right ? 'row-reverse' : 'row',
+  alignItems: 'center',
+  justifyContent: props.right ? 'flex-start' : 'flex-end'
+}));
 
 const iconClassName = css(size(theme.spacing.unit * 2), {
-  marginLeft: theme.spacing.unit / 2
+  ':not(:last-child)': {
+    marginRight: theme.spacing.unit / 2
+  }
 });
 
 class Attempt extends Component {
   static propTypes = {
-    attempt: PropTypes.object.isRequired
+    attempt: PropTypes.object.isRequired,
+    right: PropTypes.bool.isRequired
   };
 
   renderResult() {
@@ -49,7 +54,7 @@ class Attempt extends Component {
 
   render() {
     return (
-      <Container>
+      <Container right={this.props.right}>
         <Typography>{this.props.attempt.trick.name}</Typography>
         {this.renderRedos()}
         {this.renderResult()}
