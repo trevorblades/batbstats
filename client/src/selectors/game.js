@@ -1,4 +1,5 @@
 import eq from 'lodash/eq';
+import find from 'lodash/find';
 import groupBy from 'lodash/groupBy';
 import map from 'lodash/map';
 import sortBy from 'lodash/sortBy';
@@ -16,18 +17,23 @@ export const getRoshamboRounds = createSelector(getGame, game => {
   );
 });
 
-export const getRoshamboWinner = createSelector(getRoshamboRounds, rounds => {
-  for (let i = 0; i < rounds.length; i++) {
-    const round = rounds[i];
-    const moves = map(round, 'move');
-    if (eq(...moves)) {
-      continue;
-    }
+const getSkaters = createSelector(getGame, game => game.skaters);
+export const getRoshamboWinner = createSelector(
+  getRoshamboRounds,
+  getSkaters,
+  (rounds, skaters) => {
+    for (let i = 0; i < rounds.length; i++) {
+      const round = rounds[i];
+      const moves = map(round, 'move');
+      if (eq(...moves)) {
+        continue;
+      }
 
-    const winnerIndex = Number(ROSHAMBO_COUNTERS[moves[0]] === moves[1]);
-    return round[winnerIndex].skater_id;
+      const winnerIndex = Number(ROSHAMBO_COUNTERS[moves[0]] === moves[1]);
+      return find(skaters, ['id', round[winnerIndex].skater_id]);
+    }
   }
-});
+);
 
 export const getTitle = createSelector(getGame, game =>
   map(game.skaters, getFullName).join(' vs. ')

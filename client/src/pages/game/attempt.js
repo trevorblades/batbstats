@@ -1,35 +1,45 @@
-import RefreshIcon from '@material-ui/icons/Refresh';
+import CloseIcon from '@material-ui/icons/Close';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import PropTypes from 'prop-types';
 import React, {Component} from 'react';
+import RefreshIcon from '@material-ui/icons/Refresh';
 import Typography from '@material-ui/core/Typography';
 import styled, {css} from 'react-emotion';
 import {size} from 'polished';
 import theme from '../../theme';
 
-const Container = styled.div(props => ({
+const Container = styled.div({
   display: 'flex',
-  alignItems: 'center',
-  width: '50%',
-  marginLeft: props.right ? '50%' : 0,
-  justifyContent: props.right ? 'flex-start' : 'flex-end'
-}));
+  alignItems: 'center'
+});
 
-const iconClassName = css(size(theme.spacing.unit * 2));
+const iconClassName = css(size(theme.spacing.unit * 2), {
+  marginLeft: theme.spacing.unit / 2
+});
 
 class Attempt extends Component {
   static propTypes = {
-    attempt: PropTypes.object.isRequired,
-    right: PropTypes.bool.isRequired
+    attempt: PropTypes.object.isRequired
   };
 
+  renderResult() {
+    if (this.props.attempt.successful) {
+      return <CheckCircleIcon className={iconClassName} color="inherit" />;
+    }
+    return <CloseIcon className={iconClassName} color="action" />;
+  }
+
   renderRedos() {
+    if (!this.props.attempt.redos) {
+      return null;
+    }
+
     const redos = [];
     for (let i = 0; i < this.props.attempt.redos; i++) {
       redos.push(
         <RefreshIcon
           key={i.toString()}
-          color="inherit"
+          color="action"
           className={iconClassName}
         />
       );
@@ -39,12 +49,10 @@ class Attempt extends Component {
 
   render() {
     return (
-      <Container right={this.props.right}>
+      <Container>
         <Typography>{this.props.attempt.trick.name}</Typography>
-        {this.props.attempt.successful && (
-          <CheckCircleIcon className={iconClassName} />
-        )}
         {this.renderRedos()}
+        {this.renderResult()}
       </Container>
     );
   }
