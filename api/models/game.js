@@ -1,4 +1,4 @@
-module.exports = (sequelize, DataTypes) => {
+export default (sequelize, DataTypes) => {
   const Game = sequelize.define('game', {
     round: DataTypes.INTEGER,
     date: DataTypes.DATE

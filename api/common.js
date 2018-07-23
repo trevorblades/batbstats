@@ -1,16 +1,18 @@
-module.exports.STANCES = ['goofy', 'regular'];
+export const STANCE_GOOFY = 'goofy';
+export const STANCE_REGULAR = 'regular';
+export const STANCES = [STANCE_GOOFY, STANCE_REGULAR];
 
-module.exports.ROSHAMBO_MOVE_ROCK = 'rock';
-module.exports.ROSHAMBO_MOVE_PAPER = 'paper';
-module.exports.ROSHAMBO_MOVE_SCISSORS = 'scissors';
-module.exports.ROSHAMBO_MOVES = [
-  module.exports.ROSHAMBO_MOVE_ROCK,
-  module.exports.ROSHAMBO_MOVE_PAPER,
-  module.exports.ROSHAMBO_MOVE_SCISSORS
+export const ROSHAMBO_MOVE_ROCK = 'rock';
+export const ROSHAMBO_MOVE_PAPER = 'paper';
+export const ROSHAMBO_MOVE_SCISSORS = 'scissors';
+export const ROSHAMBO_MOVES = [
+  ROSHAMBO_MOVE_ROCK,
+  ROSHAMBO_MOVE_PAPER,
+  ROSHAMBO_MOVE_SCISSORS
 ];
 
-module.exports.ROSHAMBO_COUNTERS = {
-  [module.exports.ROSHAMBO_MOVE_ROCK]: module.exports.ROSHAMBO_MOVE_PAPER,
-  [module.exports.ROSHAMBO_MOVE_PAPER]: module.exports.ROSHAMBO_MOVE_SCISSORS,
-  [module.exports.ROSHAMBO_MOVE_SCISSORS]: module.exports.ROSHAMBO_MOVE_ROCK
+export const ROSHAMBO_COUNTERS = {
+  [ROSHAMBO_MOVE_ROCK]: ROSHAMBO_MOVE_PAPER,
+  [ROSHAMBO_MOVE_PAPER]: ROSHAMBO_MOVE_SCISSORS,
+  [ROSHAMBO_MOVE_SCISSORS]: ROSHAMBO_MOVE_ROCK
 };

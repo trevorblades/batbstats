@@ -1,6 +1,6 @@
-const {ROSHAMBO_MOVES} = require('../common');
+import {ROSHAMBO_MOVES} from '../common';
 
-module.exports = (sequelize, DataTypes) => {
+export default (sequelize, DataTypes) => {
   const Roshambo = sequelize.define('roshambo', {
     round: DataTypes.INTEGER,
     move: DataTypes.ENUM(ROSHAMBO_MOVES)

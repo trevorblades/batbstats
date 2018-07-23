@@ -1,1 +1,1 @@
-module.exports = sequelize => sequelize.define('participant');
+export default sequelize => sequelize.define('participant');

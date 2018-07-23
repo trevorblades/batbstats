@@ -1,4 +1,4 @@
-module.exports = (sequelize, DataTypes) => {
+export default (sequelize, DataTypes) => {
   const Attempt = sequelize.define('attempt', {
     successful: DataTypes.BOOLEAN,
     offense: DataTypes.BOOLEAN,

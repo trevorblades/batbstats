@@ -4,15 +4,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "DATABASE_URL=postgres://localhost/batbstats PORT=3000 nodemon index.js"
-  },
-  "xo": {
-    "space": true,
-    "prettier": true,
-    "rules": {
-      "camelcase": "off",
-      "new-cap": "off"
-    }
+    "start": "nodemon -r dotenv/config -r esm index.js"
   },
   "dependencies": {
     "cors": "^2.8.4",
@@ -22,7 +14,10 @@
     "sequelize": "^4.37.10"
   },
   "devDependencies": {
-    "nodemon": "^1.17.5",
-    "xo": "^0.21.1"
+    "@knoword/eslint-config": "^6.11.0",
+    "dotenv": "^6.0.0",
+    "eslint": "^5.2.0",
+    "esm": "^3.0.72",
+    "nodemon": "^1.17.5"
   }
 }

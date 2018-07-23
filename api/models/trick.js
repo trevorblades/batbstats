@@ -1,4 +1,4 @@
-module.exports = (sequelize, DataTypes) => {
+export default (sequelize, DataTypes) => {
   const Trick = sequelize.define('trick', {
     name: DataTypes.STRING,
     switch: DataTypes.BOOLEAN,

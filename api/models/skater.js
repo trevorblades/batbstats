@@ -1,6 +1,6 @@
-const {STANCES} = require('../common');
+import {STANCES} from '../common';
 
-module.exports = (sequelize, DataTypes) => {
+export default (sequelize, DataTypes) => {
   const Skater = sequelize.define('skater', {
     first_name: DataTypes.STRING,
     last_name: DataTypes.STRING,
