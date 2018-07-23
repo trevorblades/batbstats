@@ -1,10 +1,10 @@
+import api from '../api';
 import {loop, Cmd} from 'redux-loop';
 import {handleActions} from 'redux-actions';
-import api from '../api';
-import {load, success, failure} from '../actions/game';
+import {load, success, failure} from '../actions/games';
 
-async function fetchGame(id) {
-  const response = await api.get(`/games/${id}`);
+async function fetchData() {
+  const response = await api.get('/games');
   if (response.err) {
     throw response.body;
   }
@@ -14,21 +14,20 @@ async function fetchGame(id) {
 const defaultState = {
   loading: false,
   error: null,
-  properties: null
+  data: []
 };
 
 export default handleActions(
   {
-    [load]: (state, {payload}) =>
+    [load]: state =>
       loop(
         {
           ...state,
           loading: true
         },
-        Cmd.run(fetchGame, {
+        Cmd.run(fetchData, {
           successActionCreator: success,
-          failActionCreator: failure,
-          args: [payload]
+          failActionCreator: failure
         })
       ),
     [failure]: (state, {payload}) => ({
@@ -39,7 +38,7 @@ export default handleActions(
     [success]: (state, {payload}) => ({
       ...state,
       loading: false,
-      properties: payload
+      data: payload
     })
   },
   defaultState

@@ -1,7 +1,33 @@
+import './styles';
+import App from './components/app';
+import JssProvider from 'react-jss/lib/JssProvider';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Root from './root';
-import styles from './styles';
+import store from './store';
+import theme from './theme';
+import {BrowserRouter} from 'react-router-dom';
+import {
+  MuiThemeProvider,
+  createGenerateClassName,
+  jssPreset
+} from '@material-ui/core/styles';
+import {Provider} from 'react-redux';
+import {create} from 'jss';
 
-styles();
-ReactDOM.render(<Root />, document.getElementById('root'));
+const generateClassName = createGenerateClassName();
+const jss = create(jssPreset());
+// we define a custom insertion point that JSS will look for injecting the styles in the DOM
+jss.options.insertionPoint = 'jss-insertion-point';
+
+ReactDOM.render(
+  <JssProvider jss={jss} generateClassName={generateClassName}>
+    <MuiThemeProvider theme={theme}>
+      <Provider store={store}>
+        <BrowserRouter basename="/">
+          <App />
+        </BrowserRouter>
+      </Provider>
+    </MuiThemeProvider>
+  </JssProvider>,
+  document.getElementById('root')
+);

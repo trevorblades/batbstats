@@ -1,11 +1,9 @@
+import MenuItem from './menu-item';
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import styled, {css} from 'react-emotion';
 import withProps from 'recompose/withProps';
-import {size} from 'polished';
-import Logo from '../../assets/logo.svg';
 import theme from '../../theme';
-import MenuItem from './menu-item';
 
 const flexAlignCenter = css({
   display: 'flex',
@@ -42,13 +40,10 @@ const Colophon = withProps({
 const Sidebar = () => (
   <Container>
     <Content>
-      <Logo {...size(100)} fill="currentColor" />
       <Menu>
         <MenuItem exact to="/">
           Dashboard
         </MenuItem>
-        <MenuItem to="/skaters">Skaters</MenuItem>
-        <MenuItem to="/events">Events</MenuItem>
       </Menu>
     </Content>
     <Colophon>© Trevor Blades</Colophon>

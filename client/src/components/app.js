@@ -1,10 +1,10 @@
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Helmet from 'react-helmet';
+import Pages from '../pages';
 import React, {Fragment} from 'react';
+import Sidebar from './sidebar';
 import styled from 'react-emotion';
 import {hot} from 'react-hot-loader';
-import Pages from '../pages';
-import Sidebar from './sidebar';
 
 const Container = styled.div({
   display: 'flex',
@@ -13,10 +13,7 @@ const Container = styled.div({
 
 const App = () => (
   <Fragment>
-    <Helmet
-      defaultTitle={process.env.TITLE}
-      titleTemplate={`%s · ${process.env.TITLE}`}
-    />
+    <Helmet defaultTitle={TITLE} titleTemplate={`%s · ${TITLE}`} />
     <CssBaseline />
     <Container>
       <Sidebar />
