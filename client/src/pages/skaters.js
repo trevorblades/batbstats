@@ -37,20 +37,20 @@ class Skaters extends Component {
         <TableHead>
           <TableRow>
             <TableCell>Name</TableCell>
-            <TableCell>Age</TableCell>
             <TableCell>Hometown</TableCell>
-            <TableCell>Games played</TableCell>
+            <TableCell numeric>Age</TableCell>
+            <TableCell numeric>Games played</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {this.props.skaters.map(skater => (
             <TableRow key={skater.id}>
               <TableCell>{skater.full_name}</TableCell>
-              <TableCell>
+              <TableCell>{skater.hometown}</TableCell>
+              <TableCell numeric>
                 {skater.birth_date && differenceInYears(now, skater.birth_date)}
               </TableCell>
-              <TableCell>{skater.hometown}</TableCell>
-              <TableCell>{skater.games.length}</TableCell>
+              <TableCell numeric>{skater.games.length}</TableCell>
             </TableRow>
           ))}
         </TableBody>
