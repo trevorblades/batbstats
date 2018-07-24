@@ -22,6 +22,7 @@ export default createMuiTheme({
   },
   typography: {
     fontFamily: "'Inconsolata', monospace",
+    fontWeightMedium: 700,
     title,
     headline: title,
     display1,
