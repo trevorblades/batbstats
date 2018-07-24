@@ -7,7 +7,7 @@ import {connect} from 'react-redux';
 
 const Header = props => (
   <AppBar elevation={0} position="sticky" color="inherit">
-    <DialogTitle>{props.children}</DialogTitle>
+    <DialogTitle align="center">{props.children}</DialogTitle>
     <LinearProgress
       color="primary"
       variant={props.loading ? 'indeterminate' : 'determinate'}

@@ -30,6 +30,7 @@ const Sidebar = () => (
       </Typography>
     </Heading>
     <List>
+      <MenuItem to="/">About</MenuItem>
       <MenuItem to="/skaters">Skaters</MenuItem>
       <MenuItem to="/tricks">Trick distribution</MenuItem>
     </List>
