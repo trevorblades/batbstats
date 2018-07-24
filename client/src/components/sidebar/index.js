@@ -1,3 +1,4 @@
+import DialogTitle from '@material-ui/core/DialogTitle';
 import List from '@material-ui/core/List';
 import MenuItem from './menu-item';
 import React from 'react';
@@ -15,20 +16,16 @@ const Container = styled.div({
   overflow: 'auto'
 });
 
-const Heading = styled.div({
-  padding: theme.spacing.unit * 3
-});
-
 const Sidebar = () => (
   <Container>
-    <Heading>
+    <DialogTitle disableTypography>
       <Typography variant="display1" color="inherit">
         {TITLE} ⚡️
       </Typography>
       <Typography variant="body2" color="inherit">
         by Trevor Blades
       </Typography>
-    </Heading>
+    </DialogTitle>
     <List>
       <MenuItem to="/">About</MenuItem>
       <MenuItem to="/skaters">Skaters</MenuItem>
