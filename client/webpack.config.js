@@ -1,5 +1,6 @@
-const path = require('path');
 const HtmlPlugin = require('html-webpack-plugin');
+const WepappWebpackPlugin = require('webapp-webpack-plugin');
+const path = require('path');
 const webpack = require('webpack');
 
 const publicPath = '/';
@@ -35,6 +36,20 @@ module.exports = {
     new HtmlPlugin({
       title,
       template: 'index.html'
+    }),
+    new WepappWebpackPlugin({
+      logo: './assets/favicon.png',
+      favicons: {
+        icons: {
+          android: false,
+          appleIcon: false,
+          appleStartup: false,
+          coast: false,
+          firefox: false,
+          windows: true,
+          yandex: true
+        }
+      }
     }),
     new webpack.DefinePlugin({
       PUBLIC_PATH: JSON.stringify(publicPath),

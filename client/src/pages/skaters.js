@@ -1,6 +1,7 @@
 import AppBar from '@material-ui/core/AppBar';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Helmet from 'react-helmet';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import PropTypes from 'prop-types';
 import React, {Component, Fragment} from 'react';
@@ -67,6 +68,7 @@ const columns = [
 
 const ORDER_ASC = 'asc';
 const ORDER_DESC = 'desc';
+const title = 'Statistics';
 
 class Skaters extends Component {
   static propTypes = {
@@ -97,11 +99,11 @@ class Skaters extends Component {
     return this.props.loading ? (
       <CircularProgress />
     ) : (
-      <Typography>No skaters found</Typography>
+      <Typography variant="subheading">No skaters found</Typography>
     );
   }
 
-  render() {
+  renderContent() {
     if (!this.props.skaters.length) {
       return <EmptyState>{this.renderEmptyState()}</EmptyState>;
     }
@@ -115,7 +117,7 @@ class Skaters extends Component {
     return (
       <Fragment>
         <AppBar elevation={0} position="sticky" color="inherit">
-          <DialogTitle>Skaters</DialogTitle>
+          <DialogTitle>{title}</DialogTitle>
           <LinearProgress
             color="primary"
             variant={this.props.loading ? 'indeterminate' : 'determinate'}
@@ -151,6 +153,17 @@ class Skaters extends Component {
             ))}
           </TableBody>
         </Table>
+      </Fragment>
+    );
+  }
+
+  render() {
+    return (
+      <Fragment>
+        <Helmet>
+          <title>{title}</title>
+        </Helmet>
+        {this.renderContent()}
       </Fragment>
     );
   }
