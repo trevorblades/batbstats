@@ -1,4 +1,4 @@
-import EmptyStateProvider from '../components/empty-state-provider';
+import GamesLoader from '../components/games-loader';
 import Header from '../components/header';
 import Helmet from 'react-helmet';
 import PropTypes from 'prop-types';
@@ -63,7 +63,6 @@ const title = 'Skaters';
 
 class Skaters extends Component {
   static propTypes = {
-    loading: PropTypes.bool.isRequired,
     skaters: PropTypes.array.isRequired
   };
 
@@ -82,6 +81,10 @@ class Skaters extends Component {
     }));
 
   renderContent() {
+    return <Fragment />;
+  }
+
+  render() {
     const skaters = orderBy(
       this.props.skaters,
       this.state.orderBy,
@@ -90,53 +93,46 @@ class Skaters extends Component {
 
     return (
       <Fragment>
-        <Header loading={this.props.loading}>{title}</Header>
-        <Table>
-          <TableHead>
-            <TableRow>
-              {columns.map(column => (
-                <TableCell key={column.key} numeric={column.numeric}>
-                  <TableSortLabel
-                    direction={this.state.order}
-                    active={column.key === this.state.orderBy}
-                    onClick={() => this.sort(column.key)}
-                  >
-                    {column.label || sentenceCase(column.key)}
-                  </TableSortLabel>
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {skaters.map(skater => (
-              <TableRow hover key={skater.id}>
-                {columns.map(column => (
-                  <TableCell key={column.key} numeric={column.numeric}>
-                    {get(skater, column.key)}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </Fragment>
-    );
-  }
-
-  render() {
-    return (
-      <Fragment>
         <Helmet>
           <title>{title}</title>
         </Helmet>
-        <EmptyStateProvider>{this.renderContent()}</EmptyStateProvider>
+        <GamesLoader>
+          <Header>{title}</Header>
+          <Table>
+            <TableHead>
+              <TableRow>
+                {columns.map(column => (
+                  <TableCell key={column.key} numeric={column.numeric}>
+                    <TableSortLabel
+                      direction={this.state.order}
+                      active={column.key === this.state.orderBy}
+                      onClick={() => this.sort(column.key)}
+                    >
+                      {column.label || sentenceCase(column.key)}
+                    </TableSortLabel>
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {skaters.map(skater => (
+                <TableRow hover key={skater.id}>
+                  {columns.map(column => (
+                    <TableCell key={column.key} numeric={column.numeric}>
+                      {get(skater, column.key)}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </GamesLoader>
       </Fragment>
     );
   }
 }
 
 const mapStateToProps = state => ({
-  loading: state.games.loading,
   skaters: getSkaters(state)
 });
 

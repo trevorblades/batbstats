@@ -3,6 +3,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {connect} from 'react-redux';
 
 const Header = props => (
   <AppBar elevation={0} position="sticky" color="inherit">
@@ -21,4 +22,8 @@ Header.propTypes = {
   loading: PropTypes.bool.isRequired
 };
 
-export default Header;
+const mapStateToProps = state => ({
+  loading: state.games.loading
+});
+
+export default connect(mapStateToProps)(Header);

@@ -1,4 +1,4 @@
-import EmptyStateProvider from '../components/empty-state-provider';
+import GamesLoader from '../components/games-loader';
 import Header from '../components/header';
 import Helmet from 'react-helmet';
 import PropTypes from 'prop-types';
@@ -47,7 +47,6 @@ const Pie = withProps({
 const title = 'Trick distribution';
 class Tricks extends Component {
   static propTypes = {
-    loading: PropTypes.bool.isRequired,
     trickTypes: PropTypes.array.isRequired
   };
 
@@ -57,19 +56,18 @@ class Tricks extends Component {
         <Helmet>
           <title>{title}</title>
         </Helmet>
-        <EmptyStateProvider>
-          <Header loading={this.props.loading}>{title}</Header>
+        <GamesLoader>
+          <Header>{title}</Header>
           <Container>
             <Pie data={this.props.trickTypes} />
           </Container>
-        </EmptyStateProvider>
+        </GamesLoader>
       </Fragment>
     );
   }
 }
 
 const mapStateToProps = state => ({
-  loading: state.games.loading,
   trickTypes: getTrickTypes(state)
 });
 

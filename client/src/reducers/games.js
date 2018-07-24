@@ -11,6 +11,14 @@ async function fetchData(page = 1) {
   return response.body;
 }
 
+function createFetchCmd(args) {
+  return Cmd.run(fetchData, {
+    successActionCreator: success,
+    failActionCreator: failure,
+    args
+  });
+}
+
 const defaultState = {
   loading: false,
   error: null,
@@ -25,10 +33,7 @@ export default handleActions(
           ...state,
           loading: true
         },
-        Cmd.run(fetchData, {
-          successActionCreator: success,
-          failActionCreator: failure
-        })
+        createFetchCmd()
       ),
     [failure]: (state, {payload}) => ({
       ...state,
@@ -42,14 +47,7 @@ export default handleActions(
       };
 
       if (payload.next_page) {
-        return loop(
-          nextState,
-          Cmd.run(fetchData, {
-            successActionCreator: success,
-            failActionCreator: failure,
-            args: [payload.next_page]
-          })
-        );
+        return loop(nextState, createFetchCmd([payload.next_page]));
       }
 
       return {
