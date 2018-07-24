@@ -1,8 +1,6 @@
-import AppBar from '@material-ui/core/AppBar';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import Header from '../components/header';
 import Helmet from 'react-helmet';
-import LinearProgress from '@material-ui/core/LinearProgress';
 import PropTypes from 'prop-types';
 import React, {Component, Fragment} from 'react';
 import Table from '@material-ui/core/Table';
@@ -18,7 +16,6 @@ import sentenceCase from 'sentence-case';
 import styled from 'react-emotion';
 import {connect} from 'react-redux';
 import {getSkaters} from '../selectors';
-import {load as loadGames} from '../actions/games';
 
 const EmptyState = styled.div({
   margin: 'auto'
@@ -68,11 +65,10 @@ const columns = [
 
 const ORDER_ASC = 'asc';
 const ORDER_DESC = 'desc';
-const title = 'Statistics';
+const title = 'Skaters';
 
 class Skaters extends Component {
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
     skaters: PropTypes.array.isRequired
   };
@@ -81,10 +77,6 @@ class Skaters extends Component {
     order: ORDER_DESC,
     orderBy: null
   };
-
-  componentDidMount() {
-    this.props.dispatch(loadGames());
-  }
 
   sort = key =>
     this.setState(prevState => ({
@@ -116,15 +108,7 @@ class Skaters extends Component {
 
     return (
       <Fragment>
-        <AppBar elevation={0} position="sticky" color="inherit">
-          <DialogTitle>{title}</DialogTitle>
-          <LinearProgress
-            color="primary"
-            variant={this.props.loading ? 'indeterminate' : 'determinate'}
-            value={100}
-            style={{height: 2}}
-          />
-        </AppBar>
+        <Header loading={this.props.loading}>{title}</Header>
         <Table>
           <TableHead>
             <TableRow>
