@@ -25,7 +25,7 @@ const Sidebar = () => (
       <Typography variant="display1" color="inherit">
         {TITLE} ⚡️
       </Typography>
-      <Typography variant="subheading" color="inherit">
+      <Typography variant="body2" color="inherit">
         by Trevor Blades
       </Typography>
     </Heading>
