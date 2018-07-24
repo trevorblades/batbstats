@@ -8,6 +8,7 @@ import TableSortLabel from '@material-ui/core/TableSortLabel';
 import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 import Typography from '@material-ui/core/Typography';
+import orderBy from 'lodash/orderBy';
 import sentenceCase from 'sentence-case';
 import {connect} from 'react-redux';
 import {getSkaters} from '../selectors';
@@ -39,6 +40,9 @@ const columns = [
   }
 ];
 
+const ORDER_ASC = 'asc';
+const ORDER_DESC = 'desc';
+
 class Skaters extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -46,9 +50,23 @@ class Skaters extends Component {
     skaters: PropTypes.array.isRequired
   };
 
+  state = {
+    order: ORDER_DESC,
+    orderBy: null
+  };
+
   componentDidMount() {
     this.props.dispatch(loadGames());
   }
+
+  sort = key =>
+    this.setState(prevState => ({
+      order:
+        prevState.orderBy === key && prevState.order === ORDER_DESC
+          ? ORDER_ASC
+          : ORDER_DESC,
+      orderBy: key
+    }));
 
   render() {
     if (!this.props.skaters.length) {
@@ -58,13 +76,23 @@ class Skaters extends Component {
       return <Typography>No skaters found</Typography>;
     }
 
+    const skaters = orderBy(
+      this.props.skaters,
+      this.state.orderBy,
+      this.state.order
+    );
+
     return (
       <Table>
         <TableHead>
           <TableRow>
             {columns.map(column => (
               <TableCell key={column.key} numeric={column.numeric}>
-                <TableSortLabel active={false}>
+                <TableSortLabel
+                  direction={this.state.order}
+                  active={column.key === this.state.orderBy}
+                  onClick={() => this.sort(column.key)}
+                >
                   {column.label || sentenceCase(column.key)}
                 </TableSortLabel>
               </TableCell>
@@ -72,7 +100,7 @@ class Skaters extends Component {
           </TableRow>
         </TableHead>
         <TableBody>
-          {this.props.skaters.map(skater => (
+          {skaters.map(skater => (
             <TableRow hover key={skater.id}>
               {columns.map(column => (
                 <TableCell key={column.key} numeric={column.numeric}>
