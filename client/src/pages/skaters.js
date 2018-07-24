@@ -13,9 +13,14 @@ import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Typography from '@material-ui/core/Typography';
 import orderBy from 'lodash/orderBy';
 import sentenceCase from 'sentence-case';
+import styled from 'react-emotion';
 import {connect} from 'react-redux';
 import {getSkaters} from '../selectors';
 import {load as loadGames} from '../actions/games';
+
+const EmptyState = styled.div({
+  margin: 'auto'
+});
 
 const columns = [
   {
@@ -71,12 +76,17 @@ class Skaters extends Component {
       orderBy: key
     }));
 
+  renderEmptyState() {
+    return this.props.loading ? (
+      <CircularProgress />
+    ) : (
+      <Typography>No skaters found</Typography>
+    );
+  }
+
   render() {
     if (!this.props.skaters.length) {
-      if (this.props.loading) {
-        return <CircularProgress />;
-      }
-      return <Typography>No skaters found</Typography>;
+      return <EmptyState>{this.renderEmptyState()}</EmptyState>;
     }
 
     const skaters = orderBy(

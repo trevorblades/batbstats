@@ -5,6 +5,8 @@ import styled from 'react-emotion';
 import {Switch, Route} from 'react-router-dom';
 
 const Container = styled.div({
+  display: 'flex',
+  flexDirection: 'column',
   flexGrow: 1,
   overflow: 'auto'
 });
