@@ -11,6 +11,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Typography from '@material-ui/core/Typography';
+import get from 'lodash/get';
 import orderBy from 'lodash/orderBy';
 import sentenceCase from 'sentence-case';
 import styled from 'react-emotion';
@@ -28,22 +29,38 @@ const columns = [
     label: 'Name'
   },
   {
-    key: 'hometown'
-  },
-  {
-    key: 'age',
-    numeric: true
-  },
-  {
-    key: 'gamesPlayed',
+    key: 'games.length',
+    label: 'GP',
     numeric: true
   },
   {
     key: 'wins',
+    label: 'W',
     numeric: true
   },
   {
     key: 'losses',
+    label: 'L',
+    numeric: true
+  },
+  {
+    key: 'attempts.length',
+    label: 'TA',
+    numeric: true
+  },
+  {
+    key: 'makes',
+    label: 'MA',
+    numeric: true
+  },
+  {
+    key: 'misses',
+    label: 'MI',
+    numeric: true
+  },
+  {
+    key: 'redos',
+    label: 'R',
     numeric: true
   }
 ];
@@ -127,7 +144,7 @@ class Skaters extends Component {
               <TableRow hover key={skater.id}>
                 {columns.map(column => (
                   <TableCell key={column.key} numeric={column.numeric}>
-                    {skater[column.key]}
+                    {get(skater, column.key)}
                   </TableCell>
                 ))}
               </TableRow>
