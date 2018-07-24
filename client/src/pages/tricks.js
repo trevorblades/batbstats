@@ -1,184 +1,76 @@
+import EmptyStateProvider from '../components/empty-state-provider';
 import Header from '../components/header';
 import Helmet from 'react-helmet';
 import PropTypes from 'prop-types';
-import React, {Fragment} from 'react';
+import React, {Component, Fragment} from 'react';
 import styled from 'react-emotion';
+import theme from '../theme';
+import withProps from 'recompose/withProps';
 import {ResponsivePie} from '@nivo/pie';
 import {connect} from 'react-redux';
+import {getTrickTypes} from '../selectors';
 
 const Container = styled.div({
   flexGrow: 1,
-  height: 0
+  height: 0,
+  svg: {
+    display: 'block'
+  }
 });
 
-const title = 'Trick distribution';
-const Tricks = props => (
-  <Fragment>
-    <Helmet>
-      <title>{title}</title>
-    </Helmet>
-    <Header loading={props.loading}>{title}</Header>
-    <Container>
-      <ResponsivePie
-        data={[
-          {
-            id: 'ruby',
-            label: 'ruby',
-            value: 105,
-            color: 'hsl(70, 70%, 50%)'
-          },
-          {
-            id: 'make',
-            label: 'make',
-            value: 203,
-            color: 'hsl(221, 70%, 50%)'
-          },
-          {
-            id: 'rust',
-            label: 'rust',
-            value: 270,
-            color: 'hsl(152, 70%, 50%)'
-          },
-          {
-            id: 'stylus',
-            label: 'stylus',
-            value: 148,
-            color: 'hsl(290, 70%, 50%)'
-          },
-          {
-            id: 'python',
-            label: 'python',
-            value: 467,
-            color: 'hsl(23, 70%, 50%)'
-          }
-        ]}
-        margin={{
-          top: 40,
-          right: 80,
-          bottom: 80,
-          left: 80
-        }}
-        innerRadius={0.5}
-        padAngle={0.7}
-        cornerRadius={3}
-        colors="nivo"
-        colorBy="id"
-        borderWidth={1}
-        borderColor="inherit:darker(0.2)"
-        radialLabelsSkipAngle={10}
-        radialLabelsTextXOffset={6}
-        radialLabelsTextColor="#333333"
-        radialLabelsLinkOffset={0}
-        radialLabelsLinkDiagonalLength={16}
-        radialLabelsLinkHorizontalLength={24}
-        radialLabelsLinkStrokeWidth={1}
-        radialLabelsLinkColor="inherit"
-        slicesLabelsSkipAngle={10}
-        slicesLabelsTextColor="#333333"
-        motionStiffness={90}
-        motionDamping={15}
-        theme={{
-          tooltip: {
-            container: {
-              fontSize: '13px'
-            }
-          },
-          labels: {
-            textColor: '#555'
-          }
-        }}
-        defs={[
-          {
-            id: 'dots',
-            type: 'patternDots',
-            background: 'inherit',
-            color: 'rgba(255, 255, 255, 0.3)',
-            size: 4,
-            padding: 1,
-            stagger: true
-          },
-          {
-            id: 'lines',
-            type: 'patternLines',
-            background: 'inherit',
-            color: 'rgba(255, 255, 255, 0.3)',
-            rotation: -45,
-            lineWidth: 6,
-            spacing: 10
-          }
-        ]}
-        fill={[
-          {
-            match: {
-              id: 'ruby'
-            },
-            id: 'dots'
-          },
-          {
-            match: {
-              id: 'c'
-            },
-            id: 'dots'
-          },
-          {
-            match: {
-              id: 'go'
-            },
-            id: 'dots'
-          },
-          {
-            match: {
-              id: 'python'
-            },
-            id: 'dots'
-          },
-          {
-            match: {
-              id: 'scala'
-            },
-            id: 'lines'
-          },
-          {
-            match: {
-              id: 'lisp'
-            },
-            id: 'lines'
-          },
-          {
-            match: {
-              id: 'elixir'
-            },
-            id: 'lines'
-          },
-          {
-            match: {
-              id: 'javascript'
-            },
-            id: 'lines'
-          }
-        ]}
-        legends={[
-          {
-            anchor: 'bottom',
-            direction: 'row',
-            translateY: 56,
-            itemWidth: 100,
-            itemHeight: 18,
-            symbolSize: 18,
-            symbolShape: 'circle'
-          }
-        ]}
-      />
-    </Container>
-  </Fragment>
-);
+const margin = theme.spacing.unit * 5;
+const symbolSize = 18;
+const Pie = withProps({
+  margin: {
+    top: margin,
+    right: margin,
+    left: margin,
+    bottom: margin * 2 + symbolSize
+  },
+  innerRadius: 0.5,
+  padAngle: 0.7,
+  colors: 'paired',
+  radialLabelsLinkColor: 'inherit',
+  legends: [
+    {
+      anchor: 'bottom',
+      direction: 'row',
+      translateY: margin + symbolSize,
+      itemWidth: 100,
+      itemHeight: symbolSize,
+      symbolSize,
+      symbolShape: 'circle'
+    }
+  ]
+})(ResponsivePie);
 
-Tricks.propTypes = {
-  loading: PropTypes.bool.isRequired
-};
+const title = 'Trick distribution';
+class Tricks extends Component {
+  static propTypes = {
+    loading: PropTypes.bool.isRequired,
+    trickTypes: PropTypes.array.isRequired
+  };
+
+  render() {
+    return (
+      <Fragment>
+        <Helmet>
+          <title>{title}</title>
+        </Helmet>
+        <EmptyStateProvider>
+          <Header loading={this.props.loading}>{title}</Header>
+          <Container>
+            <Pie data={this.props.trickTypes} />
+          </Container>
+        </EmptyStateProvider>
+      </Fragment>
+    );
+  }
+}
 
 const mapStateToProps = state => ({
-  loading: state.games.loading
+  loading: state.games.loading,
+  trickTypes: getTrickTypes(state)
 });
 
 export default connect(mapStateToProps)(Tricks);

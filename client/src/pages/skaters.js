@@ -1,4 +1,4 @@
-import CircularProgress from '@material-ui/core/CircularProgress';
+import EmptyStateProvider from '../components/empty-state-provider';
 import Header from '../components/header';
 import Helmet from 'react-helmet';
 import PropTypes from 'prop-types';
@@ -9,17 +9,11 @@ import TableHead from '@material-ui/core/TableHead';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
-import Typography from '@material-ui/core/Typography';
 import get from 'lodash/get';
 import orderBy from 'lodash/orderBy';
 import sentenceCase from 'sentence-case';
-import styled from 'react-emotion';
 import {connect} from 'react-redux';
 import {getSkaters} from '../selectors';
-
-const EmptyState = styled.div({
-  margin: 'auto'
-});
 
 const columns = [
   {
@@ -87,19 +81,7 @@ class Skaters extends Component {
       orderBy: key
     }));
 
-  renderEmptyState() {
-    return this.props.loading ? (
-      <CircularProgress />
-    ) : (
-      <Typography variant="subheading">No skaters found</Typography>
-    );
-  }
-
   renderContent() {
-    if (!this.props.skaters.length) {
-      return <EmptyState>{this.renderEmptyState()}</EmptyState>;
-    }
-
     const skaters = orderBy(
       this.props.skaters,
       this.state.orderBy,
@@ -147,7 +129,7 @@ class Skaters extends Component {
         <Helmet>
           <title>{title}</title>
         </Helmet>
-        {this.renderContent()}
+        <EmptyStateProvider>{this.renderContent()}</EmptyStateProvider>
       </Fragment>
     );
   }

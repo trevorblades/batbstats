@@ -8,9 +8,10 @@ import {createSelector} from 'reselect';
 import {getLetters} from './util/game';
 
 const getGames = state => state.games.data;
-export const getAttempts = createSelector(getGames, games =>
+const getAttempts = createSelector(getGames, games =>
   flatMap(games, 'attempts')
 );
+
 export const getSkaters = createSelector(
   getGames,
   getAttempts,
@@ -43,3 +44,16 @@ export const getSkaters = createSelector(
     });
   }
 );
+
+export const getTrickTypes = createSelector(getAttempts, attempts => [
+  {
+    id: 'kickflip',
+    label: 'kickflip',
+    value: attempts.filter(attempt => attempt.trick.flip > 0).length
+  },
+  {
+    id: 'heelflip',
+    label: 'heelflip',
+    value: attempts.filter(attempt => attempt.trick.flip < 0).length
+  }
+]);
