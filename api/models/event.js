@@ -1,6 +1,7 @@
 export default (sequelize, DataTypes) => {
   const Event = sequelize.define('event', {
-    name: DataTypes.STRING
+    name: DataTypes.STRING,
+    image: DataTypes.STRING
   });
 
   Event.associate = models => {
