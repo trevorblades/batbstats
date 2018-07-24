@@ -7,7 +7,7 @@ const {primary} = theme.palette;
 const gradient = [primary[500], primary[900]].toString();
 const Container = styled.div({
   flexShrink: 0,
-  width: 250,
+  width: 220,
   padding: theme.spacing.unit * 2.5,
   color: theme.palette.common.white,
   backgroundImage: `linear-gradient(to bottom right, ${gradient})`,
@@ -17,7 +17,7 @@ const Container = styled.div({
 const Sidebar = () => (
   <Container>
     <Typography variant="display1" color="inherit">
-      {TITLE}
+      {TITLE} ⚡️
     </Typography>
     <Typography variant="subheading" color="inherit">
       by Trevor Blades
