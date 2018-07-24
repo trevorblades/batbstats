@@ -4,15 +4,41 @@ import TableRow from '@material-ui/core/TableRow';
 import TableHead from '@material-ui/core/TableHead';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
+import TableSortLabel from '@material-ui/core/TableSortLabel';
 import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 import Typography from '@material-ui/core/Typography';
-import differenceInYears from 'date-fns/differenceInYears';
+import sentenceCase from 'sentence-case';
 import {connect} from 'react-redux';
 import {getSkaters} from '../selectors';
 import {load as loadGames} from '../actions/games';
 
-const now = Date.now();
+const columns = [
+  {
+    key: 'full_name',
+    label: 'Name'
+  },
+  {
+    key: 'hometown'
+  },
+  {
+    key: 'age',
+    numeric: true
+  },
+  {
+    key: 'gamesPlayed',
+    numeric: true
+  },
+  {
+    key: 'wins',
+    numeric: true
+  },
+  {
+    key: 'losses',
+    numeric: true
+  }
+];
+
 class Skaters extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -36,31 +62,25 @@ class Skaters extends Component {
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell>Hometown</TableCell>
-            <TableCell numeric>Age</TableCell>
-            <TableCell numeric>Games played</TableCell>
-            <TableCell numeric>Wins</TableCell>
-            <TableCell numeric>Losses</TableCell>
+            {columns.map(column => (
+              <TableCell key={column.key} numeric={column.numeric}>
+                <TableSortLabel active={false}>
+                  {column.label || sentenceCase(column.key)}
+                </TableSortLabel>
+              </TableCell>
+            ))}
           </TableRow>
         </TableHead>
         <TableBody>
-          {this.props.skaters.map(skater => {
-            const gamesPlayed = skater.games.length;
-            return (
-              <TableRow key={skater.id}>
-                <TableCell>{skater.full_name}</TableCell>
-                <TableCell>{skater.hometown}</TableCell>
-                <TableCell numeric>
-                  {skater.birth_date &&
-                    differenceInYears(now, skater.birth_date)}
+          {this.props.skaters.map(skater => (
+            <TableRow hover key={skater.id}>
+              {columns.map(column => (
+                <TableCell key={column.key} numeric={column.numeric}>
+                  {skater[column.key]}
                 </TableCell>
-                <TableCell numeric>{gamesPlayed}</TableCell>
-                <TableCell numeric>{skater.wins}</TableCell>
-                <TableCell numeric>{gamesPlayed - skater.wins}</TableCell>
-              </TableRow>
-            );
-          })}
+              ))}
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
     );
