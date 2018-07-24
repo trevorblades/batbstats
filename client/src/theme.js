@@ -8,5 +8,11 @@ export default createMuiTheme({
     primary: indigo,
     secondary: teal,
     grey: blueGrey
+  },
+  typography: {
+    fontFamily: '"Helvetica Neue", Helvetica',
+    title: {
+      fontWeight: 700
+    }
   }
 });
