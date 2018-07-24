@@ -46,8 +46,8 @@ module.exports = {
           appleStartup: false,
           coast: false,
           firefox: false,
-          windows: true,
-          yandex: true
+          windows: false,
+          yandex: false
         }
       }
     }),
