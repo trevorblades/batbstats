@@ -1,12 +1,15 @@
+import AppBar from '@material-ui/core/AppBar';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import PropTypes from 'prop-types';
+import React, {Component, Fragment} from 'react';
 import Table from '@material-ui/core/Table';
 import TableRow from '@material-ui/core/TableRow';
 import TableHead from '@material-ui/core/TableHead';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
-import PropTypes from 'prop-types';
-import React, {Component} from 'react';
 import Typography from '@material-ui/core/Typography';
 import orderBy from 'lodash/orderBy';
 import sentenceCase from 'sentence-case';
@@ -71,7 +74,7 @@ class Skaters extends Component {
   render() {
     if (!this.props.skaters.length) {
       if (this.props.loading) {
-        return <CircularProgress color="primary" />;
+        return <CircularProgress />;
       }
       return <Typography>No skaters found</Typography>;
     }
@@ -83,34 +86,45 @@ class Skaters extends Component {
     );
 
     return (
-      <Table>
-        <TableHead>
-          <TableRow>
-            {columns.map(column => (
-              <TableCell key={column.key} numeric={column.numeric}>
-                <TableSortLabel
-                  direction={this.state.order}
-                  active={column.key === this.state.orderBy}
-                  onClick={() => this.sort(column.key)}
-                >
-                  {column.label || sentenceCase(column.key)}
-                </TableSortLabel>
-              </TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {skaters.map(skater => (
-            <TableRow hover key={skater.id}>
+      <Fragment>
+        <AppBar elevation={0} position="sticky" color="inherit">
+          <DialogTitle>Skaters</DialogTitle>
+          <LinearProgress
+            color="primary"
+            variant={this.props.loading ? 'indeterminate' : 'determinate'}
+            value={100}
+            style={{height: 2}}
+          />
+        </AppBar>
+        <Table>
+          <TableHead>
+            <TableRow>
               {columns.map(column => (
                 <TableCell key={column.key} numeric={column.numeric}>
-                  {skater[column.key]}
+                  <TableSortLabel
+                    direction={this.state.order}
+                    active={column.key === this.state.orderBy}
+                    onClick={() => this.sort(column.key)}
+                  >
+                    {column.label || sentenceCase(column.key)}
+                  </TableSortLabel>
                 </TableCell>
               ))}
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHead>
+          <TableBody>
+            {skaters.map(skater => (
+              <TableRow hover key={skater.id}>
+                {columns.map(column => (
+                  <TableCell key={column.key} numeric={column.numeric}>
+                    {skater[column.key]}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </Fragment>
     );
   }
 }
