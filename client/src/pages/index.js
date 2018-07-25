@@ -1,3 +1,4 @@
+import About from './about';
 import NotFound from './not-found';
 import Paper from '@material-ui/core/Paper';
 import React from 'react';
@@ -22,6 +23,7 @@ const Container = withProps({
 const Pages = () => (
   <Container>
     <Switch>
+      <Route exact component={About} path="/" />
       <Route exact component={Skaters} path="/skaters" />
       <Route exact component={Tricks} path="/tricks" />
       <Route component={NotFound} />
