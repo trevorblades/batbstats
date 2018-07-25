@@ -23,7 +23,7 @@ ReactDOM.render(
   <JssProvider jss={jss} generateClassName={generateClassName}>
     <MuiThemeProvider theme={theme}>
       <Provider store={store}>
-        <BrowserRouter basename="/">
+        <BrowserRouter basename={PUBLIC_PATH}>
           <App />
         </BrowserRouter>
       </Provider>
