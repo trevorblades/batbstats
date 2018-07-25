@@ -31,7 +31,7 @@ jobs:
     <<: *defaults
     steps:
       - attach_workspace:
-          at: ~/batbstats/client
+          at: ~/batbstats
       - run: npm run build
       - persist_to_workspace:
           root: ~/batbstats/client
