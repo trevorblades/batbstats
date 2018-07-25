@@ -31,7 +31,7 @@ jobs:
     <<: *defaults
     steps:
       - attach_workspace:
-          at: /home/circleci
+          at: /home/circleci/batbstats
       - run: cd client
       - run: npm run build
       - persist_to_workspace:
@@ -44,7 +44,7 @@ jobs:
       - image: cibuilds/aws:1.15.44
     steps:
       - attach_workspace:
-          at: /home/circleci/batbstats
+          at: /home/circleci/batbstats/client
       - run: aws configure set region us-west-2
       - run: aws configure set preview.cloudfront true
       - run: aws configure set preview.create-invalidation true
