@@ -6,7 +6,6 @@
     "node": true
   },
   "globals": {
-    "PUBLIC_PATH": true,
     "TITLE": true
   }
 }

@@ -4,15 +4,10 @@ const path = require('path');
 const webpack = require('webpack');
 
 const title = 'BATB Stats';
-const branchName = process.env.CIRCLE_BRANCH;
-const publicPath =
-  branchName && branchName !== 'master' ? `/${branchName}/` : '/';
-
 module.exports = {
   context: path.join(__dirname, 'src'),
   entry: ['babel-polyfill', './index.js'],
   output: {
-    publicPath,
     path: path.resolve(__dirname, 'build'),
     filename: '[name].[hash].js'
   },
@@ -50,7 +45,6 @@ module.exports = {
       }
     }),
     new webpack.DefinePlugin({
-      PUBLIC_PATH: JSON.stringify(publicPath),
       TITLE: JSON.stringify(title)
     })
   ]
