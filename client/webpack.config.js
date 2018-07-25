@@ -23,12 +23,8 @@ module.exports = {
         use: 'babel-loader'
       },
       {
-        test: /\.jpg$/,
+        test: /\.png$/,
         use: 'file-loader'
-      },
-      {
-        test: /\.svg$/,
-        use: 'svgr/webpack'
       }
     ]
   },

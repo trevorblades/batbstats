@@ -3,6 +3,11 @@ import DialogContent from '@material-ui/core/DialogContent';
 import Helmet from 'react-helmet';
 import React, {Fragment} from 'react';
 import Typography from '@material-ui/core/Typography';
+import styled from 'react-emotion';
+
+const StyledDialogContent = styled(DialogContent)({
+  overflow: 'visible'
+});
 
 const About = () => (
   <Fragment>
@@ -12,7 +17,7 @@ const About = () => (
     <DialogTitle disableTypography>
       <Typography variant="display1">About the project</Typography>
     </DialogTitle>
-    <DialogContent>
+    <StyledDialogContent>
       <Typography paragraph>
         BATB Stats is a collection of charts and data visualizations about{' '}
         <a
@@ -24,7 +29,7 @@ const About = () => (
         </a>{' '}
         played in the contest series, <em>Battle at the Berrics</em>.
       </Typography>
-    </DialogContent>
+    </StyledDialogContent>
   </Fragment>
 );
 
