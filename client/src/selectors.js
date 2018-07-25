@@ -1,3 +1,4 @@
+import countBy from 'lodash/countBy';
 import differenceInYears from 'date-fns/differenceInYears';
 import filter from 'lodash/filter';
 import flatMap from 'lodash/flatMap';
@@ -45,15 +46,42 @@ export const getSkaters = createSelector(
   }
 );
 
-export const getTrickTypes = createSelector(getAttempts, attempts => [
-  {
-    id: 'kickflip',
-    label: 'kickflip',
-    value: attempts.filter(attempt => attempt.trick.flip > 0).length
-  },
-  {
-    id: 'heelflip',
-    label: 'heelflip',
-    value: attempts.filter(attempt => attempt.trick.flip < 0).length
-  }
-]);
+function objectToPieData(object) {
+  return Object.keys(object).map(key => ({
+    id: key,
+    label: key,
+    value: object[key]
+  }));
+}
+
+export const getFlips = createSelector(getAttempts, attempts =>
+  objectToPieData(
+    countBy(attempts, attempt => {
+      const {flip} = attempt.trick;
+      if (!flip) {
+        return 'none';
+      }
+
+      return flip > 0 ? 'kickflip' : 'heelflip';
+    })
+  )
+);
+
+export const getSpins = createSelector(getAttempts, attempts =>
+  objectToPieData(
+    countBy(attempts, attempt => {
+      const {spin} = attempt.trick;
+      if (!spin) {
+        return 'none';
+      }
+
+      return spin > 0 ? 'backside' : 'frontside';
+    })
+  )
+);
+
+export const getVariations = createSelector(getAttempts, attempts =>
+  objectToPieData(
+    countBy(attempts, attempt => attempt.trick.variation || 'regular')
+  )
+);
