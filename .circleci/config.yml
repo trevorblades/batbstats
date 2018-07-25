@@ -29,9 +29,6 @@ jobs:
 
   build:
     <<: *defaults
-    branches:
-      only:
-        - master
     steps:
       - attach_workspace:
           at: /home/circleci
@@ -62,6 +59,10 @@ workflows:
       - build:
           requires:
             - test
+          filters:
+            branches:
+              only:
+                - master
       - deploy:
           requires:
             - build
