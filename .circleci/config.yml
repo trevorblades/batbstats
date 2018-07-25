@@ -10,7 +10,7 @@ jobs:
     <<: *defaults
     steps:
       - checkout:
-        path: ~/batbstats
+          path: ~/batbstats
       - restore_cache:
           keys:
           - v1-client-dependencies-{{ checksum "package.json" }}
