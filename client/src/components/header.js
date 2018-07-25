@@ -9,7 +9,7 @@ import {connect} from 'react-redux';
 const Header = props => (
   <AppBar elevation={0} position="sticky" color="inherit">
     <DialogTitle disableTypography>
-      <Typography variant="display1">{props.children}</Typography>
+      <Typography variant="headline">{props.children}</Typography>
     </DialogTitle>
     <LinearProgress
       variant={props.loading ? 'indeterminate' : 'determinate'}
