@@ -1,7 +1,7 @@
 version: 2
 
 defaults: &defaults
-  working_directory: /home/circleci/batbstats
+  working_directory: ~/batbstats/client
   docker:
     - image: circleci/node:8
 
@@ -9,8 +9,8 @@ jobs:
   test:
     <<: *defaults
     steps:
-      - checkout
-      - run: cd client
+      - checkout:
+        path: ~/batbstats
       - restore_cache:
           keys:
           - v1-client-dependencies-{{ checksum "package.json" }}
@@ -23,7 +23,7 @@ jobs:
           key: v1-client-dependencies-{{ checksum "package.json" }}
       - run: npm test
       - persist_to_workspace:
-          root: /home/circleci/batbstats
+          root: ~/batbstats
           paths: 
             - client
 
@@ -31,11 +31,10 @@ jobs:
     <<: *defaults
     steps:
       - attach_workspace:
-          at: /home/circleci/batbstats
-      - run: cd client
+          at: ~/batbstats
       - run: npm run build
       - persist_to_workspace:
-          root: /home/circleci/batbstats/client
+          root: ~/batbstats/client
           paths: 
             - build
 
@@ -44,11 +43,11 @@ jobs:
       - image: cibuilds/aws:1.15.44
     steps:
       - attach_workspace:
-          at: /home/circleci/batbstats/client
+          at: ~/batbstats/client
       - run: aws configure set region us-west-2
       - run: aws configure set preview.cloudfront true
       - run: aws configure set preview.create-invalidation true
-      - run: aws s3 sync /home/circleci/batbstats/build s3://batbstats/$CIRCLE_BRANCH --delete
+      - run: aws s3 sync ~/batbstats/build s3://batbstats/$CIRCLE_BRANCH --delete
       - run: aws cloudfront create-invalidation --cli-input-json "{\"DistributionId\":\"$AWS_CLOUDFRONT_ID\",\"InvalidationBatch\":{\"Paths\":{\"Quantity\":2,\"Items\":[\"/index.html\",\"/*\"]},\"CallerReference\":\"$(date +%s)\"}}"
 
 workflows:
