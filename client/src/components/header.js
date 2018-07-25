@@ -2,16 +2,18 @@ import AppBar from '@material-ui/core/AppBar';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import PropTypes from 'prop-types';
+import Typography from '@material-ui/core/Typography';
 import React from 'react';
 import {connect} from 'react-redux';
 
 const Header = props => (
   <AppBar elevation={0} position="sticky" color="inherit">
-    <DialogTitle align="center">{props.children}</DialogTitle>
+    <DialogTitle disableTypography>
+      <Typography variant="display1">{props.children}</Typography>
+    </DialogTitle>
     <LinearProgress
-      color="primary"
       variant={props.loading ? 'indeterminate' : 'determinate'}
-      value={100}
+      value={0}
       style={{height: 2}}
     />
   </AppBar>
