@@ -2,6 +2,8 @@ export const STANCE_GOOFY = 'goofy';
 export const STANCE_REGULAR = 'regular';
 export const STANCES = [STANCE_GOOFY, STANCE_REGULAR];
 
+export const VARIATIONS = ['switch', 'nollie', 'fakie'];
+
 export const ROSHAMBO_MOVE_ROCK = 'rock';
 export const ROSHAMBO_MOVE_PAPER = 'paper';
 export const ROSHAMBO_MOVE_SCISSORS = 'scissors';

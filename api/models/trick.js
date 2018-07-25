@@ -1,8 +1,9 @@
+import {VARIATIONS} from '../common';
+
 export default (sequelize, DataTypes) => {
   const Trick = sequelize.define('trick', {
     name: DataTypes.STRING,
-    switch: DataTypes.BOOLEAN,
-    nollie: DataTypes.BOOLEAN,
+    variation: DataTypes.ENUM(VARIATIONS),
     spin: DataTypes.INTEGER,
     flip: DataTypes.INTEGER,
     shuv: DataTypes.INTEGER
