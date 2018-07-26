@@ -6,5 +6,5 @@ A collection of charts and data visualizations about [games of S.K.A.T.E](https:
 
 ## Acknowledgements
 
-- Andrew Jones for his work transcribing all of the games into useful bits of data
+- Andrew Jones for his work transcribing all of the battles
 - [Alexey Timanovsky](https://github.com/timanovsky) for his [Heroku buildpack to support deployment from a subdirectory](https://medium.com/@timanovsky/heroku-buildpack-to-support-deployment-from-subdirectory-e743c2c838dd)
