@@ -4,8 +4,12 @@ import routes from './routes';
 import {sequelize} from './models';
 
 const app = express();
-app.use(cors());
 app.use('/', routes);
+app.use(
+  cors({
+    origin: /^https?:\/\/(localhost(:\d{4})?|batbstats.trevorblades.com)$/
+  })
+);
 
 sequelize
   .sync()
