@@ -23,14 +23,14 @@ jobs:
           at: ~/
       - restore_cache:
           keys:
-            - {{ .Environment.CACHE_VERSION }}-api-dependencies-{{ checksum "package.json" }}
+            - api-dependencies-{{ .Environment.CACHE_VERSION }}-{{ checksum "package.json" }}
             # fallback to using the latest cache if no exact match is found
-            - {{ .Environment.CACHE_VERSION }}-api-dependencies-
+            - api-dependencies-{{ .Environment.CACHE_VERSION }}-
       - run: npm install
       - save_cache:
           paths:
             - node_modules
-          key: {{ .Environment.CACHE_VERSION }}-api-dependencies-{{ checksum "package.json" }}
+          key: api-dependencies-{{ .Environment.CACHE_VERSION }}-{{ checksum "package.json" }}
       - run: npm test
 
   test:client:
@@ -41,13 +41,13 @@ jobs:
           at: ~/
       - restore_cache:
           keys:
-            - {{ .Environment.CACHE_VERSION }}-client-dependencies-{{ checksum "package.json" }}
-            - {{ .Environment.CACHE_VERSION }}-client-dependencies-
+            - client-dependencies-{{ .Environment.CACHE_VERSION }}-{{ checksum "package.json" }}
+            - client-dependencies-{{ .Environment.CACHE_VERSION }}-
       - run: npm install
       - save_cache:
           paths:
             - node_modules
-          key: {{ .Environment.CACHE_VERSION }}-client-dependencies-{{ checksum "package.json" }}
+          key: client-dependencies-{{ .Environment.CACHE_VERSION }}-{{ checksum "package.json" }}
       - run: npm test
       - persist_to_workspace:
           root: ~/batbstats
