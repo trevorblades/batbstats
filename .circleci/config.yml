@@ -11,7 +11,7 @@ jobs:
       - checkout:
           path: ~/batbstats
       - persist_to_workspace:
-          root: ~
+          root: ~/
           paths: 
             - batbstats
 
@@ -20,7 +20,7 @@ jobs:
     working_directory: ~/batbstats/api
     steps:
       - attach_workspace:
-          at: ~
+          at: ~/
       - restore_cache:
           keys:
           - v1-api-dependencies-{{ checksum "package.json" }}
@@ -38,7 +38,7 @@ jobs:
     working_directory: ~/batbstats/client
     steps:
       - attach_workspace:
-          at: ~
+          at: ~/
       - restore_cache:
           keys:
           - v1-client-dependencies-{{ checksum "package.json" }}
