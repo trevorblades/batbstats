@@ -4,10 +4,6 @@ defaults: &defaults
   docker:
     - image: circleci/node:8
 
-defaults:client: &defaults:client
-  <<: *defaults
-  working_directory: ~/batbstats/client
-
 jobs:
   checkout:
     steps:
@@ -37,7 +33,8 @@ jobs:
       - run: npm test
 
   test:client:
-    <<: *defaults:client
+    <<: *defaults
+    working_directory: ~/batbstats/client
     steps:
       - attach_workspace:
           at: ~
@@ -58,7 +55,8 @@ jobs:
             - client
 
   build:
-    <<: *defaults:client
+    <<: *defaults
+    working_directory: ~/batbstats/client
     steps:
       - attach_workspace:
           at: ~/batbstats
