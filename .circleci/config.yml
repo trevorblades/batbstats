@@ -12,7 +12,7 @@ jobs:
           path: ~/batbstats
       - persist_to_workspace:
           root: ~/
-          paths: 
+          paths:
             - batbstats
 
   test:api:
@@ -23,9 +23,9 @@ jobs:
           at: ~/
       - restore_cache:
           keys:
-          - {{ .Environment.CACHE_VERSION }}-api-dependencies-{{ checksum "package.json" }}
-          # fallback to using the latest cache if no exact match is found
-          - {{ .Environment.CACHE_VERSION }}-api-dependencies-
+            - {{ .Environment.CACHE_VERSION }}-api-dependencies-{{ checksum "package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - {{ .Environment.CACHE_VERSION }}-api-dependencies-
       - run: npm install
       - save_cache:
           paths:
@@ -41,9 +41,8 @@ jobs:
           at: ~/
       - restore_cache:
           keys:
-          - {{ .Environment.CACHE_VERSION }}-client-dependencies-{{ checksum "package.json" }}
-          # fallback to using the latest cache if no exact match is found
-          - {{ .Environment.CACHE_VERSION }}-client-dependencies-
+            - {{ .Environment.CACHE_VERSION }}-client-dependencies-{{ checksum "package.json" }}
+            - {{ .Environment.CACHE_VERSION }}-client-dependencies-
       - run: npm install
       - save_cache:
           paths:
