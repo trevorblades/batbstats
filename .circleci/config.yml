@@ -6,6 +6,7 @@ defaults: &defaults
 
 jobs:
   checkout:
+    <<: *defaults
     steps:
       - checkout:
           path: ~/batbstats
