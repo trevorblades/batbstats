@@ -1,8 +1,10 @@
 import Frisbee from 'frisbee';
-import {API_URL} from './config';
 
 export default new Frisbee({
-  baseURI: API_URL,
+  baseURI:
+    process.env.NODE_ENV === 'production'
+      ? 'https://api.batbstats.trevorblades.com'
+      : 'http://localhost:3000',
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json'
