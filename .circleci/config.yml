@@ -95,7 +95,7 @@ workflows:
             - checkout
       - build:
           requires:
-            - test
+            - test:client
           filters:
             branches:
               only:
