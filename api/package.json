@@ -5,8 +5,7 @@
   "scripts": {
     "pretest": "eslint ./",
     "test": "echo \"Error: no test specified\" && exit 0",
-    "start": "node -r esm index.js",
-    "dev": "nodemon -r dotenv/config -r esm index.js"
+    "start": "nodemon -r dotenv/config -r esm index.js"
   },
   "dependencies": {
     "cors": "^2.8.4",
