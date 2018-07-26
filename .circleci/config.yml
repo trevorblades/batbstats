@@ -1,16 +1,46 @@
 version: 2
 
 defaults: &defaults
-  working_directory: ~/batbstats/client
   docker:
     - image: circleci/node:8
 
+defaults:client: &defaults:client
+  <<: *defaults
+  working_directory: ~/batbstats/client
+
 jobs:
-  test:
-    <<: *defaults
+  checkout:
     steps:
       - checkout:
           path: ~/batbstats
+      - persist_to_workspace:
+          root: ~
+          paths: 
+            - batbstats
+
+  test:api:
+    <<: *defaults
+    working_directory: ~/batbstats/api
+    steps:
+      - attach_workspace:
+          at: ~
+      - restore_cache:
+          keys:
+          - v1-api-dependencies-{{ checksum "package.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-api-dependencies-
+      - run: npm install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-api-dependencies-{{ checksum "package.json" }}
+      - run: npm test
+
+  test:client:
+    <<: *defaults:client
+    steps:
+      - attach_workspace:
+          at: ~
       - restore_cache:
           keys:
           - v1-client-dependencies-{{ checksum "package.json" }}
@@ -28,7 +58,7 @@ jobs:
             - client
 
   build:
-    <<: *defaults
+    <<: *defaults:client
     steps:
       - attach_workspace:
           at: ~/batbstats
@@ -47,14 +77,23 @@ jobs:
       - run: aws configure set region us-west-2
       - run: aws configure set preview.cloudfront true
       - run: aws configure set preview.create-invalidation true
-      - run: aws s3 sync ~/batbstats/build s3://batbstats/$CIRCLE_BRANCH --delete
+      - run: aws s3 sync ~/batbstats/client/build s3://batbstats/$CIRCLE_BRANCH --delete
       - run: aws cloudfront create-invalidation --cli-input-json "{\"DistributionId\":\"$AWS_CLOUDFRONT_ID\",\"InvalidationBatch\":{\"Paths\":{\"Quantity\":2,\"Items\":[\"/index.html\",\"/*\"]},\"CallerReference\":\"$(date +%s)\"}}"
 
 workflows:
   version: 2
-  test-build-deploy:
+  api:
     jobs:
-      - test
+      - checkout
+      - test:api:
+          requires:
+            - checkout
+  client:
+    jobs:
+      - checkout
+      - test:client:
+          requires:
+            - checkout
       - build:
           requires:
             - test
