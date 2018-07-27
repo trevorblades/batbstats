@@ -10,7 +10,7 @@ const ListItemLink = withProps({
   component: Link
 })(ListItem);
 
-const MenuItem = props => (
+const NavItem = props => (
   <ListItemLink to={props.to}>
     <ListItemText
       primary={props.children}
@@ -19,9 +19,9 @@ const MenuItem = props => (
   </ListItemLink>
 );
 
-MenuItem.propTypes = {
+NavItem.propTypes = {
   children: PropTypes.string.isRequired,
   to: PropTypes.string.isRequired
 };
 
-export default MenuItem;
+export default NavItem;

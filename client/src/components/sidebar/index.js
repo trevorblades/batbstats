@@ -3,7 +3,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import GitHubLogo from 'react-icons/lib/fa/github';
 import IconButton from '@material-ui/core/IconButton';
 import List from '@material-ui/core/List';
-import MenuItem from './menu-item';
+import MenuButton from './menu-button';
+import NavItem from './nav-item';
 import React from 'react';
 import TwitterLogo from 'react-icons/lib/fa/twitter';
 import Typography from '@material-ui/core/Typography';
@@ -23,6 +24,10 @@ const Container = styled.div({
   overflow: 'auto'
 });
 
+const StyledDialogActions = styled(DialogActions)({
+  marginTop: 'auto'
+});
+
 const LinkIconButton = withProps({
   color: 'inherit',
   component: 'a',
@@ -40,19 +45,22 @@ const Sidebar = () => (
         by Trevor Blades
       </Typography>
     </DialogTitle>
-    <List>
-      <MenuItem to="/">About</MenuItem>
-      <MenuItem to="/skaters">Skaters</MenuItem>
-      <MenuItem to="/tricks">Trick distribution</MenuItem>
-    </List>
-    <DialogActions style={{marginTop: 'auto'}}>
+    <nav>
+      <List>
+        <NavItem to="/">About</NavItem>
+        <NavItem to="/skaters">Skaters</NavItem>
+        <NavItem to="/tricks">Trick distribution</NavItem>
+      </List>
+    </nav>
+    <StyledDialogActions>
       <LinkIconButton href="https://twitter.com/trevorblades">
         <TwitterLogo />
       </LinkIconButton>
       <LinkIconButton href="https://github.com/trevorblades/batbstats">
         <GitHubLogo />
       </LinkIconButton>
-    </DialogActions>
+      <MenuButton />
+    </StyledDialogActions>
   </Container>
 );
 

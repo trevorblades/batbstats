@@ -6,11 +6,13 @@ import DialogActions from '@material-ui/core/DialogActions';
 import PropTypes from 'prop-types';
 import React, {Component, Fragment} from 'react';
 import SkaterForm from './skater-form';
+import {connect} from 'react-redux';
 
 const UNKNOWN = 'unknown';
 class SkaterDialogContent extends Component {
   static propTypes = {
-    skater: PropTypes.object.isRequired
+    skater: PropTypes.object.isRequired,
+    user: PropTypes.object
   };
 
   state = {
@@ -39,12 +41,18 @@ class SkaterDialogContent extends Component {
             Hometown: {this.props.skater.hometown || UNKNOWN}
           </DialogContentText>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={this.onEditClick}>Edit skater</Button>
-        </DialogActions>
+        {this.props.user && (
+          <DialogActions>
+            <Button onClick={this.onEditClick}>Edit skater</Button>
+          </DialogActions>
+        )}
       </Fragment>
     );
   }
 }
 
-export default SkaterDialogContent;
+const mapStateToProps = state => ({
+  user: state.user.data
+});
+
+export default connect(mapStateToProps)(SkaterDialogContent);

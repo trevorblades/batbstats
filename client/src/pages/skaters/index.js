@@ -88,7 +88,8 @@ const columns = [
 
 class Skaters extends Component {
   static propTypes = {
-    skaters: PropTypes.array.isRequired
+    skaters: PropTypes.array.isRequired,
+    user: PropTypes.object
   };
 
   state = {
@@ -173,9 +174,11 @@ class Skaters extends Component {
               ))}
             </TableBody>
           </Table>
-          <CreateButton>
-            <AddIcon />
-          </CreateButton>
+          {this.props.user && (
+            <CreateButton>
+              <AddIcon />
+            </CreateButton>
+          )}
           {this.renderDialog()}
         </GamesLoader>
       </Fragment>
@@ -184,7 +187,8 @@ class Skaters extends Component {
 }
 
 const mapStateToProps = state => ({
-  skaters: getSkaters(state)
+  skaters: getSkaters(state),
+  user: state.user.data
 });
 
 export default connect(mapStateToProps)(Skaters);

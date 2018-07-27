@@ -99,7 +99,7 @@ class SkaterForm extends Component {
           <Button disabled={this.props.loading} onClick={this.props.onCancel}>
             Cancel
           </Button>
-          <Button disabled={this.props.loading} type="submit">
+          <Button disabled={this.props.loading} type="submit" color="primary">
             Save changes
           </Button>
         </DialogActions>
