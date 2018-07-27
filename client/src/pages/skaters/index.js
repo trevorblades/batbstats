@@ -1,8 +1,12 @@
-import GamesLoader from '../components/games-loader';
-import Header from '../components/header';
+import AddIcon from '@material-ui/icons/Add';
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import GamesLoader from '../../components/games-loader';
+import Header from '../../components/header';
 import Helmet from 'react-helmet';
 import PropTypes from 'prop-types';
 import React, {Component, Fragment} from 'react';
+import SkaterDialogContent from './skater-dialog-content';
 import Table from '@material-ui/core/Table';
 import TableRow from '@material-ui/core/TableRow';
 import TableHead from '@material-ui/core/TableHead';
@@ -10,11 +14,36 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import get from 'lodash/get';
+import mapProps from 'recompose/mapProps';
 import orderBy from 'lodash/orderBy';
 import sentenceCase from 'sentence-case';
+import styled from 'react-emotion';
+import theme from '../../theme';
+import withProps from 'recompose/withProps';
 import {connect} from 'react-redux';
-import {getSkaters} from '../selectors';
+import {getSkaters} from '../../selectors';
 
+const DenseTableCell = mapProps(props => ({
+  ...props,
+  padding: props.numeric ? 'dense' : 'default'
+}))(TableCell);
+
+const createButtonSpacing = theme.spacing.unit * 3;
+const CreateButton = withProps({
+  variant: 'fab',
+  color: 'secondary'
+})(
+  styled(Button)({
+    position: 'absolute',
+    bottom: createButtonSpacing,
+    right: createButtonSpacing
+  })
+);
+
+const ORDER_ASC = 'asc';
+const ORDER_DESC = 'desc';
+
+const title = 'Skaters';
 const columns = [
   {
     key: 'full_name',
@@ -57,19 +86,25 @@ const columns = [
   }
 ];
 
-const ORDER_ASC = 'asc';
-const ORDER_DESC = 'desc';
-const title = 'Skaters';
-
 class Skaters extends Component {
   static propTypes = {
     skaters: PropTypes.array.isRequired
   };
 
   state = {
+    dialogOpen: false,
     order: ORDER_DESC,
-    orderBy: null
+    orderBy: null,
+    skater: null
   };
+
+  onTableRowClick = skater =>
+    this.setState({
+      skater,
+      dialogOpen: true
+    });
+
+  closeDialog = () => this.setState({dialogOpen: false});
 
   sort = key =>
     this.setState(prevState => ({
@@ -80,8 +115,16 @@ class Skaters extends Component {
       orderBy: key
     }));
 
-  renderContent() {
-    return <Fragment />;
+  renderDialog() {
+    if (!this.state.skater) {
+      return null;
+    }
+
+    return (
+      <Dialog fullWidth open={this.state.dialogOpen} onClose={this.closeDialog}>
+        <SkaterDialogContent skater={this.state.skater} />
+      </Dialog>
+    );
   }
 
   render() {
@@ -102,7 +145,7 @@ class Skaters extends Component {
             <TableHead>
               <TableRow>
                 {columns.map(column => (
-                  <TableCell key={column.key} numeric={column.numeric}>
+                  <DenseTableCell key={column.key} numeric={column.numeric}>
                     <TableSortLabel
                       direction={this.state.order}
                       active={column.key === this.state.orderBy}
@@ -110,22 +153,30 @@ class Skaters extends Component {
                     >
                       {column.label || sentenceCase(column.key)}
                     </TableSortLabel>
-                  </TableCell>
+                  </DenseTableCell>
                 ))}
               </TableRow>
             </TableHead>
             <TableBody>
               {skaters.map(skater => (
-                <TableRow hover key={skater.id}>
+                <TableRow
+                  hover
+                  key={skater.id}
+                  onClick={() => this.onTableRowClick(skater)}
+                >
                   {columns.map(column => (
-                    <TableCell key={column.key} numeric={column.numeric}>
+                    <DenseTableCell key={column.key} numeric={column.numeric}>
                       {get(skater, column.key)}
-                    </TableCell>
+                    </DenseTableCell>
                   ))}
                 </TableRow>
               ))}
             </TableBody>
           </Table>
+          <CreateButton>
+            <AddIcon />
+          </CreateButton>
+          {this.renderDialog()}
         </GamesLoader>
       </Fragment>
     );

@@ -15,6 +15,13 @@ const display1 = {
 };
 
 export default createMuiTheme({
+  overrides: {
+    MuiPickersDay: {
+      day: {
+        fontWeight: 400
+      }
+    }
+  },
   palette: {
     primary: indigo,
     secondary: pink,
