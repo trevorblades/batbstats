@@ -7,7 +7,9 @@ import ReactGA from 'react-ga';
 import Sidebar from './sidebar';
 import compose from 'recompose/compose';
 import styled from 'react-emotion';
+import {connect} from 'react-redux';
 import {hot} from 'react-hot-loader';
+import {renewToken} from '../actions/user';
 import {withRouter} from 'react-router-dom';
 
 const Container = styled.div({
@@ -17,11 +19,16 @@ const Container = styled.div({
 
 class App extends Component {
   static propTypes = {
-    location: PropTypes.object.isRequired
+    dispatch: PropTypes.func.isRequired,
+    location: PropTypes.object.isRequired,
+    user: PropTypes.object
   };
 
   componentDidMount() {
     ReactGA.pageview(this.props.location.pathname);
+    if (this.props.user) {
+      this.props.dispatch(renewToken(this.props.user.token));
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -44,4 +51,8 @@ class App extends Component {
   }
 }
 
-export default compose(hot(module), withRouter)(App);
+const mapStateToProps = state => ({
+  user: state.user.data
+});
+
+export default compose(hot(module), withRouter, connect(mapStateToProps))(App);

@@ -8,9 +8,15 @@
     "start": "nodemon -r dotenv/config -r esm index.js"
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.18.3",
     "cors": "^2.8.4",
     "express": "^4.16.3",
+    "jsonwebtoken": "^8.3.0",
     "pascalcase": "^0.1.1",
+    "passport": "^0.4.0",
+    "passport-http": "^0.3.0",
+    "passport-jwt": "^4.0.0",
     "pg": "^7.4.3",
     "sequelize": "^4.37.10"
   },
