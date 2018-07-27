@@ -1,4 +1,4 @@
-import {STANCES} from '../../client/src/constants';
+import {STANCES} from '../common';
 
 export default (sequelize, DataTypes) => {
   const Skater = sequelize.define('skater', {

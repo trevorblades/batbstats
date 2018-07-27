@@ -1,4 +1,4 @@
-import {VARIATIONS} from '../../client/src/constants';
+import {VARIATIONS} from '../common';
 
 export default (sequelize, DataTypes) => {
   const Trick = sequelize.define('trick', {

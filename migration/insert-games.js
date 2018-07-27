@@ -1,4 +1,4 @@
-const {ROSHAMBO_MOVES} = require('../client/src/constants');
+const {ROSHAMBO_MOVES} = require('../api/common');
 const {Game, Roshambo, Attempt} = require('../api/models');
 
 function marshallAttempts(gameId, skater1, skater2, tricks) {
