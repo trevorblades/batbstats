@@ -1,6 +1,6 @@
-export const STANCE_GOOFY = 'goofy';
 export const STANCE_REGULAR = 'regular';
-export const STANCES = [STANCE_GOOFY, STANCE_REGULAR];
+export const STANCE_GOOFY = 'goofy';
+export const STANCES = [STANCE_REGULAR, STANCE_GOOFY];
 
 export const VARIATIONS = ['switch', 'nollie', 'fakie'];
 
