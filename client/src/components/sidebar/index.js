@@ -53,11 +53,11 @@ const Sidebar = () => (
       </List>
     </nav>
     <StyledDialogActions>
-      <LinkIconButton href="https://twitter.com/trevorblades">
-        <TwitterLogo />
-      </LinkIconButton>
       <LinkIconButton href="https://github.com/trevorblades/batbstats">
         <GitHubLogo />
+      </LinkIconButton>
+      <LinkIconButton href="https://twitter.com/trevorblades">
+        <TwitterLogo />
       </LinkIconButton>
       <MenuButton />
     </StyledDialogActions>
