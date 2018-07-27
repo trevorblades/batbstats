@@ -35,6 +35,9 @@ class SkaterDialogContent extends Component {
         <DialogTitle>{this.props.skater.full_name}</DialogTitle>
         <DialogContent>
           <DialogContentText>
+            Record: {this.props.skater.wins}-{this.props.skater.losses}
+          </DialogContentText>
+          <DialogContentText>
             Age: {this.props.skater.age || UNKNOWN}
           </DialogContentText>
           <DialogContentText>
