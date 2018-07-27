@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 import Select from '@material-ui/core/Select';
 import upperFirst from 'lodash/upperFirst';
-import {STANCES, STANCE_REGULAR} from '../../../../../api/common';
+import {STANCES, STANCE_REGULAR} from '../../../constants';
 import {DatePicker} from 'material-ui-pickers';
 import {connect} from 'react-redux';
 import {save as saveSkater} from '../../../actions/skater';

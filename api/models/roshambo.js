@@ -1,4 +1,4 @@
-import {ROSHAMBO_MOVES} from '../common';
+import {ROSHAMBO_MOVES} from '../../client/src/constants';
 
 export default (sequelize, DataTypes) => {
   const Roshambo = sequelize.define('roshambo', {
