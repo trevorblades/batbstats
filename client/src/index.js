@@ -20,7 +20,7 @@ const jss = create(jssPreset());
 // we define a custom insertion point that JSS will look for injecting the styles in the DOM
 jss.options.insertionPoint = 'jss-insertion-point';
 
-ReactGA.initialize('UA-53329033-1');
+ReactGA.initialize('UA-34658521-2');
 ReactDOM.render(
   <JssProvider jss={jss} generateClassName={generateClassName}>
     <MuiThemeProvider theme={theme}>
