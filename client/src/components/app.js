@@ -1,7 +1,9 @@
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Helmet from 'react-helmet';
 import Pages from '../pages';
-import React, {Fragment} from 'react';
+import PropTypes from 'prop-types';
+import React, {Component, Fragment} from 'react';
+import ReactGA from 'react-ga';
 import Sidebar from './sidebar';
 import styled from 'react-emotion';
 import {hot} from 'react-hot-loader';
@@ -11,15 +13,33 @@ const Container = styled.div({
   height: '100%'
 });
 
-const App = () => (
-  <Fragment>
-    <Helmet defaultTitle={TITLE} titleTemplate={`%s · ${TITLE}`} />
-    <CssBaseline />
-    <Container>
-      <Sidebar />
-      <Pages />
-    </Container>
-  </Fragment>
-);
+class App extends Component {
+  static propTypes = {
+    location: PropTypes.object.isRequired
+  };
+
+  componentDidMount() {
+    ReactGA.pageview(this.props.location.pathname);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.location.pathname !== prevProps.location.pathname) {
+      ReactGA.pageview(this.props.location.pathname);
+    }
+  }
+
+  render() {
+    return (
+      <Fragment>
+        <Helmet defaultTitle={TITLE} titleTemplate={`%s · ${TITLE}`} />
+        <CssBaseline />
+        <Container>
+          <Sidebar />
+          <Pages />
+        </Container>
+      </Fragment>
+    );
+  }
+}
 
 export default hot(module)(App);
