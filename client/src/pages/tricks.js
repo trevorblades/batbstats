@@ -4,7 +4,7 @@ import Helmet from 'react-helmet';
 import PropTypes from 'prop-types';
 import React, {Component, Fragment} from 'react';
 import styled from 'react-emotion';
-import theme from '../theme';
+import theme from '@trevorblades/mui-theme';
 import withProps from 'recompose/withProps';
 import {ResponsivePie} from '@nivo/pie';
 import {connect} from 'react-redux';

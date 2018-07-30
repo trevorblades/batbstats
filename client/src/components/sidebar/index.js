@@ -9,18 +9,16 @@ import React from 'react';
 import TwitterLogo from 'react-icons/lib/fa/twitter';
 import Typography from '@material-ui/core/Typography';
 import styled from 'react-emotion';
-import theme from '../../theme';
+import theme, {getLinearGradient} from '@trevorblades/mui-theme';
 import withProps from 'recompose/withProps';
 
-const {primary} = theme.palette;
-const gradient = [primary[500], primary[900]].toString();
 const Container = styled.div({
   display: 'flex',
   flexDirection: 'column',
   flexShrink: 0,
   width: 250,
   color: theme.palette.common.white,
-  backgroundImage: `linear-gradient(to bottom right, ${gradient})`,
+  backgroundImage: getLinearGradient('to bottom right'),
   overflow: 'auto'
 });
 

@@ -1,4 +1,4 @@
-import theme from './theme';
+import theme from '@trevorblades/mui-theme';
 import {injectGlobal} from 'emotion';
 
 injectGlobal({

@@ -18,7 +18,7 @@ import mapProps from 'recompose/mapProps';
 import orderBy from 'lodash/orderBy';
 import sentenceCase from 'sentence-case';
 import styled from 'react-emotion';
-import theme from '../../theme';
+import theme from '@trevorblades/mui-theme';
 import withProps from 'recompose/withProps';
 import {connect} from 'react-redux';
 import {getSkaters} from '../../selectors';

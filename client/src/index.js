@@ -7,7 +7,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactGA from 'react-ga';
 import store from './store';
-import theme from './theme';
+import theme from '@trevorblades/mui-theme';
 import {BrowserRouter} from 'react-router-dom';
 import {
   MuiThemeProvider,
