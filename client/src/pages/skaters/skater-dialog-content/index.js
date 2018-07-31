@@ -45,6 +45,9 @@ class SkaterDialogContent extends Component {
             Record: {this.props.skater.wins}-{this.props.skater.losses}
           </DialogContentText>
           <DialogContentText>
+            Stance: {this.props.skater.stance || UNKNOWN}
+          </DialogContentText>
+          <DialogContentText>
             Age:{' '}
             {this.props.skater.birth_date
               ? differenceInYears(Date.now(), this.props.skater.birth_date)
