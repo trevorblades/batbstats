@@ -1,5 +1,4 @@
 import countBy from 'lodash/countBy';
-import differenceInYears from 'date-fns/differenceInYears';
 import filter from 'lodash/filter';
 import flatMap from 'lodash/flatMap';
 import some from 'lodash/some';
@@ -17,7 +16,6 @@ export const getSkaters = createSelector(
   getGames,
   getAttempts,
   (games, attempts) => {
-    const now = Date.now();
     const skaters = uniqBy(flatMap(games, 'skaters'), 'id');
     return skaters.map(skater => {
       const filteredGames = games.filter(game =>
@@ -33,7 +31,6 @@ export const getSkaters = createSelector(
       const makes = filter(filteredAttempts, 'successful').length;
       return {
         ...skater,
-        age: skater.birth_date && differenceInYears(now, skater.birth_date),
         games: filteredGames,
         wins,
         losses: filteredGames.length - wins,

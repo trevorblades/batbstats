@@ -6,6 +6,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import PropTypes from 'prop-types';
 import React, {Component, Fragment} from 'react';
 import SkaterForm from './skater-form';
+import differenceInYears from 'date-fns/differenceInYears';
 import {connect} from 'react-redux';
 
 const UNKNOWN = 'unknown';
@@ -44,7 +45,10 @@ class SkaterDialogContent extends Component {
             Record: {this.props.skater.wins}-{this.props.skater.losses}
           </DialogContentText>
           <DialogContentText>
-            Age: {this.props.skater.age || UNKNOWN}
+            Age:{' '}
+            {this.props.skater.birth_date
+              ? differenceInYears(Date.now(), this.props.skater.birth_date)
+              : UNKNOWN}
           </DialogContentText>
           <DialogContentText>
             Hometown: {this.props.skater.hometown || UNKNOWN}
