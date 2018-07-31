@@ -1,7 +1,7 @@
 import api from '../api';
 import {handleActions} from 'redux-actions';
 import {loop, Cmd} from 'redux-loop';
-import {save, success, failure} from '../actions/skater';
+import {save, success, failure, reset} from '../actions/skater';
 
 async function createSkater(body) {
   const response = await api.post('/skaters', {body});
@@ -50,7 +50,8 @@ export default handleActions(
       ...state,
       loading: false,
       error: payload
-    })
+    }),
+    [reset]: () => defaultState
   },
   defaultState
 );
