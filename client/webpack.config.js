@@ -1,5 +1,5 @@
 const HtmlPlugin = require('html-webpack-plugin');
-const WepappPlugin = require('webapp-webpack-plugin');
+const WebappPlugin = require('webapp-webpack-plugin');
 const path = require('path');
 const webpack = require('webpack');
 
@@ -30,7 +30,7 @@ module.exports = {
       title,
       template: 'index.html'
     }),
-    new WepappPlugin({
+    new WebappPlugin({
       logo: './assets/favicon.png',
       favicons: {
         icons: {
