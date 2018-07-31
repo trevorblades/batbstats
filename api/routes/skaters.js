@@ -28,6 +28,11 @@ const validation = createValidationMiddleware(
       }
     },
     birth_date: {
+      optional: {
+        options: {
+          nullable: true
+        }
+      },
       isISO8601: true
     },
     hometown: {
