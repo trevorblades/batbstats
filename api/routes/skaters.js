@@ -24,7 +24,7 @@ const validation = createValidationMiddleware(
     },
     stance: {
       isIn: {
-        options: STANCES
+        options: [STANCES]
       }
     },
     birth_date: {
