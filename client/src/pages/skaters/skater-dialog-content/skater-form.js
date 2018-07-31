@@ -54,7 +54,6 @@ class SkaterForm extends Component {
 
   render() {
     const {errors} = this.props.error || {};
-    const firstNameError = errors && errors.first_name;
     return (
       <form onSubmit={this.onSubmit}>
         <DialogTitle>Editing {this.props.skater.full_name}</DialogTitle>
@@ -63,13 +62,13 @@ class SkaterForm extends Component {
             label="First name"
             name="first_name"
             defaultValue={this.props.skater.first_name}
-            error={Boolean(firstNameError)}
-            helperText={firstNameError && firstNameError.msg}
+            errors={errors}
           />
           <FormField
             label="Last name"
             name="last_name"
             defaultValue={this.props.skater.last_name}
+            errors={errors}
           />
           <FormControl {...formFieldProps}>
             <InputLabel>Stance</InputLabel>
@@ -85,12 +84,14 @@ class SkaterForm extends Component {
             label="Hometown"
             name="hometown"
             defaultValue={this.props.skater.hometown}
+            errors={errors}
           />
           <DatePicker
             {...formFieldProps}
             disableFuture
             openToYearSelection
             label="Date of birth"
+            error={Boolean(errors && errors.birth_date)}
             value={this.state.birthDate}
             onChange={this.onBirthDateChange}
           />

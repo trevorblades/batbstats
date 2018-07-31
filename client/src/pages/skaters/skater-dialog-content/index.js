@@ -19,6 +19,12 @@ class SkaterDialogContent extends Component {
     editing: false
   };
 
+  componentDidUpdate(prevProps) {
+    if (this.props.skater !== prevProps.skater) {
+      this.stopEditing();
+    }
+  }
+
   onEditClick = () => this.setState({editing: true});
 
   stopEditing = () => this.setState({editing: false});

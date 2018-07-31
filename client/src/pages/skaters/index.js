@@ -88,6 +88,7 @@ const columns = [
 
 class Skaters extends Component {
   static propTypes = {
+    skater: PropTypes.object,
     skaters: PropTypes.array.isRequired,
     user: PropTypes.object
   };
@@ -98,6 +99,23 @@ class Skaters extends Component {
     orderBy: null,
     skater: null
   };
+
+  componentDidUpdate(prevProps) {
+    const {skater} = this.props;
+    if (
+      skater &&
+      skater !== prevProps.skater &&
+      this.state.skater &&
+      this.state.skater.id === skater.id
+    ) {
+      this.setState(prevState => ({
+        skater: {
+          ...prevState.skater,
+          ...skater
+        }
+      }));
+    }
+  }
 
   onTableRowClick = skater =>
     this.setState({
@@ -187,6 +205,7 @@ class Skaters extends Component {
 }
 
 const mapStateToProps = state => ({
+  skater: state.skater.data,
   skaters: getSkaters(state),
   user: state.user.data
 });

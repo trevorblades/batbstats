@@ -2,6 +2,7 @@ import api from '../api';
 import {loop, Cmd} from 'redux-loop';
 import {handleActions} from 'redux-actions';
 import {load, success, failure} from '../actions/games';
+import {success as skaterSuccess} from '../actions/skater';
 
 async function fetchData(page = 1) {
   const response = await api.get(`/games?page=${page}`);
@@ -11,7 +12,7 @@ async function fetchData(page = 1) {
   return response.body;
 }
 
-function createFetchCmd(args) {
+function createFetchDataCmd(args) {
   return Cmd.run(fetchData, {
     successActionCreator: success,
     failActionCreator: failure,
@@ -33,7 +34,7 @@ export default handleActions(
           ...state,
           loading: true
         },
-        createFetchCmd()
+        createFetchDataCmd()
       ),
     [failure]: (state, {payload}) => ({
       ...state,
@@ -47,14 +48,23 @@ export default handleActions(
       };
 
       if (payload.next_page) {
-        return loop(nextState, createFetchCmd([payload.next_page]));
+        return loop(nextState, createFetchDataCmd([payload.next_page]));
       }
 
       return {
         ...nextState,
         loading: false
       };
-    }
+    },
+    [skaterSuccess]: (state, {payload}) => ({
+      ...state,
+      data: state.data.map(game => ({
+        ...game,
+        skaters: game.skaters.map(
+          skater => (skater.id === payload.id ? payload : skater)
+        )
+      }))
+    })
   },
   defaultState
 );
