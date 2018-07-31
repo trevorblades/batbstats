@@ -43,6 +43,10 @@ export const getSkaters = createSelector(
   }
 );
 
+export const getTricks = createSelector(getAttempts, attempts =>
+  uniqBy(flatMap(attempts, 'trick'), 'id')
+);
+
 function objectToPieData(object) {
   return Object.keys(object).map(key => ({
     id: key,

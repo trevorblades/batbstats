@@ -4,6 +4,7 @@ import Paper from '@material-ui/core/Paper';
 import React from 'react';
 import Skaters from './skaters';
 import Tricks from './tricks';
+import TrickDistribution from './trick-distribution';
 import styled from 'react-emotion';
 import withProps from 'recompose/withProps';
 import {Switch, Route} from 'react-router-dom';
@@ -26,6 +27,7 @@ const Pages = () => (
       <Route exact component={About} path="/" />
       <Route exact component={Skaters} path="/skaters" />
       <Route exact component={Tricks} path="/tricks" />
+      <Route exact component={TrickDistribution} path="/trick-distribution" />
       <Route component={NotFound} />
     </Switch>
   </Container>

@@ -47,7 +47,8 @@ const Sidebar = () => (
       <List>
         <NavItem to="/">About</NavItem>
         <NavItem to="/skaters">Skaters</NavItem>
-        <NavItem to="/tricks">Trick distribution</NavItem>
+        <NavItem to="/tricks">Tricks</NavItem>
+        <NavItem to="/trick-distribution">Trick distribution</NavItem>
       </List>
     </nav>
     <StyledDialogActions>
