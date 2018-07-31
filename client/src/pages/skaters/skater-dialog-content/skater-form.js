@@ -98,6 +98,7 @@ class SkaterForm extends Component {
             disableFuture
             openToYearSelection
             label="Date of birth"
+            format="MMMM Do, YYYY"
             error={Boolean(errors && errors.birth_date)}
             value={this.state.birthDate}
             onChange={this.onBirthDateChange}
