@@ -1,6 +1,6 @@
 {
   "parser": "babel-eslint",
-  "extends": "@knoword/eslint-config/react",
+  "extends": "@trevorblades/eslint-config/react",
   "env": {
     "browser": true,
     "node": true
