@@ -13,7 +13,10 @@ import upperFirst from 'lodash/upperFirst';
 import {STANCES, STANCE_REGULAR} from '../../../../../api/common';
 import {DatePicker} from 'material-ui-pickers';
 import {connect} from 'react-redux';
-import {save as saveSkater} from '../../../actions/skater';
+import {
+  save as saveSkater,
+  reset as resetSkater
+} from '../../../actions/skater';
 
 class SkaterForm extends Component {
   static propTypes = {
@@ -32,6 +35,10 @@ class SkaterForm extends Component {
         : null,
       stance: props.skater.stance || STANCE_REGULAR
     };
+  }
+
+  componentWillUnmount() {
+    this.props.dispatch(resetSkater());
   }
 
   onSubmit = event => {
