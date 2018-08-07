@@ -27,7 +27,7 @@
     "@material-ui/core": "^1.4.1",
     "@material-ui/icons": "^2.0.0",
     "@nivo/pie": "^0.42.1",
-    "@trevorblades/mui-theme": "^1.1.6",
+    "@trevorblades/mui-theme": "^1.2.0",
     "date-fns": "^2.0.0-alpha.7",
     "emotion": "^9.1.3",
     "frisbee": "^2.0.4",
