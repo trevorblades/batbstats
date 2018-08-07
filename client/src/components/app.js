@@ -1,8 +1,6 @@
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Helmet from 'react-helmet';
 import Pages from '../pages';
 import PropTypes from 'prop-types';
-import React, {Component, Fragment} from 'react';
+import React, {Component} from 'react';
 import ReactGA from 'react-ga';
 import Sidebar from './sidebar';
 import compose from 'recompose/compose';
@@ -39,14 +37,10 @@ class App extends Component {
 
   render() {
     return (
-      <Fragment>
-        <Helmet defaultTitle={TITLE} titleTemplate={`%s · ${TITLE}`} />
-        <CssBaseline />
-        <Container>
-          <Sidebar />
-          <Pages />
-        </Container>
-      </Fragment>
+      <Container>
+        <Sidebar />
+        <Pages />
+      </Container>
     );
   }
 }
