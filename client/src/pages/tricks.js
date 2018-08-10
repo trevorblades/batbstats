@@ -1,6 +1,9 @@
 import GamesLoader from '../components/games-loader';
 import Header from '../components/header';
 import Helmet from 'react-helmet';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
 import PropTypes from 'prop-types';
 import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
@@ -14,9 +17,13 @@ const Tricks = props => (
     </Helmet>
     <GamesLoader>
       <Header>{title}</Header>
-      <div>
-        {props.tricks.map(trick => <div key={trick.id}>{trick.name}</div>)}
-      </div>
+      <List>
+        {props.tricks.map(trick => (
+          <ListItem key={trick.id}>
+            <ListItemText primary={trick.name} />
+          </ListItem>
+        ))}
+      </List>
     </GamesLoader>
   </Fragment>
 );
