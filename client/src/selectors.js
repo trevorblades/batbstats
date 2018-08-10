@@ -1,4 +1,4 @@
-import countBy from 'lodash/countBy';
+import countBy from 'lodash/fp/countBy';
 import filter from 'lodash/filter';
 import flatMap from 'lodash/flatMap';
 import some from 'lodash/some';
@@ -43,11 +43,47 @@ export const getSkaters = createSelector(
   }
 );
 
-export const getTricks = createSelector(getAttempts, attempts =>
-  uniqBy(flatMap(attempts, 'trick'), 'id')
+const getTrickAttempts = createSelector(getAttempts, countBy('trick.id'));
+export const getTricks = createSelector(
+  getAttempts,
+  getTrickAttempts,
+  (attempts, trickAttempts) =>
+    uniqBy(flatMap(attempts, 'trick'), 'id').map(trick => ({
+      ...trick,
+      attempts: trickAttempts[trick.id]
+    }))
 );
 
-function objectToPieData(object) {
+const getFlips = createSelector(
+  getAttempts,
+  countBy(attempt => {
+    const {flip} = attempt.trick;
+    if (!flip) {
+      return 'none';
+    }
+
+    return flip > 0 ? 'kickflip' : 'heelflip';
+  })
+);
+
+const getSpins = createSelector(
+  getAttempts,
+  countBy(attempt => {
+    const {spin} = attempt.trick;
+    if (!spin) {
+      return 'none';
+    }
+
+    return spin > 0 ? 'backside' : 'frontside';
+  })
+);
+
+const getVariations = createSelector(
+  getAttempts,
+  countBy(attempt => attempt.trick.variation || 'regular')
+);
+
+function toPieData(object) {
   return Object.keys(object).map(key => ({
     id: key,
     label: key,
@@ -55,34 +91,6 @@ function objectToPieData(object) {
   }));
 }
 
-export const getFlips = createSelector(getAttempts, attempts =>
-  objectToPieData(
-    countBy(attempts, attempt => {
-      const {flip} = attempt.trick;
-      if (!flip) {
-        return 'none';
-      }
-
-      return flip > 0 ? 'kickflip' : 'heelflip';
-    })
-  )
-);
-
-export const getSpins = createSelector(getAttempts, attempts =>
-  objectToPieData(
-    countBy(attempts, attempt => {
-      const {spin} = attempt.trick;
-      if (!spin) {
-        return 'none';
-      }
-
-      return spin > 0 ? 'backside' : 'frontside';
-    })
-  )
-);
-
-export const getVariations = createSelector(getAttempts, attempts =>
-  objectToPieData(
-    countBy(attempts, attempt => attempt.trick.variation || 'regular')
-  )
-);
+export const getFlipsPieData = createSelector(getFlips, toPieData);
+export const getSpinsPieData = createSelector(getSpins, toPieData);
+export const getVariationsPieData = createSelector(getVariations, toPieData);

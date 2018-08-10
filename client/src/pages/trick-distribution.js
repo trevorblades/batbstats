@@ -8,7 +8,11 @@ import theme from '@trevorblades/mui-theme';
 import withProps from 'recompose/withProps';
 import {ResponsivePie} from '@nivo/pie';
 import {connect} from 'react-redux';
-import {getFlips, getVariations, getSpins} from '../selectors';
+import {
+  getFlipsPieData,
+  getVariationsPieData,
+  getSpinsPieData
+} from '../selectors';
 
 const Container = styled.div({
   display: 'flex',
@@ -95,9 +99,9 @@ class TrickDistribution extends Component {
 }
 
 const mapStateToProps = state => ({
-  flips: getFlips(state),
-  spins: getSpins(state),
-  variations: getVariations(state)
+  flips: getFlipsPieData(state),
+  spins: getSpinsPieData(state),
+  variations: getVariationsPieData(state)
 });
 
 export default connect(mapStateToProps)(TrickDistribution);

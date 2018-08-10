@@ -6,6 +6,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import PropTypes from 'prop-types';
 import React, {Fragment} from 'react';
+import pluralize from 'pluralize';
 import {connect} from 'react-redux';
 import {getTricks} from '../selectors';
 
@@ -20,7 +21,10 @@ const Tricks = props => (
       <List>
         {props.tricks.map(trick => (
           <ListItem key={trick.id}>
-            <ListItemText primary={trick.name} />
+            <ListItemText
+              primary={trick.name}
+              secondary={pluralize('attempt', trick.attempts, true)}
+            />
           </ListItem>
         ))}
       </List>
