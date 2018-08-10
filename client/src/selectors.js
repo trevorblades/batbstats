@@ -56,41 +56,32 @@ export const getTricks = createSelector(
 );
 
 const getFlips = createSelector(
-  createSelector(
-    getAttempts,
-    countBy(attempt => {
-      const {flip} = attempt.trick;
-      if (!flip) {
-        return 'none';
-      }
+  getAttempts,
+  countBy(attempt => {
+    const {flip} = attempt.trick;
+    if (!flip) {
+      return 'none';
+    }
 
-      return flip > 0 ? 'kickflip' : 'heelflip';
-    })
-  ),
-  toPieData
+    return flip > 0 ? 'kickflip' : 'heelflip';
+  })
 );
 
 const getSpins = createSelector(
-  createSelector(
-    getAttempts,
-    countBy(attempt => {
-      const {spin} = attempt.trick;
-      if (!spin) {
-        return 'none';
-      }
+  getAttempts,
+  countBy(attempt => {
+    const {spin} = attempt.trick;
+    if (!spin) {
+      return 'none';
+    }
 
-      return spin > 0 ? 'backside' : 'frontside';
-    })
-  ),
-  toPieData
+    return spin > 0 ? 'backside' : 'frontside';
+  })
 );
 
 const getVariations = createSelector(
-  createSelector(
-    getAttempts,
-    countBy(attempt => attempt.trick.variation || 'regular')
-  ),
-  toPieData
+  getAttempts,
+  countBy(attempt => attempt.trick.variation || 'regular')
 );
 
 function toPieData(object) {
