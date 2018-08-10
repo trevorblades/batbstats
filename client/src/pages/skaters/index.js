@@ -134,18 +134,6 @@ class Skaters extends Component {
       orderBy: key
     }));
 
-  renderDialog() {
-    if (!this.state.skater) {
-      return null;
-    }
-
-    return (
-      <Dialog fullWidth open={this.state.dialogOpen} onClose={this.closeDialog}>
-        <SkaterDialogContent skater={this.state.skater} />
-      </Dialog>
-    );
-  }
-
   render() {
     const skaters = orderBy(
       this.props.skaters,
@@ -197,7 +185,15 @@ class Skaters extends Component {
               <AddIcon />
             </CreateButton>
           )}
-          {this.renderDialog()}
+          {this.state.skater && (
+            <Dialog
+              fullWidth
+              open={this.state.dialogOpen}
+              onClose={this.closeDialog}
+            >
+              <SkaterDialogContent skater={this.state.skater} />
+            </Dialog>
+          )}
         </GamesLoader>
       </Fragment>
     );

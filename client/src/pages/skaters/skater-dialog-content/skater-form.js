@@ -20,20 +20,18 @@ import {
 
 class SkaterForm extends Component {
   static propTypes = {
+    data: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
     error: PropTypes.object,
     loading: PropTypes.bool.isRequired,
-    onCancel: PropTypes.func.isRequired,
-    skater: PropTypes.object.isRequired
+    onCancel: PropTypes.func.isRequired
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      birthDate: props.skater.birth_date
-        ? new Date(props.skater.birth_date)
-        : null,
-      stance: props.skater.stance || STANCE_REGULAR
+      birthDate: props.data.birth_date ? new Date(props.data.birth_date) : null,
+      stance: props.data.stance || STANCE_REGULAR
     };
   }
 
@@ -45,7 +43,7 @@ class SkaterForm extends Component {
     event.preventDefault();
     this.props.dispatch(
       saveSkater({
-        id: this.props.skater.id,
+        id: this.props.data.id,
         first_name: event.target.first_name.value,
         last_name: event.target.last_name.value,
         stance: this.state.stance,
@@ -63,18 +61,18 @@ class SkaterForm extends Component {
     const {errors} = this.props.error || {};
     return (
       <form onSubmit={this.onSubmit}>
-        <DialogTitle>Editing {this.props.skater.full_name}</DialogTitle>
+        <DialogTitle>Editing {this.props.data.full_name}</DialogTitle>
         <DialogContent>
           <FormField
             label="First name"
             name="first_name"
-            defaultValue={this.props.skater.first_name}
+            defaultValue={this.props.data.first_name}
             errors={errors}
           />
           <FormField
             label="Last name"
             name="last_name"
-            defaultValue={this.props.skater.last_name}
+            defaultValue={this.props.data.last_name}
             errors={errors}
           />
           <FormControl {...formFieldProps}>
@@ -90,7 +88,7 @@ class SkaterForm extends Component {
           <FormField
             label="Hometown"
             name="hometown"
-            defaultValue={this.props.skater.hometown}
+            defaultValue={this.props.data.hometown}
             errors={errors}
           />
           <DatePicker
