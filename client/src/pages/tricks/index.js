@@ -8,7 +8,6 @@ import ListItemText from '@material-ui/core/ListItemText';
 import PropTypes from 'prop-types';
 import React, {Component, Fragment} from 'react';
 import TrickDialogContent from './trick-dialog-content';
-import pluralize from 'pluralize';
 import {connect} from 'react-redux';
 import {getTricks} from '../../selectors';
 
@@ -46,10 +45,7 @@ class Tricks extends Component {
                 button
                 onClick={() => this.onTrickClick(trick)}
               >
-                <ListItemText
-                  primary={trick.name}
-                  secondary={pluralize('attempt', trick.attempts, true)}
-                />
+                <ListItemText primary={trick.name} secondary={trick.attempts} />
               </ListItem>
             ))}
           </List>

@@ -1,6 +1,7 @@
 import countBy from 'lodash/fp/countBy';
 import filter from 'lodash/filter';
 import flatMap from 'lodash/flatMap';
+import pluralize from 'pluralize';
 import some from 'lodash/some';
 import sumBy from 'lodash/sumBy';
 import uniqBy from 'lodash/uniqBy';
@@ -50,37 +51,8 @@ export const getTricks = createSelector(
   (attempts, trickAttempts) =>
     uniqBy(flatMap(attempts, 'trick'), 'id').map(trick => ({
       ...trick,
-      attempts: trickAttempts[trick.id]
+      attempts: pluralize('attempt', trickAttempts[trick.id], true)
     }))
-);
-
-const getFlips = createSelector(
-  getAttempts,
-  countBy(attempt => {
-    const {flip} = attempt.trick;
-    if (!flip) {
-      return 'none';
-    }
-
-    return flip > 0 ? 'kickflip' : 'heelflip';
-  })
-);
-
-const getSpins = createSelector(
-  getAttempts,
-  countBy(attempt => {
-    const {spin} = attempt.trick;
-    if (!spin) {
-      return 'none';
-    }
-
-    return spin > 0 ? 'backside' : 'frontside';
-  })
-);
-
-const getVariations = createSelector(
-  getAttempts,
-  countBy(attempt => attempt.trick.variation || 'regular')
 );
 
 function toPieData(object) {
@@ -91,6 +63,40 @@ function toPieData(object) {
   }));
 }
 
-export const getFlipsPieData = createSelector(getFlips, toPieData);
-export const getSpinsPieData = createSelector(getSpins, toPieData);
-export const getVariationsPieData = createSelector(getVariations, toPieData);
+export const getFlips = createSelector(
+  createSelector(
+    getAttempts,
+    countBy(attempt => {
+      const {flip} = attempt.trick;
+      if (!flip) {
+        return 'none';
+      }
+
+      return flip > 0 ? 'kickflip' : 'heelflip';
+    })
+  ),
+  toPieData
+);
+
+export const getSpins = createSelector(
+  createSelector(
+    getAttempts,
+    countBy(attempt => {
+      const {spin} = attempt.trick;
+      if (!spin) {
+        return 'none';
+      }
+
+      return spin > 0 ? 'backside' : 'frontside';
+    })
+  ),
+  toPieData
+);
+
+export const getVariations = createSelector(
+  createSelector(
+    getAttempts,
+    countBy(attempt => attempt.trick.variation || 'regular')
+  ),
+  toPieData
+);

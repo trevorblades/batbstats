@@ -8,9 +8,9 @@ import TrickForm from './trick-form';
 
 const TrickDialogContent = props => (
   <FormDialogContent data={props.trick} formComponent={TrickForm}>
-    <DialogTitle>Hello</DialogTitle>
+    <DialogTitle>{props.trick.name}</DialogTitle>
     <DialogContent>
-      <DialogContentText>jldfakjkaldfs</DialogContentText>
+      <DialogContentText>{props.trick.attempts}</DialogContentText>
     </DialogContent>
   </FormDialogContent>
 );
