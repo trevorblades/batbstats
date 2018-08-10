@@ -55,15 +55,7 @@ export const getTricks = createSelector(
     }))
 );
 
-function toPieData(object) {
-  return Object.keys(object).map(key => ({
-    id: key,
-    label: key,
-    value: object[key]
-  }));
-}
-
-export const getFlips = createSelector(
+const getFlips = createSelector(
   createSelector(
     getAttempts,
     countBy(attempt => {
@@ -78,7 +70,7 @@ export const getFlips = createSelector(
   toPieData
 );
 
-export const getSpins = createSelector(
+const getSpins = createSelector(
   createSelector(
     getAttempts,
     countBy(attempt => {
@@ -93,10 +85,22 @@ export const getSpins = createSelector(
   toPieData
 );
 
-export const getVariations = createSelector(
+const getVariations = createSelector(
   createSelector(
     getAttempts,
     countBy(attempt => attempt.trick.variation || 'regular')
   ),
   toPieData
 );
+
+function toPieData(object) {
+  return Object.keys(object).map(key => ({
+    id: key,
+    label: key,
+    value: object[key]
+  }));
+}
+
+export const getFlipsPieData = createSelector(getFlips, toPieData);
+export const getSpinsPieData = createSelector(getSpins, toPieData);
+export const getVariationsPieData = createSelector(getVariations, toPieData);
