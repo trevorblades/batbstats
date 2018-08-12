@@ -47,21 +47,6 @@ class TrickForm extends Component {
               label="Name"
               name="name"
             />
-            <FormControl {...formFieldProps}>
-              <InputLabel>Variation</InputLabel>
-              <Select
-                name="variation"
-                value={this.state.variation}
-                onChange={this.onVariationChange}
-              >
-                <MenuItem value="">None</MenuItem>
-                {VARIATIONS.map(variation => (
-                  <MenuItem key={variation} value={variation}>
-                    {upperFirst(variation)}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
             <Grid container spacing={theme.spacing.unit * 2}>
               <GridItem>
                 <NumberField
@@ -88,6 +73,21 @@ class TrickForm extends Component {
                 />
               </GridItem>
             </Grid>
+            <FormControl {...formFieldProps}>
+              <InputLabel>Variation</InputLabel>
+              <Select
+                name="variation"
+                value={this.state.variation}
+                onChange={this.onVariationChange}
+              >
+                <MenuItem value="">None</MenuItem>
+                {VARIATIONS.map(variation => (
+                  <MenuItem key={variation} value={variation}>
+                    {upperFirst(variation)}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Fragment>
         )}
       />
