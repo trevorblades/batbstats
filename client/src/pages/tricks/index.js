@@ -9,9 +9,20 @@ import PropTypes from 'prop-types';
 import React, {Component, Fragment} from 'react';
 import TrickDialogContent from './trick-dialog-content';
 import {connect} from 'react-redux';
+import {createIsEqualWithKeys} from '../../util';
 import {getTricks} from '../../selectors';
 
 const title = 'Tricks';
+
+const isEqualWithKeys = createIsEqualWithKeys(
+  'first_name',
+  'last_name',
+  'stance',
+  'hometown',
+  'birth_date',
+  'updated_at'
+);
+
 class Tricks extends Component {
   static propTypes = {
     tricks: PropTypes.array.isRequired
@@ -21,6 +32,15 @@ class Tricks extends Component {
     dialogOpen: false,
     trick: null
   };
+
+  componentDidUpdate(prevProps) {
+    if (this.state.trick && this.props.tricks !== prevProps.tricks) {
+      const trick = find(this.props.tricks, ['id', this.state.trick.id]);
+      if (trick && !isEqualWithKeys(trick, this.state.trick)) {
+        this.setState({trick});
+      }
+    }
+  }
 
   onTrickClick = trick =>
     this.setState({

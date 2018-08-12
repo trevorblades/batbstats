@@ -14,6 +14,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import get from 'lodash/get';
+import find from 'lodash/find';
 import mapProps from 'recompose/mapProps';
 import orderBy from 'lodash/orderBy';
 import sentenceCase from 'sentence-case';
@@ -21,6 +22,7 @@ import styled from 'react-emotion';
 import theme from '@trevorblades/mui-theme';
 import withProps from 'recompose/withProps';
 import {connect} from 'react-redux';
+import {createIsEqualWithKeys} from '../../util';
 import {getSkaters} from '../../selectors';
 
 const DenseTableCell = mapProps(props => ({
@@ -86,9 +88,17 @@ const columns = [
   }
 ];
 
+const isEqualWithKeys = createIsEqualWithKeys(
+  'first_name',
+  'last_name',
+  'stance',
+  'hometown',
+  'birth_date',
+  'updated_at'
+);
+
 class Skaters extends Component {
   static propTypes = {
-    skater: PropTypes.object,
     skaters: PropTypes.array.isRequired,
     user: PropTypes.object
   };
@@ -101,19 +111,11 @@ class Skaters extends Component {
   };
 
   componentDidUpdate(prevProps) {
-    const {skater} = this.props;
-    if (
-      skater &&
-      skater !== prevProps.skater &&
-      this.state.skater &&
-      this.state.skater.id === skater.id
-    ) {
-      this.setState(prevState => ({
-        skater: {
-          ...prevState.skater,
-          ...skater
-        }
-      }));
+    if (this.state.skater && this.props.skaters !== prevProps.skaters) {
+      const skater = find(this.props.skaters, ['id', this.state.skater.id]);
+      if (skater && !isEqualWithKeys(skater, this.state.skater)) {
+        this.setState({skater});
+      }
     }
   }
 
@@ -201,7 +203,6 @@ class Skaters extends Component {
 }
 
 const mapStateToProps = state => ({
-  skater: state.skater.data,
   skaters: getSkaters(state),
   user: state.user.data
 });

@@ -1,10 +1,20 @@
-import Button from '@material-ui/core/Button';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogActions from '@material-ui/core/DialogActions';
-import FormField from '../../../components/form-field';
+import Form from '../../../components/form';
+import FormField, {formFieldProps} from '../../../components/form-field';
+import FormControl from '@material-ui/core/FormControl';
+import Grid from '@material-ui/core/Grid';
+import GridItem from './grid-item';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
 import PropTypes from 'prop-types';
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
+import Select from '@material-ui/core/Select';
+import defaultProps from 'recompose/defaultProps';
+import theme from '@trevorblades/mui-theme';
+import upperFirst from 'lodash/upperFirst';
+import {VARIATIONS, VARIATION_NONE} from '../../../../../api/common';
+import {updateTrick} from '../../../actions/games';
+
+const NumberField = defaultProps({type: 'number'})(FormField);
 
 class TrickForm extends Component {
   static propTypes = {
@@ -12,28 +22,74 @@ class TrickForm extends Component {
     onCancel: PropTypes.func.isRequired
   };
 
-  onSubmit = event => {
-    event.preventDefault();
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      variation: props.data.variation || VARIATION_NONE
+    };
+  }
+
+  onVariationChange = event => this.setState({variation: event.target.value});
 
   render() {
     return (
-      <form onSubmit={this.onSubmit}>
-        <DialogTitle>Editing {this.props.data.name}</DialogTitle>
-        <DialogContent>
-          <FormField
-            defaultValue={this.props.data.name}
-            label="Name"
-            name="name"
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={this.props.onCancel}>Cancel</Button>
-          <Button onClick={this.onSubmit} color="primary" type="submit">
-            Save changes
-          </Button>
-        </DialogActions>
-      </form>
+      <Form
+        method="put"
+        action={`/tricks/${this.props.data.id}`}
+        title={`Editing ${this.props.data.name}`}
+        onCancel={this.props.onCancel}
+        successActionCreator={updateTrick}
+        render={errors => (
+          <Fragment>
+            <FormField
+              errors={errors}
+              defaultValue={this.props.data.name}
+              label="Name"
+              name="name"
+            />
+            <FormControl {...formFieldProps}>
+              <InputLabel>Variation</InputLabel>
+              <Select
+                name="variation"
+                value={this.state.variation}
+                onChange={this.onVariationChange}
+              >
+                {VARIATIONS.map(variation => (
+                  <MenuItem key={variation} value={variation}>
+                    {upperFirst(variation)}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <Grid container spacing={theme.spacing.unit * 2}>
+              <GridItem>
+                <NumberField
+                  errors={errors}
+                  defaultValue={this.props.data.flip}
+                  label="Flip"
+                  name="flip"
+                />
+              </GridItem>
+              <GridItem>
+                <NumberField
+                  errors={errors}
+                  defaultValue={this.props.data.shuv}
+                  label="Shuv"
+                  name="shuv"
+                />
+              </GridItem>
+              <GridItem>
+                <NumberField
+                  errors={errors}
+                  defaultValue={this.props.data.spin}
+                  label="Spin"
+                  name="spin"
+                />
+              </GridItem>
+            </Grid>
+          </Fragment>
+        )}
+      />
     );
   }
 }

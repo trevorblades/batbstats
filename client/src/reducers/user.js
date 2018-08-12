@@ -1,10 +1,29 @@
 import api from '../api';
+import jwtDecode from 'jwt-decode';
 import store from 'store';
 import {TOKEN_KEY} from '../constants';
 import {logIn, logOut, renewToken, success, failure} from '../actions/user';
 import {handleActions} from 'redux-actions';
 import {loop, Cmd} from 'redux-loop';
-import {userFromToken} from '../util';
+
+function userFromToken(token) {
+  try {
+    const {exp, ...claims} = jwtDecode(token);
+    if (!exp || Date.now() > exp * 1000) {
+      return null;
+    }
+
+    delete claims.iat;
+    delete claims.sub;
+
+    return {
+      ...claims,
+      token
+    };
+  } catch (error) {
+    return null;
+  }
+}
 
 async function authenticate(email, password) {
   const response = await api.auth(email, password).post('/auth');

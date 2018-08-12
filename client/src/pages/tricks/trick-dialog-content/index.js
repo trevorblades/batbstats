@@ -1,16 +1,29 @@
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
+import FormDialogContent from '../../../components/form-dialog-content';
+import Grid from '@material-ui/core/Grid';
+import GridItem from './grid-item';
 import PropTypes from 'prop-types';
 import React from 'react';
-import FormDialogContent from '../../../components/form-dialog-content';
 import TrickForm from './trick-form';
 
 const TrickDialogContent = props => (
   <FormDialogContent data={props.trick} formComponent={TrickForm}>
     <DialogTitle>{props.trick.name}</DialogTitle>
     <DialogContent>
-      <DialogContentText>{props.trick.attempts}</DialogContentText>
+      <DialogContentText>Variation: {props.trick.variation}</DialogContentText>
+      <Grid container>
+        <GridItem>
+          <DialogContentText>Flip: {props.trick.flip}</DialogContentText>
+        </GridItem>
+        <GridItem>
+          <DialogContentText>Shuv: {props.trick.shuv}</DialogContentText>
+        </GridItem>
+        <GridItem>
+          <DialogContentText>Spin: {props.trick.spin}</DialogContentText>
+        </GridItem>
+      </Grid>
     </DialogContent>
   </FormDialogContent>
 );

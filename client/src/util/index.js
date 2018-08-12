@@ -1,20 +1,7 @@
-import jwtDecode from 'jwt-decode';
+import isEqual from 'lodash/isEqual';
+import pick from 'lodash/fp/pick';
 
-export function userFromToken(token) {
-  try {
-    const {exp, ...claims} = jwtDecode(token);
-    if (!exp || Date.now() > exp * 1000) {
-      return null;
-    }
-
-    delete claims.iat;
-    delete claims.sub;
-
-    return {
-      ...claims,
-      token
-    };
-  } catch (error) {
-    return null;
-  }
+export function createIsEqualWithKeys(...keys) {
+  const pickKeys = pick(keys);
+  return (a, b) => isEqual(...[a, b].map(pickKeys));
 }

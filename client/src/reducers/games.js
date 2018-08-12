@@ -1,8 +1,7 @@
 import api from '../api';
 import {loop, Cmd} from 'redux-loop';
 import {handleActions} from 'redux-actions';
-import {load, success, failure} from '../actions/games';
-import {success as skaterSuccess} from '../actions/skater';
+import {load, success, failure, updateSkater} from '../actions/games';
 
 async function fetchData(page = 1) {
   const response = await api.get(`/games?page=${page}`);
@@ -56,7 +55,7 @@ export default handleActions(
         loading: false
       };
     },
-    [skaterSuccess]: (state, {payload}) => ({
+    [updateSkater]: (state, {payload}) => ({
       ...state,
       data: state.data.map(game => ({
         ...game,
