@@ -50,19 +50,13 @@ export const getSkaters = createSelector(
   }
 );
 
-const getTrickAttempts = createSelector(getAttempts, attempts =>
-  countBy(attempts, 'trick.id')
-);
-
-export const getTricks = createSelector(
-  getAttempts,
-  getTrickAttempts,
-  (attempts, trickAttempts) =>
-    uniqBy(flatMap(attempts, 'trick'), 'id').map(trick => ({
-      ...trick,
-      attempts: pluralize('attempt', trickAttempts[trick.id], true)
-    }))
-);
+export const getTricks = createSelector(getAttempts, attempts => {
+  const attemptCounts = countBy(attempts, 'trick.id');
+  return uniqBy(flatMap(attempts, 'trick'), 'id').map(trick => ({
+    ...trick,
+    attempts: pluralize('attempt', attemptCounts[trick.id], true)
+  }));
+});
 
 function toPieData(iteratee) {
   return attempts => {
@@ -97,18 +91,26 @@ function getVariationFromAttempt(attempt) {
   return attempt.trick.variation || 'none';
 }
 
-export const getFlipsPieData = createSelector(
+const getIncludeMisses = state => state.settings.includeMisses;
+const getFilteredAttempts = createSelector(
   getAttempts,
+  getIncludeMisses,
+  (attempts, includeMisses) =>
+    includeMisses ? attempts : filter(attempts, 'successful')
+);
+
+export const getFlipsPieData = createSelector(
+  getFilteredAttempts,
   toPieData(getFlipFromAttempt)
 );
 
 export const getSpinsPieData = createSelector(
-  getAttempts,
+  getFilteredAttempts,
   toPieData(getSpinFromAttempt)
 );
 
 export const getVariationsPieData = createSelector(
-  getAttempts,
+  getFilteredAttempts,
   toPieData(getVariationFromAttempt)
 );
 
@@ -129,16 +131,16 @@ function toLineData(iteratee) {
 }
 
 export const getVariationsLineData = createSelector(
-  getAttempts,
+  getFilteredAttempts,
   toLineData(getVariationFromAttempt)
 );
 
 export const getFlipsLineData = createSelector(
-  getAttempts,
+  getFilteredAttempts,
   toLineData(getFlipFromAttempt)
 );
 
 export const getSpinsLineData = createSelector(
-  getAttempts,
+  getFilteredAttempts,
   toLineData(getSpinFromAttempt)
 );

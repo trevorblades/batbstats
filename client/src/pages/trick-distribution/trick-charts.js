@@ -1,11 +1,15 @@
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, {Component} from 'react';
+import Switch from '@material-ui/core/Switch';
 import Typography from '@material-ui/core/Typography';
 import styled from 'react-emotion';
 import theme from '@trevorblades/mui-theme';
 import withProps from 'recompose/withProps';
 import {ResponsiveLine} from '@nivo/line';
 import {ResponsivePie} from '@nivo/pie';
+import {connect} from 'react-redux';
+import {setIncludeMisses} from '../../actions/settings';
 import {size} from 'polished';
 
 const Container = styled.div({
@@ -84,28 +88,50 @@ const Secondary = styled.div({
 const PieContainer = styled.div(size(250));
 const TextContainer = styled.div({paddingTop: margin});
 
-const TrickCharts = props => (
-  <Container>
-    <Primary>
-      <Line data={props.lineData} />
-    </Primary>
-    <Secondary>
-      <PieContainer>
-        <Pie data={props.pieData} />
-      </PieContainer>
-      <TextContainer>
-        <Typography gutterBottom variant="title">
-          Examining patterns in tricks
-        </Typography>
-        <Typography>Some more interesting text here</Typography>
-      </TextContainer>
-    </Secondary>
-  </Container>
-);
+class TrickCharts extends Component {
+  static propTypes = {
+    dispatch: PropTypes.func.isRequired,
+    includeMisses: PropTypes.bool.isRequired,
+    lineData: PropTypes.array.isRequired,
+    pieData: PropTypes.array.isRequired
+  };
 
-TrickCharts.propTypes = {
-  lineData: PropTypes.array.isRequired,
-  pieData: PropTypes.array.isRequired
-};
+  onIncludeMissesChange = event =>
+    this.props.dispatch(setIncludeMisses(event.target.checked));
 
-export default TrickCharts;
+  render() {
+    return (
+      <Container>
+        <Primary>
+          <Line data={this.props.lineData} />
+        </Primary>
+        <Secondary>
+          <PieContainer>
+            <Pie data={this.props.pieData} />
+          </PieContainer>
+          <TextContainer>
+            <Typography gutterBottom variant="title">
+              Examining patterns in tricks
+            </Typography>
+            <Typography>Some more interesting text here</Typography>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={this.props.includeMisses}
+                  onChange={this.onIncludeMissesChange}
+                />
+              }
+              label="Include misses"
+            />
+          </TextContainer>
+        </Secondary>
+      </Container>
+    );
+  }
+}
+
+const mapStateToProps = state => ({
+  includeMisses: state.settings.includeMisses
+});
+
+export default connect(mapStateToProps)(TrickCharts);
