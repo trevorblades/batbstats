@@ -25,7 +25,8 @@ const TrickDialogContent = props => (
         </GridItem>
         <GridItem>
           <DialogContentText>
-            Variation: {upperFirst(props.trick.variation)}
+            Variation:{' '}
+            {props.trick.variation ? upperFirst(props.trick.variation) : 'None'}
           </DialogContentText>
         </GridItem>
       </Grid>
