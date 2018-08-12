@@ -71,11 +71,13 @@ const Pie = withProps({
 
 const Primary = styled.div({
   flexGrow: 1,
-  height: 0
+  height: 0,
+  minHeight: 300
 });
 
 const Secondary = styled.div({
   display: 'flex',
+  flexShrink: 0,
   backgroundColor: theme.palette.background.default
 });
 
