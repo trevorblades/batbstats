@@ -8,19 +8,18 @@ import ListItemText from '@material-ui/core/ListItemText';
 import PropTypes from 'prop-types';
 import React, {Component, Fragment} from 'react';
 import TrickDialogContent from './trick-dialog-content';
+import find from 'lodash/find';
 import {connect} from 'react-redux';
 import {createIsEqualWithKeys} from '../../util';
 import {getTricks} from '../../selectors';
 
 const title = 'Tricks';
-
 const isEqualWithKeys = createIsEqualWithKeys(
-  'first_name',
-  'last_name',
-  'stance',
-  'hometown',
-  'birth_date',
-  'updated_at'
+  'name',
+  'variation',
+  'flip',
+  'shuv',
+  'spin'
 );
 
 class Tricks extends Component {

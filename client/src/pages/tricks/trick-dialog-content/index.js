@@ -7,12 +7,12 @@ import GridItem from './grid-item';
 import PropTypes from 'prop-types';
 import React from 'react';
 import TrickForm from './trick-form';
+import upperFirst from 'lodash/upperFirst';
 
 const TrickDialogContent = props => (
   <FormDialogContent data={props.trick} formComponent={TrickForm}>
     <DialogTitle>{props.trick.name}</DialogTitle>
     <DialogContent>
-      <DialogContentText>Variation: {props.trick.variation}</DialogContentText>
       <Grid container>
         <GridItem>
           <DialogContentText>Flip: {props.trick.flip}</DialogContentText>
@@ -22,6 +22,11 @@ const TrickDialogContent = props => (
         </GridItem>
         <GridItem>
           <DialogContentText>Spin: {props.trick.spin}</DialogContentText>
+        </GridItem>
+        <GridItem>
+          <DialogContentText>
+            Variation: {upperFirst(props.trick.variation)}
+          </DialogContentText>
         </GridItem>
       </Grid>
     </DialogContent>

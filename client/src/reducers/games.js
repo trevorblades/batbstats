@@ -1,7 +1,13 @@
 import api from '../api';
 import {loop, Cmd} from 'redux-loop';
 import {handleActions} from 'redux-actions';
-import {load, success, failure, updateSkater} from '../actions/games';
+import {
+  load,
+  success,
+  failure,
+  updateSkater,
+  updateTrick
+} from '../actions/games';
 
 async function fetchData(page = 1) {
   const response = await api.get(`/games?page=${page}`);
@@ -62,6 +68,16 @@ export default handleActions(
         skaters: game.skaters.map(
           skater => (skater.id === payload.id ? payload : skater)
         )
+      }))
+    }),
+    [updateTrick]: (state, {payload}) => ({
+      ...state,
+      data: state.data.map(game => ({
+        ...game,
+        attempts: game.attempts.map(attempt => ({
+          ...attempt,
+          trick: attempt.trick_id === payload.id ? payload : attempt.trick
+        }))
       }))
     })
   },

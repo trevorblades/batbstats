@@ -11,7 +11,7 @@ import Select from '@material-ui/core/Select';
 import defaultProps from 'recompose/defaultProps';
 import theme from '@trevorblades/mui-theme';
 import upperFirst from 'lodash/upperFirst';
-import {VARIATIONS, VARIATION_NONE} from '../../../../../api/common';
+import {VARIATIONS} from '../../../../../api/common';
 import {updateTrick} from '../../../actions/games';
 
 const NumberField = defaultProps({type: 'number'})(FormField);
@@ -25,7 +25,7 @@ class TrickForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      variation: props.data.variation || VARIATION_NONE
+      variation: props.data.variation || ''
     };
   }
 
@@ -54,6 +54,7 @@ class TrickForm extends Component {
                 value={this.state.variation}
                 onChange={this.onVariationChange}
               >
+                <MenuItem value="">None</MenuItem>
                 {VARIATIONS.map(variation => (
                   <MenuItem key={variation} value={variation}>
                     {upperFirst(variation)}
