@@ -1,9 +1,11 @@
 import Dialog from '@material-ui/core/Dialog';
+import FiberNewIcon from '@material-ui/icons/FiberNew';
 import GamesLoader from '../../components/games-loader';
 import Header from '../../components/header';
 import Helmet from 'react-helmet';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import PropTypes from 'prop-types';
 import React, {Component, Fragment} from 'react';
@@ -24,7 +26,8 @@ const isEqualWithKeys = createIsEqualWithKeys(
 
 class Tricks extends Component {
   static propTypes = {
-    tricks: PropTypes.array.isRequired
+    tricks: PropTypes.array.isRequired,
+    user: PropTypes.object
   };
 
   state = {
@@ -64,6 +67,15 @@ class Tricks extends Component {
                 button
                 onClick={() => this.onTrickClick(trick)}
               >
+                {this.props.user &&
+                  !trick.variation &&
+                  !trick.flip &&
+                  !trick.shuv &&
+                  !trick.spin && (
+                    <ListItemIcon>
+                      <FiberNewIcon />
+                    </ListItemIcon>
+                  )}
                 <ListItemText primary={trick.name} secondary={trick.attempts} />
               </ListItem>
             ))}
@@ -84,7 +96,8 @@ class Tricks extends Component {
 }
 
 const mapStateToProps = state => ({
-  tricks: getTricks(state)
+  tricks: getTricks(state),
+  user: state.user.data
 });
 
 export default connect(mapStateToProps)(Tricks);
