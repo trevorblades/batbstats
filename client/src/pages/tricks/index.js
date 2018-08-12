@@ -59,7 +59,7 @@ class Tricks extends Component {
           <title>{title}</title>
         </Helmet>
         <GamesLoader>
-          <Header>{title}</Header>
+          <Header title={title} />
           <List>
             {this.props.tricks.map(trick => (
               <ListItem

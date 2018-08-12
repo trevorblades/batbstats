@@ -4,13 +4,20 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 import React from 'react';
+import styled from 'react-emotion';
 import {connect} from 'react-redux';
+
+const StyledDialogTitle = styled(DialogTitle)({
+  display: 'flex',
+  alignItems: 'center'
+});
 
 const Header = props => (
   <AppBar elevation={0} position="sticky" color="inherit">
-    <DialogTitle disableTypography>
-      <Typography variant="headline">{props.children}</Typography>
-    </DialogTitle>
+    <StyledDialogTitle disableTypography>
+      <Typography variant="headline">{props.title}</Typography>
+      {props.children}
+    </StyledDialogTitle>
     <LinearProgress
       variant={props.loading ? 'indeterminate' : 'determinate'}
       value={0}
@@ -20,8 +27,9 @@ const Header = props => (
 );
 
 Header.propTypes = {
-  children: PropTypes.string.isRequired,
-  loading: PropTypes.bool.isRequired
+  children: PropTypes.node,
+  loading: PropTypes.bool.isRequired,
+  title: PropTypes.string.isRequired
 };
 
 const mapStateToProps = state => ({

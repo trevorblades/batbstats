@@ -27,7 +27,7 @@ const Pages = () => (
       <Route exact component={About} path="/" />
       <Route exact component={Skaters} path="/skaters" />
       <Route exact component={Tricks} path="/tricks" />
-      <Route exact component={TrickDistribution} path="/trick-distribution" />
+      <Route component={TrickDistribution} path="/trick-distribution" />
       <Route component={NotFound} />
     </Switch>
   </Container>

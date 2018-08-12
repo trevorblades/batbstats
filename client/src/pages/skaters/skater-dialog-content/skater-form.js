@@ -81,11 +81,13 @@ class SkaterForm extends Component {
               value={this.state.birthDate}
               onChange={this.onBirthDateChange}
             />
-            <input
-              type="hidden"
-              name="birth_date"
-              value={this.state.birthDate.toISOString()}
-            />
+            {this.state.birthDate && (
+              <input
+                type="hidden"
+                name="birth_date"
+                value={this.state.birthDate.toISOString()}
+              />
+            )}
           </Fragment>
         )}
       />

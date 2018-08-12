@@ -26,6 +26,7 @@
   "dependencies": {
     "@material-ui/core": "^1.4.1",
     "@material-ui/icons": "^2.0.0",
+    "@nivo/line": "^0.42.1",
     "@nivo/pie": "^0.42.1",
     "@trevorblades/mui-theme": "^1.2.0",
     "date-fns": "^2.0.0-alpha.7",

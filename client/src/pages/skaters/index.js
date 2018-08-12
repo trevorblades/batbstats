@@ -149,7 +149,7 @@ class Skaters extends Component {
           <title>{title}</title>
         </Helmet>
         <GamesLoader>
-          <Header>{title}</Header>
+          <Header title={title} />
           <Table>
             <TableHead>
               <TableRow>
