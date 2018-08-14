@@ -22,7 +22,8 @@ const isEqualWithKeys = createIsEqualWithKeys(
 
 class Tricks extends Component {
   static propTypes = {
-    tricks: PropTypes.array.isRequired
+    tricks: PropTypes.array.isRequired,
+    user: PropTypes.object
   };
 
   state = {
@@ -48,6 +49,32 @@ class Tricks extends Component {
   closeDialog = () => this.setState({dialogOpen: false});
 
   render() {
+    const columns = [{key: 'name'}];
+    if (this.props.user) {
+      columns.push({
+        key: 'complete',
+        numeric: true
+      });
+    }
+
+    columns.push(
+      {
+        key: 'attempts',
+        label: 'A',
+        numeric: true
+      },
+      {
+        key: 'offense_success_rate',
+        label: 'OSR',
+        numeric: true
+      },
+      {
+        key: 'defense_success_rate',
+        label: 'DSR',
+        numeric: true
+      }
+    );
+
     return (
       <Fragment>
         <Helmet>
@@ -58,26 +85,7 @@ class Tricks extends Component {
           <SortableTable
             rows={this.props.tricks}
             onRowClick={this.onTrickClick}
-            columns={[
-              {
-                key: 'name'
-              },
-              {
-                key: 'attempts',
-                label: 'A',
-                numeric: true
-              },
-              {
-                key: 'offense_success_rate',
-                label: 'OSR',
-                numeric: true
-              },
-              {
-                key: 'defense_success_rate',
-                label: 'DSR',
-                numeric: true
-              }
-            ]}
+            columns={columns}
           />
           {this.state.trick && (
             <Dialog

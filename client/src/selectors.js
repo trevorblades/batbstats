@@ -67,8 +67,11 @@ export const getTricks = createSelector(getAttempts, attempts => {
   const groups = groupBy(attempts, 'trick.id');
   return uniqBy(flatMap(attempts, 'trick'), 'id').map(trick => {
     const group = groups[trick.id];
+    const needsInfo =
+      !trick.variation && !trick.flip && !trick.shuv && !trick.spin;
     return {
       ...trick,
+      complete: needsInfo ? '🚨' : '👍',
       attempts: group.length,
       offense_success_rate: getSuccessRate(filter(group, 'offense')),
       defense_success_rate: getSuccessRate(reject(group, 'offense'))
