@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import React, {Component} from 'react';
-import Switch from '@material-ui/core/Switch';
 import styled from 'react-emotion';
 import theme from '@trevorblades/mui-theme';
 import upperFirst from 'lodash/upperFirst';
@@ -14,7 +13,7 @@ import {STANCES} from '../../../../api/common';
 import {ResponsiveLine} from '@nivo/line';
 import {ResponsivePie} from '@nivo/pie';
 import {connect} from 'react-redux';
-import {setIncludeMisses, setStance} from '../../actions/settings';
+import {setResult, setStance, setPosture} from '../../actions/settings';
 import {size} from 'polished';
 
 const Container = styled.div({
@@ -91,23 +90,33 @@ const Secondary = styled.div({
 });
 
 const PieContainer = styled.div(size(250));
-const TextContainer = styled.div({paddingTop: margin});
+const Filters = styled.div({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-around',
+  flexGrow: 1,
+  padding: margin,
+  paddingLeft: 0
+});
 
 const RadioLabel = withProps({control: <Radio />})(FormControlLabel);
 
 class TrickCharts extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    includeMisses: PropTypes.bool.isRequired,
     lineData: PropTypes.array.isRequired,
     pieData: PropTypes.array.isRequired,
+    posture: PropTypes.string.isRequired,
+    result: PropTypes.string.isRequired,
     stance: PropTypes.string.isRequired
   };
 
+  onResultChange = event => this.props.dispatch(setResult(event.target.value));
+
   onStanceChange = event => this.props.dispatch(setStance(event.target.value));
 
-  onIncludeMissesChange = event =>
-    this.props.dispatch(setIncludeMisses(event.target.checked));
+  onPostureChange = event =>
+    this.props.dispatch(setPosture(event.target.value));
 
   render() {
     return (
@@ -119,7 +128,7 @@ class TrickCharts extends Component {
           <PieContainer>
             <Pie data={this.props.pieData} />
           </PieContainer>
-          <TextContainer>
+          <Filters>
             <FormControl>
               <FormLabel>Stance</FormLabel>
               <RadioGroup
@@ -136,16 +145,29 @@ class TrickCharts extends Component {
                 ))}
               </RadioGroup>
             </FormControl>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={this.props.includeMisses}
-                  onChange={this.onIncludeMissesChange}
-                />
-              }
-              label="Include misses"
-            />
-          </TextContainer>
+            <FormControl>
+              <FormLabel>Result</FormLabel>
+              <RadioGroup
+                value={this.props.result}
+                onChange={this.onResultChange}
+              >
+                <RadioLabel value="both" label="Both" />
+                <RadioLabel value="make" label="Make" />
+                <RadioLabel value="miss" label="Miss" />
+              </RadioGroup>
+            </FormControl>
+            <FormControl>
+              <FormLabel>Posture</FormLabel>
+              <RadioGroup
+                value={this.props.posture}
+                onChange={this.onPostureChange}
+              >
+                <RadioLabel value="both" label="Both" />
+                <RadioLabel value="offense" label="Offense" />
+                <RadioLabel value="defense" label="Defense" />
+              </RadioGroup>
+            </FormControl>
+          </Filters>
         </Secondary>
       </Container>
     );
@@ -153,8 +175,9 @@ class TrickCharts extends Component {
 }
 
 const mapStateToProps = state => ({
-  includeMisses: state.settings.includeMisses,
-  stance: state.settings.stance
+  result: state.settings.result,
+  stance: state.settings.stance,
+  posture: state.settings.posture
 });
 
 export default connect(mapStateToProps)(TrickCharts);

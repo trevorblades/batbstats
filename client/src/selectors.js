@@ -3,11 +3,12 @@ import filter from 'lodash/filter';
 import flatMap from 'lodash/flatMap';
 import groupBy from 'lodash/groupBy';
 import keyBy from 'lodash/keyBy';
+import map from 'lodash/map';
 import pluralize from 'pluralize';
 import some from 'lodash/some';
 import sumBy from 'lodash/sumBy';
+import uniq from 'lodash/uniq';
 import uniqBy from 'lodash/uniqBy';
-import {STANCES} from '../../api/common';
 import {createSelector} from 'reselect';
 import {getLetters} from './util/game';
 
@@ -96,17 +97,20 @@ function getVariationFromAttempt(attempt) {
 }
 
 const getStance = state => state.settings.stance;
-const getIncludeMisses = state => state.settings.includeMisses;
+const getResult = state => state.settings.result;
+const getPosture = state => state.settings.posture;
 const getFilteredAttempts = createSelector(
   getAttempts,
   getStance,
-  getIncludeMisses,
-  (attempts, stance, includeMisses) => {
-    const filtered = includeMisses ? attempts : filter(attempts, 'successful');
-    return STANCES.includes(stance)
-      ? filter(filtered, ['skater.stance', stance])
-      : filtered;
-  }
+  getResult,
+  getPosture,
+  (attempts, stance, result, posture) =>
+    attempts.filter(
+      attempt =>
+        (stance === 'both' || attempt.skater.stance === stance) &&
+        (result === 'both' || attempt.successful === (result === 'miss')) &&
+        (posture === 'both' || attempt.offense === (posture === 'offense'))
+    )
 );
 
 export const getFlipsPieData = createSelector(
@@ -127,13 +131,14 @@ export const getVariationsPieData = createSelector(
 function toLineData(iteratee) {
   return attempts => {
     const groups = groupBy(attempts, iteratee);
+    const eventIds = uniq(map(attempts, 'event_id'));
     return Object.keys(groups).map(key => {
-      const counts = countBy(groups[key], 'event_id');
+      const counts = groupBy(groups[key], 'event_id');
       return {
         id: key,
-        data: Object.keys(counts).map(key => ({
-          x: key,
-          y: counts[key]
+        data: eventIds.map(eventId => ({
+          x: eventId,
+          y: counts[eventId] ? counts[eventId].length : 0
         }))
       };
     });
