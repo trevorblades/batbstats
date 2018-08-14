@@ -6,6 +6,7 @@ import keyBy from 'lodash/keyBy';
 import map from 'lodash/map';
 import pluralize from 'pluralize';
 import some from 'lodash/some';
+import sortBy from 'lodash/sortBy';
 import sumBy from 'lodash/sumBy';
 import uniq from 'lodash/uniq';
 import uniqBy from 'lodash/uniqBy';
@@ -132,7 +133,7 @@ function toLineData(iteratee) {
   return attempts => {
     const groups = groupBy(attempts, iteratee);
     const eventIds = uniq(map(attempts, 'event_id'));
-    return Object.keys(groups).map(key => {
+    const data = Object.keys(groups).map(key => {
       const counts = groupBy(groups[key], 'event_id');
       return {
         id: key,
@@ -142,6 +143,8 @@ function toLineData(iteratee) {
         }))
       };
     });
+
+    return sortBy(data, 'id');
   };
 }
 
