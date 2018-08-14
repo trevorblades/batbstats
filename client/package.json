@@ -10,7 +10,7 @@
     "@babel/preset-env": "^7.0.0-beta.49",
     "@babel/preset-react": "^7.0.0-beta.49",
     "@babel/preset-stage-0": "^7.0.0-beta.49",
-    "@trevorblades/eslint-config": "^6.13.3",
+    "@trevorblades/eslint-config": "^6.15.0",
     "babel-eslint": "^8.2.6",
     "babel-loader": "^8.0.0-beta.3",
     "babel-plugin-emotion": "^9.1.2",
