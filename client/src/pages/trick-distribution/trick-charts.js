@@ -130,22 +130,6 @@ class TrickCharts extends Component {
           </PieContainer>
           <Filters>
             <FormControl>
-              <FormLabel>Stance</FormLabel>
-              <RadioGroup
-                value={this.props.stance}
-                onChange={this.onStanceChange}
-              >
-                <RadioLabel value="both" label="Both" />
-                {STANCES.map(stance => (
-                  <RadioLabel
-                    value={stance}
-                    key={stance}
-                    label={upperFirst(stance)}
-                  />
-                ))}
-              </RadioGroup>
-            </FormControl>
-            <FormControl>
               <FormLabel>Result</FormLabel>
               <RadioGroup
                 value={this.props.result}
@@ -165,6 +149,22 @@ class TrickCharts extends Component {
                 <RadioLabel value="both" label="Both" />
                 <RadioLabel value="offense" label="Offense" />
                 <RadioLabel value="defense" label="Defense" />
+              </RadioGroup>
+            </FormControl>
+            <FormControl>
+              <FormLabel>Stance</FormLabel>
+              <RadioGroup
+                value={this.props.stance}
+                onChange={this.onStanceChange}
+              >
+                <RadioLabel value="both" label="Both" />
+                {STANCES.map(stance => (
+                  <RadioLabel
+                    value={stance}
+                    key={stance}
+                    label={upperFirst(stance)}
+                  />
+                ))}
               </RadioGroup>
             </FormControl>
           </Filters>
