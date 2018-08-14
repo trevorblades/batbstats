@@ -2,21 +2,25 @@ import countBy from 'lodash/countBy';
 import filter from 'lodash/filter';
 import flatMap from 'lodash/flatMap';
 import groupBy from 'lodash/groupBy';
+import keyBy from 'lodash/keyBy';
 import pluralize from 'pluralize';
 import some from 'lodash/some';
 import sumBy from 'lodash/sumBy';
 import uniqBy from 'lodash/uniqBy';
+import {STANCES} from '../../api/common';
 import {createSelector} from 'reselect';
 import {getLetters} from './util/game';
 
 const getGames = state => state.games.data;
 const getAttempts = createSelector(getGames, games =>
-  flatMap(games, game =>
-    game.attempts.map(attempt => ({
+  flatMap(games, game => {
+    const skaters = keyBy(game.skaters, 'id');
+    return game.attempts.map(attempt => ({
       ...attempt,
+      skater: skaters[attempt.skater_id],
       event_id: game.event_id
-    }))
-  )
+    }));
+  })
 );
 
 export const getSkaters = createSelector(
@@ -91,12 +95,18 @@ function getVariationFromAttempt(attempt) {
   return attempt.trick.variation || 'none';
 }
 
+const getStance = state => state.settings.stance;
 const getIncludeMisses = state => state.settings.includeMisses;
 const getFilteredAttempts = createSelector(
   getAttempts,
+  getStance,
   getIncludeMisses,
-  (attempts, includeMisses) =>
-    includeMisses ? attempts : filter(attempts, 'successful')
+  (attempts, stance, includeMisses) => {
+    const filtered = includeMisses ? attempts : filter(attempts, 'successful');
+    return STANCES.includes(stance)
+      ? filter(filtered, ['skater.stance', stance])
+      : filtered;
+  }
 );
 
 export const getFlipsPieData = createSelector(
