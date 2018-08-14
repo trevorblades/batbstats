@@ -36,7 +36,6 @@
     "jwt-decode": "^2.2.0",
     "lodash": "^4.17.10",
     "material-ui-pickers": "^1.0.0-rc.11",
-    "pluralize": "^7.0.0",
     "polished": "^1.9.2",
     "prop-types": "^15.6.1",
     "react": "^16.4.0",

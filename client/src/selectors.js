@@ -4,7 +4,8 @@ import flatMap from 'lodash/flatMap';
 import groupBy from 'lodash/groupBy';
 import keyBy from 'lodash/keyBy';
 import map from 'lodash/map';
-import pluralize from 'pluralize';
+import reject from 'lodash/reject';
+import round from 'lodash/round';
 import some from 'lodash/some';
 import sortBy from 'lodash/sortBy';
 import sumBy from 'lodash/sumBy';
@@ -56,12 +57,23 @@ export const getSkaters = createSelector(
   }
 );
 
+function getSuccessRate(attempts) {
+  const rate =
+    attempts.length && filter(attempts, 'successful').length / attempts.length;
+  return `${round(rate * 100, 2)} %`;
+}
+
 export const getTricks = createSelector(getAttempts, attempts => {
-  const attemptCounts = countBy(attempts, 'trick.id');
-  return uniqBy(flatMap(attempts, 'trick'), 'id').map(trick => ({
-    ...trick,
-    attempts: pluralize('attempt', attemptCounts[trick.id], true)
-  }));
+  const groups = groupBy(attempts, 'trick.id');
+  return uniqBy(flatMap(attempts, 'trick'), 'id').map(trick => {
+    const group = groups[trick.id];
+    return {
+      ...trick,
+      attempts: group.length,
+      offense_success_rate: getSuccessRate(filter(group, 'offense')),
+      defense_success_rate: getSuccessRate(reject(group, 'offense'))
+    };
+  });
 });
 
 function toPieData(iteratee) {
