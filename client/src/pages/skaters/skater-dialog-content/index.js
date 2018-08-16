@@ -15,6 +15,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import Typography from '@material-ui/core/Typography';
 import differenceInYears from 'date-fns/differenceInYears';
+import map from 'lodash/map';
 import theme from '@trevorblades/mui-theme';
 import styled from 'react-emotion';
 import withProps from 'recompose/withProps';
@@ -29,9 +30,13 @@ const GridItem = withProps({
   xs: true
 })(Grid);
 
+const BackButton = styled(ButtonBase)({
+  marginBottom: theme.spacing.unit
+});
+
 const StyledChevronLeftIcon = styled(ChevronLeftIcon)(
-  size(theme.typography.title.lineHeight),
-  {marginLeft: theme.spacing.unit * -1}
+  size(theme.typography.caption.fontSize),
+  {marginLeft: theme.spacing.unit / -2}
 );
 
 const UNKNOWN = 'unknown';
@@ -55,19 +60,21 @@ class SkaterDialogContent extends Component {
       return (
         <Fragment>
           <DialogTitle disableTypography>
-            <ButtonBase onClick={this.onBackClick}>
+            <BackButton onClick={this.onBackClick}>
               <StyledChevronLeftIcon />
-              <Typography variant="title">
+              <Typography variant="caption" color="inherit">
                 Back to {this.props.skater.full_name}
               </Typography>
-            </ButtonBase>
+            </BackButton>
+            <Typography variant="title">
+              {map(this.state.game.skaters, 'full_name').join(' vs. ')}
+            </Typography>
+            <Typography variant="subheading">
+              {this.state.game.event.short_name} {this.state.game.round_name}
+            </Typography>
           </DialogTitle>
           <DialogContent>
-            {this.state.game.skaters.map(skater => (
-              <DialogContentText key={skater.id}>
-                {skater.full_name}
-              </DialogContentText>
-            ))}
+            <DialogContentText>Game data here</DialogContentText>
           </DialogContent>
         </Fragment>
       );
