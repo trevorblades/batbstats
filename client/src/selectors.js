@@ -12,7 +12,8 @@ import sumBy from 'lodash/sumBy';
 import uniq from 'lodash/uniq';
 import uniqBy from 'lodash/uniqBy';
 import {createSelector} from 'reselect';
-import {getLetters} from './util/game';
+import {getLetters, getRoundName} from './util/game';
+import {getShortName} from './util/event';
 
 const getGames = state => state.games.data;
 const getAttempts = createSelector(getGames, games =>
@@ -32,26 +33,35 @@ export const getSkaters = createSelector(
   (games, attempts) => {
     const skaters = uniqBy(flatMap(games, 'skaters'), 'id');
     return skaters.map(skater => {
-      const filteredGames = games.filter(game =>
-        some(game.skaters, ['id', skater.id])
-      );
+      const skaterGames = games
+        .filter(game => some(game.skaters, ['id', skater.id]))
+        .map(game => {
+          const {event} = game;
+          const letters = getLetters(game);
+          return {
+            ...game,
+            letters,
+            win: letters[skater.id] < 5,
+            round_name: getRoundName(game.round),
+            event: {
+              ...event,
+              short_name: getShortName(event)
+            }
+          };
+        });
 
-      const wins = filteredGames.filter(game => {
-        const letters = getLetters(game);
-        return letters[skater.id] < 5;
-      }).length;
-
-      const filteredAttempts = filter(attempts, ['skater_id', skater.id]);
-      const makes = filter(filteredAttempts, 'successful').length;
+      const wins = filter(skaterGames, 'win').length;
+      const skaterAttempts = filter(attempts, ['skater_id', skater.id]);
+      const makes = filter(skaterAttempts, 'successful').length;
       return {
         ...skater,
-        games: filteredGames,
+        games: skaterGames,
         wins,
-        losses: filteredGames.length - wins,
-        attempts: filteredAttempts,
+        losses: skaterGames.length - wins,
+        attempts: skaterAttempts,
         makes,
-        misses: filteredAttempts.length - makes,
-        redos: sumBy(filteredAttempts, 'redos')
+        misses: skaterAttempts.length - makes,
+        redos: sumBy(skaterAttempts, 'redos')
       };
     });
   }

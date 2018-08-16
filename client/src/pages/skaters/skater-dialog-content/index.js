@@ -6,6 +6,11 @@ import Grid from '@material-ui/core/Grid';
 import PropTypes from 'prop-types';
 import React from 'react';
 import SkaterForm from './skater-form';
+import Table from '@material-ui/core/Table';
+import TableHead from '@material-ui/core/TableHead';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableRow from '@material-ui/core/TableRow';
 import differenceInYears from 'date-fns/differenceInYears';
 import theme from '@trevorblades/mui-theme';
 import withProps from 'recompose/withProps';
@@ -41,6 +46,32 @@ const SkaterDialogContent = props => (
           </DialogContentText>
         </GridItem>
       </Grid>
+      <Table padding="none">
+        <TableHead>
+          <TableRow>
+            <TableCell>Opponent</TableCell>
+            <TableCell>Event</TableCell>
+            <TableCell>Round</TableCell>
+            <TableCell>Result</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {props.skater.games.map(game => {
+            const {event} = game;
+            const opponent = game.skaters.find(
+              skater => skater.id !== props.skater.id
+            );
+            return (
+              <TableRow key={game.id}>
+                <TableCell>{opponent.full_name}</TableCell>
+                <TableCell>{event.short_name}</TableCell>
+                <TableCell>{game.round_name}</TableCell>
+                <TableCell>{game.win ? 'Win' : 'Loss'}</TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
     </DialogContent>
   </FormDialogContent>
 );
