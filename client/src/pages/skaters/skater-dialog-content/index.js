@@ -21,6 +21,7 @@ const GridItem = withProps({
 })(Grid);
 
 const UNKNOWN = 'unknown';
+const NOW = Date.now();
 const SkaterDialogContent = props => (
   <FormDialogContent data={props.skater} formComponent={SkaterForm}>
     <DialogTitle>{props.skater.full_name}</DialogTitle>
@@ -38,12 +39,11 @@ const SkaterDialogContent = props => (
           <DialogContentText>
             Stance: {props.skater.stance || UNKNOWN}
           </DialogContentText>
-          <DialogContentText>
-            Age:{' '}
-            {props.skater.birth_date
-              ? differenceInYears(Date.now(), props.skater.birth_date)
-              : UNKNOWN}
-          </DialogContentText>
+          {props.skater.birth_date && (
+            <DialogContentText>
+              Age: {differenceInYears(NOW, props.skater.birth_date)}
+            </DialogContentText>
+          )}
         </GridItem>
       </Grid>
       <Table padding="none">
