@@ -25,7 +25,7 @@ class LoginForm extends Component {
       <form onSubmit={this.onSubmit}>
         <DialogTitle>Log in</DialogTitle>
         <DialogContent>
-          <FormField label="Email" name="email" />
+          <FormField autoFocus label="Email" name="email" />
           <FormField label="Password" name="password" type="password" />
         </DialogContent>
         <DialogActions>
