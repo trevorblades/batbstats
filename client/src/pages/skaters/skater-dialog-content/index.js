@@ -13,7 +13,12 @@ import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import differenceInYears from 'date-fns/differenceInYears';
 import theme from '@trevorblades/mui-theme';
+import styled from 'react-emotion';
 import withProps from 'recompose/withProps';
+
+const StyledTable = styled(Table)({
+  marginTop: theme.spacing.unit
+});
 
 const GridItem = withProps({
   item: true,
@@ -22,6 +27,7 @@ const GridItem = withProps({
 
 const UNKNOWN = 'unknown';
 const NOW = Date.now();
+
 const SkaterDialogContent = props => (
   <FormDialogContent data={props.skater} formComponent={SkaterForm}>
     <DialogTitle>{props.skater.full_name}</DialogTitle>
@@ -46,7 +52,7 @@ const SkaterDialogContent = props => (
           )}
         </GridItem>
       </Grid>
-      <Table padding="none">
+      <StyledTable padding="none">
         <TableHead>
           <TableRow>
             <TableCell>Opponent</TableCell>
@@ -71,7 +77,7 @@ const SkaterDialogContent = props => (
             );
           })}
         </TableBody>
-      </Table>
+      </StyledTable>
     </DialogContent>
   </FormDialogContent>
 );
