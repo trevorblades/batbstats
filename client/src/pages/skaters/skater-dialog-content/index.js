@@ -4,9 +4,10 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import FormDialogContent from '../../../components/form-dialog-content';
+import GameCard from './game-card';
 import Grid from '@material-ui/core/Grid';
 import PropTypes from 'prop-types';
-import React, {Component, Fragment} from 'react';
+import React, {Component} from 'react';
 import SkaterForm from './skater-form';
 import Table from '@material-ui/core/Table';
 import TableHead from '@material-ui/core/TableHead';
@@ -15,7 +16,6 @@ import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import Typography from '@material-ui/core/Typography';
 import differenceInYears from 'date-fns/differenceInYears';
-import map from 'lodash/map';
 import theme from '@trevorblades/mui-theme';
 import styled from 'react-emotion';
 import withProps from 'recompose/withProps';
@@ -39,17 +39,6 @@ const StyledChevronLeftIcon = styled(ChevronLeftIcon)(
   {marginLeft: theme.spacing.unit / -2}
 );
 
-const Video = styled.div({
-  paddingTop: `${9 / 16 * 100}%`,
-  position: 'relative'
-});
-
-const StyledIframe = styled.iframe(size('100%'), {
-  position: 'absolute',
-  top: 0,
-  left: 0
-});
-
 const UNKNOWN = 'unknown';
 const NOW = Date.now();
 
@@ -69,40 +58,14 @@ class SkaterDialogContent extends Component {
   render() {
     if (this.state.game) {
       return (
-        <Fragment>
-          <DialogTitle disableTypography>
-            <BackButton onClick={this.onBackClick}>
-              <StyledChevronLeftIcon />
-              <Typography variant="caption" color="inherit">
-                Back to {this.props.skater.full_name}
-              </Typography>
-            </BackButton>
-            <Typography variant="title">
-              {map(this.state.game.skaters, 'full_name').join(' vs. ')}
+        <GameCard game={this.state.game}>
+          <BackButton onClick={this.onBackClick}>
+            <StyledChevronLeftIcon />
+            <Typography variant="caption" color="inherit">
+              Back to {this.props.skater.full_name}
             </Typography>
-            <Typography variant="subheading">
-              {this.state.game.event.short_name} {this.state.game.round_name}
-            </Typography>
-          </DialogTitle>
-          {this.state.game.video_id && (
-            <Video>
-              <StyledIframe
-                allowFullScreen
-                src={`https://www.youtube.com/embed/${
-                  this.state.game.video_id
-                }?rel=0&showinfo=0`}
-                frameBorder={0}
-                allow="autoplay; encrypted-media"
-              />
-            </Video>
-          )}
-          <div>
-            {!this.state.game.video_id && <div />}
-            <DialogContent>
-              <DialogContentText>Game data here</DialogContentText>
-            </DialogContent>
-          </div>
-        </Fragment>
+          </BackButton>
+        </GameCard>
       );
     }
 
