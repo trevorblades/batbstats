@@ -1,7 +1,8 @@
 export default (sequelize, DataTypes) => {
   const Game = sequelize.define('game', {
     round: DataTypes.INTEGER,
-    date: DataTypes.DATE
+    date: DataTypes.DATE,
+    video_id: DataTypes.STRING
   });
 
   Game.associate = models => {

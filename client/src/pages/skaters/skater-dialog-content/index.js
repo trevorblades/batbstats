@@ -39,6 +39,17 @@ const StyledChevronLeftIcon = styled(ChevronLeftIcon)(
   {marginLeft: theme.spacing.unit / -2}
 );
 
+const Video = styled.div({
+  paddingTop: `${9 / 16 * 100}%`,
+  position: 'relative'
+});
+
+const StyledIframe = styled.iframe(size('100%'), {
+  position: 'absolute',
+  top: 0,
+  left: 0
+});
+
 const UNKNOWN = 'unknown';
 const NOW = Date.now();
 
@@ -73,9 +84,24 @@ class SkaterDialogContent extends Component {
               {this.state.game.event.short_name} {this.state.game.round_name}
             </Typography>
           </DialogTitle>
-          <DialogContent>
-            <DialogContentText>Game data here</DialogContentText>
-          </DialogContent>
+          {this.state.game.video_id && (
+            <Video>
+              <StyledIframe
+                allowFullScreen
+                src={`https://www.youtube.com/embed/${
+                  this.state.game.video_id
+                }?rel=0&showinfo=0`}
+                frameBorder={0}
+                allow="autoplay; encrypted-media"
+              />
+            </Video>
+          )}
+          <div>
+            {!this.state.game.video_id && <div />}
+            <DialogContent>
+              <DialogContentText>Game data here</DialogContentText>
+            </DialogContent>
+          </div>
         </Fragment>
       );
     }
