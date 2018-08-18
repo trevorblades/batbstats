@@ -1,4 +1,9 @@
 import fromPairs from 'lodash/fromPairs';
+import {
+  ROSHAMBO_MOVE_ROCK,
+  ROSHAMBO_MOVE_PAPER,
+  ROSHAMBO_MOVE_SCISSORS
+} from '../../../api/common';
 
 export function getRoundName(round) {
   switch (round) {
@@ -12,6 +17,19 @@ export function getRoundName(round) {
       return 'Quarterfinal';
     default:
       return `Round ${round}`;
+  }
+}
+
+export function getRoshamboEmoji(move) {
+  switch (move) {
+    case ROSHAMBO_MOVE_ROCK:
+      return '✊';
+    case ROSHAMBO_MOVE_PAPER:
+      return '✋';
+    case ROSHAMBO_MOVE_SCISSORS:
+      return '✌️';
+    default:
+      return null;
   }
 }
 
