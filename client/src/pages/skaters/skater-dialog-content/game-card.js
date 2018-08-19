@@ -9,12 +9,14 @@ import TableBody from '@material-ui/core/TableBody';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 import Typography from '@material-ui/core/Typography';
+import filter from 'lodash/filter';
 import find from 'lodash/find';
 import groupBy from 'lodash/groupBy';
 import keyBy from 'lodash/fp/keyBy';
 import map from 'lodash/map';
 import mapProps from 'recompose/mapProps';
 import mapValues from 'lodash/mapValues';
+import sortBy from 'lodash/sortBy';
 import styled from 'react-emotion';
 import toPairs from 'lodash/toPairs';
 import upperFirst from 'lodash/upperFirst';
@@ -51,6 +53,29 @@ class GameCard extends Component {
     game: PropTypes.object.isRequired
   };
 
+  get rounds() {
+    const rounds = [];
+    const {attempts} = this.props.game;
+    for (let i = 0; i < attempts.length; i++) {
+      const attempt = attempts[i];
+      const round = [attempt, null];
+      if (attempt.successful) {
+        i++;
+        round[1] = attempts[i];
+      }
+
+      rounds.push(round);
+    }
+
+    const skaterIds = map(this.props.game.skaters, 'id');
+    return rounds.map(round =>
+      sortBy(
+        round,
+        attempt => (attempt ? skaterIds.indexOf(attempt.skater_id) : 0)
+      )
+    );
+  }
+
   renderRoshambos() {
     const roshambos = mapValues(
       groupBy(this.props.game.roshambos, 'round'),
@@ -58,9 +83,11 @@ class GameCard extends Component {
     );
 
     const keys = Object.keys(roshambos);
-    const pairs = toPairs(
-      mapValues(roshambos[keys[keys.length - 1]], 'move')
-    ).sort((a, b) => (ROSHAMBO_COUNTERS[a[1]] === b[1] ? 1 : -1));
+    const lastRound = roshambos[keys[keys.length - 1]];
+    const pairs = toPairs(mapValues(lastRound, 'move')).sort(
+      (a, b) => (ROSHAMBO_COUNTERS[a[1]] === b[1] ? 1 : -1)
+    );
+
     const winner = find(this.props.game.skaters, ['id', Number(pairs[0][0])]);
     return (
       <Fragment>
@@ -100,35 +127,56 @@ class GameCard extends Component {
             {this.props.game.event.short_name} {this.props.game.round_name}
           </Typography>
         </DialogTitle>
-        {this.props.game.video_id && (
-          <Video>
-            <StyledIframe
-              allowFullScreen
-              src={`https://www.youtube.com/embed/${
-                this.props.game.video_id
-              }?rel=0&showinfo=0`}
-              frameBorder={0}
-              allow="autoplay; encrypted-media"
-            />
-          </Video>
-        )}
-        <div>
-          {!this.props.game.video_id && <div />}
-          <DialogContent>
-            <DenseTable>
-              <TableHead>
-                <TableRow>
-                  {this.props.game.skaters.map((skater, index) => (
-                    <StyledTableCell key={skater.id} index={index}>
-                      {skater.full_name}
-                    </StyledTableCell>
-                  ))}
-                </TableRow>
-              </TableHead>
-              <TableBody>{this.renderRoshambos()}</TableBody>
-            </DenseTable>
-          </DialogContent>
-        </div>
+        <DialogContent>
+          {this.props.game.video_id && (
+            <Video>
+              <StyledIframe
+                allowFullScreen
+                src={`https://www.youtube.com/embed/${
+                  this.props.game.video_id
+                }?rel=0&showinfo=0`}
+                frameBorder={0}
+                allow="autoplay; encrypted-media"
+              />
+            </Video>
+          )}
+          <DenseTable>
+            <TableHead>
+              <TableRow>
+                {this.props.game.skaters.map((skater, index) => (
+                  <StyledTableCell key={skater.id} index={index}>
+                    {skater.full_name}
+                  </StyledTableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {this.renderRoshambos()}
+              {this.rounds.map(round => {
+                const roundId = map(filter(round), 'id');
+                return (
+                  <TableRow key={roundId}>
+                    {round.map((attempt, index) => {
+                      if (!attempt) {
+                        return <StyledTableCell key="miss" index={index} />;
+                      }
+
+                      return (
+                        <StyledTableCell key={attempt.id} index={index}>
+                          {attempt.offense
+                            ? attempt.trick.name
+                            : attempt.successful
+                              ? 'yes'
+                              : 'no'}
+                        </StyledTableCell>
+                      );
+                    })}
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </DenseTable>
+        </DialogContent>
       </Fragment>
     );
   }
