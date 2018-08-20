@@ -44,6 +44,7 @@ const spacing = theme.spacing.unit * 3;
 const fixedClassName = css({
   width,
   height: width / aspectRatio,
+  boxShadow: theme.shadows[3],
   position: 'fixed',
   bottom: spacing,
   left: spacing,
