@@ -19,6 +19,7 @@ import differenceInYears from 'date-fns/differenceInYears';
 import theme from '@trevorblades/mui-theme';
 import styled from 'react-emotion';
 import withProps from 'recompose/withProps';
+import {createIsEqualWithKeys} from '../../../util';
 import {size} from 'polished';
 
 const StyledTable = styled(Table)({
@@ -41,6 +42,15 @@ const StyledChevronLeftIcon = styled(ChevronLeftIcon)(
 
 const UNKNOWN = 'unknown';
 const NOW = Date.now();
+
+const isEqualWithKeys = createIsEqualWithKeys(
+  'first_name',
+  'last_name',
+  'stance',
+  'hometown',
+  'birth_date',
+  'updated_at'
+);
 
 class SkaterDialogContent extends Component {
   static propTypes = {
@@ -70,7 +80,11 @@ class SkaterDialogContent extends Component {
     }
 
     return (
-      <FormDialogContent data={this.props.skater} formComponent={SkaterForm}>
+      <FormDialogContent
+        data={this.props.skater}
+        formComponent={SkaterForm}
+        isEqual={isEqualWithKeys}
+      >
         <DialogTitle>{this.props.skater.full_name}</DialogTitle>
         <DialogContent>
           <Grid container spacing={theme.spacing.unit * 2}>

@@ -8,9 +8,22 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import TrickForm from './trick-form';
 import upperFirst from 'lodash/upperFirst';
+import {createIsEqualWithKeys} from '../../../util';
+
+const isEqualWithKeys = createIsEqualWithKeys(
+  'name',
+  'variation',
+  'flip',
+  'shuv',
+  'spin'
+);
 
 const TrickDialogContent = props => (
-  <FormDialogContent data={props.trick} formComponent={TrickForm}>
+  <FormDialogContent
+    data={props.trick}
+    formComponent={TrickForm}
+    isEqual={isEqualWithKeys}
+  >
     <DialogTitle>{props.trick.name}</DialogTitle>
     <DialogContent>
       <Grid container>
@@ -27,6 +40,11 @@ const TrickDialogContent = props => (
           <DialogContentText>
             Variation:{' '}
             {props.trick.variation ? upperFirst(props.trick.variation) : 'None'}
+          </DialogContentText>
+        </GridItem>
+        <GridItem>
+          <DialogContentText>
+            Attempts: {props.trick.attempts}
           </DialogContentText>
         </GridItem>
       </Grid>

@@ -13,7 +13,6 @@ import styled from 'react-emotion';
 import theme from '@trevorblades/mui-theme';
 import withProps from 'recompose/withProps';
 import {connect} from 'react-redux';
-import {createIsEqualWithKeys} from '../../util';
 import {getSkaters} from '../../selectors';
 
 const createButtonSpacing = theme.spacing.unit * 3;
@@ -29,15 +28,6 @@ const CreateButton = withProps({
 );
 
 const title = 'Skaters';
-const isEqualWithKeys = createIsEqualWithKeys(
-  'first_name',
-  'last_name',
-  'stance',
-  'hometown',
-  'birth_date',
-  'updated_at'
-);
-
 class Skaters extends Component {
   static propTypes = {
     skaters: PropTypes.array.isRequired,
@@ -51,10 +41,9 @@ class Skaters extends Component {
 
   componentDidUpdate(prevProps) {
     if (this.state.skater && this.props.skaters !== prevProps.skaters) {
-      const skater = find(this.props.skaters, ['id', this.state.skater.id]);
-      if (skater && !isEqualWithKeys(skater, this.state.skater)) {
-        this.setState({skater});
-      }
+      this.setState({
+        skater: find(this.props.skaters, ['id', this.state.skater.id])
+      });
     }
   }
 

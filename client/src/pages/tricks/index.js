@@ -8,18 +8,9 @@ import SortableTable from '../../components/sortable-table';
 import TrickDialogContent from './trick-dialog-content';
 import find from 'lodash/find';
 import {connect} from 'react-redux';
-import {createIsEqualWithKeys} from '../../util';
 import {getTricks} from '../../selectors';
 
 const title = 'Tricks';
-const isEqualWithKeys = createIsEqualWithKeys(
-  'name',
-  'variation',
-  'flip',
-  'shuv',
-  'spin'
-);
-
 class Tricks extends Component {
   static propTypes = {
     tricks: PropTypes.array.isRequired,
@@ -33,10 +24,9 @@ class Tricks extends Component {
 
   componentDidUpdate(prevProps) {
     if (this.state.trick && this.props.tricks !== prevProps.tricks) {
-      const trick = find(this.props.tricks, ['id', this.state.trick.id]);
-      if (trick && !isEqualWithKeys(trick, this.state.trick)) {
-        this.setState({trick});
-      }
+      this.setState({
+        trick: find(this.props.tricks, ['id', this.state.trick.id])
+      });
     }
   }
 

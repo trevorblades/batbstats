@@ -2,6 +2,7 @@ import Button from '@material-ui/core/Button';
 import DialogActions from '@material-ui/core/DialogActions';
 import PropTypes from 'prop-types';
 import React, {Component, Fragment} from 'react';
+import isEqual from 'lodash/isEqual';
 import {connect} from 'react-redux';
 
 class FormDialogContent extends Component {
@@ -9,7 +10,12 @@ class FormDialogContent extends Component {
     children: PropTypes.node.isRequired,
     data: PropTypes.object.isRequired,
     formComponent: PropTypes.func.isRequired,
+    isEqual: PropTypes.func,
     user: PropTypes.object
+  };
+
+  static defaultProps = {
+    isEqual
   };
 
   state = {
@@ -17,7 +23,10 @@ class FormDialogContent extends Component {
   };
 
   componentDidUpdate(prevProps) {
-    if (this.props.data !== prevProps.data) {
+    if (
+      this.state.editing &&
+      !this.props.isEqual(this.props.data, prevProps.data)
+    ) {
       this.stopEditing();
     }
   }
