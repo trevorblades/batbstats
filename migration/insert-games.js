@@ -1,6 +1,7 @@
 const {ROSHAMBO_MOVES} = require('../api/common');
 const {Game, Roshambo, Attempt} = require('../api/models');
 
+let attemptId = 0;
 function marshallAttempts(gameId, skater1, skater2, tricks) {
   const attempts = [];
   tricks.forEach(trick => {
@@ -9,6 +10,7 @@ function marshallAttempts(gameId, skater1, skater2, tricks) {
       if (attempt.result !== -1) {
         const offense = trick.setter === index;
         roundAttempt = {
+          id: attemptId,
           successful: Boolean(attempt.result),
           offense,
           redos: attempt.redos,
@@ -29,14 +31,23 @@ function marshallAttempts(gameId, skater1, skater2, tricks) {
     attempts.push(...roundAttempts);
   });
 
-  return attempts;
+  return attempts.map(attempt => {
+    attemptId++;
+    return {
+      ...attempt,
+      id: attemptId
+    };
+  });
 }
 
+let roshamboId = 0;
 function marshallRoshambos(gameId, skater1, skater2, roshambos) {
   const marshalled = [];
-  roshambos.forEach((moves, round) =>
+  roshambos.filter(roshambo => roshambo.indexOf(-1) === -1).forEach((moves, round) =>
     moves.forEach((move, index) => {
+      roshamboId++;
       marshalled.push({
+        id: roshamboId,
         round: round + 1,
         move: ROSHAMBO_MOVES[move],
         game_id: gameId,
