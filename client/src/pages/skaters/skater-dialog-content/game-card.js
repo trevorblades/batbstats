@@ -1,8 +1,11 @@
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
+import Divider from '@material-ui/core/Divider';
 import PropTypes from 'prop-types';
 import React, {Component, Fragment} from 'react';
+import Tab from '@material-ui/core/Tab';
+import Tabs from '@material-ui/core/Tabs';
 import Table from '@material-ui/core/Table';
 import TableHead from '@material-ui/core/TableHead';
 import TableBody from '@material-ui/core/TableBody';
@@ -25,6 +28,8 @@ import {getRoshamboEmoji, getInitialLetters} from '../../../util/game';
 import {size} from 'polished';
 import {ROSHAMBO_COUNTERS} from '../../../../../api/common';
 
+const StyledDivider = styled(Divider)({marginTop: -1});
+
 const Video = styled.div({
   paddingTop: `${9 / 16 * 100}%`,
   position: 'relative'
@@ -41,11 +46,7 @@ const DenseTable = withProps({padding: 'dense'})(Table);
 const StyledTableCell = mapProps(props => ({
   ...props,
   numeric: !props.index
-}))(
-  styled(TableCell)({
-    width: '50%'
-  })
-);
+}))(styled(TableCell)({width: '50%'}));
 
 const Commentary = nest(
   TableRow,
@@ -78,6 +79,10 @@ class GameCard extends Component {
     game: PropTypes.object.isRequired
   };
 
+  state = {
+    tab: 0
+  };
+
   get rounds() {
     const rounds = [];
     const {attempts} = this.props.game;
@@ -99,6 +104,48 @@ class GameCard extends Component {
         attempt => (attempt ? skaterIds.indexOf(attempt.skater_id) : 0)
       )
     );
+  }
+
+  renderContent() {
+    switch (this.state.tab) {
+      case 0: {
+        const skaters = keyBy('id')(this.props.game.skaters);
+        return (
+          <DialogContent>
+            <DenseTable>
+              <TableHead>
+                <TableRow>
+                  {this.props.game.skaters.map((skater, index) => (
+                    <StyledTableCell key={skater.id} index={index}>
+                      {skater.full_name}
+                    </StyledTableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {this.renderRoshambos(skaters)}
+                {this.renderRounds(skaters)}
+              </TableBody>
+            </DenseTable>
+          </DialogContent>
+        );
+      }
+      case 1:
+        return (
+          <Video>
+            <StyledIframe
+              allowFullScreen
+              src={`https://www.youtube.com/embed/${
+                this.props.game.video_id
+              }?rel=0&showinfo=0`}
+              frameBorder={0}
+              allow="autoplay; encrypted-media"
+            />
+          </Video>
+        );
+      default:
+        return null;
+    }
   }
 
   renderRoshambos(skaters) {
@@ -188,7 +235,6 @@ class GameCard extends Component {
   }
 
   render() {
-    const skaters = keyBy('id')(this.props.game.skaters);
     return (
       <Fragment>
         <DialogTitle disableTypography>
@@ -200,35 +246,12 @@ class GameCard extends Component {
             {this.props.game.event.short_name} {this.props.game.round_name}
           </Typography>
         </DialogTitle>
-        <DialogContent>
-          {this.props.game.video_id && (
-            <Video>
-              <StyledIframe
-                allowFullScreen
-                src={`https://www.youtube.com/embed/${
-                  this.props.game.video_id
-                }?rel=0&showinfo=0`}
-                frameBorder={0}
-                allow="autoplay; encrypted-media"
-              />
-            </Video>
-          )}
-          <DenseTable>
-            <TableHead>
-              <TableRow>
-                {this.props.game.skaters.map((skater, index) => (
-                  <StyledTableCell key={skater.id} index={index}>
-                    {skater.full_name}
-                  </StyledTableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {this.renderRoshambos(skaters)}
-              {this.renderRounds(skaters)}
-            </TableBody>
-          </DenseTable>
-        </DialogContent>
+        <Tabs centered value={this.state.tab}>
+          <Tab label="Transcript" />
+          <Tab label="Video" disabled={!this.props.game.video_id} />
+        </Tabs>
+        <StyledDivider />
+        {this.renderContent()}
       </Fragment>
     );
   }
