@@ -1,11 +1,8 @@
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
-import Divider from '@material-ui/core/Divider';
 import PropTypes from 'prop-types';
 import React, {Component, Fragment} from 'react';
-import Tab from '@material-ui/core/Tab';
-import Tabs from '@material-ui/core/Tabs';
 import Table from '@material-ui/core/Table';
 import TableHead from '@material-ui/core/TableHead';
 import TableBody from '@material-ui/core/TableBody';
@@ -20,7 +17,8 @@ import mapProps from 'recompose/mapProps';
 import mapValues from 'lodash/mapValues';
 import nest from 'recompose/nest';
 import sortBy from 'lodash/sortBy';
-import styled from 'react-emotion';
+import styled, {css} from 'react-emotion';
+import theme from '@trevorblades/mui-theme';
 import toPairs from 'lodash/toPairs';
 import upperFirst from 'lodash/upperFirst';
 import withProps from 'recompose/withProps';
@@ -28,17 +26,28 @@ import {getRoshamboEmoji, getInitialLetters} from '../../../util/game';
 import {size} from 'polished';
 import {ROSHAMBO_COUNTERS} from '../../../../../api/common';
 
-const StyledDivider = styled(Divider)({marginTop: -1});
-
+const aspectRatio = 16 / 9;
 const Video = styled.div({
-  paddingTop: `${9 / 16 * 100}%`,
+  paddingTop: `${100 / aspectRatio}%`,
+  backgroundColor: theme.palette.grey[100],
   position: 'relative'
 });
 
-const StyledIframe = styled.iframe(size('100%'), {
+const staticClassName = css(size('100%'), {
   position: 'absolute',
   top: 0,
   left: 0
+});
+
+const width = 360;
+const spacing = theme.spacing.unit * 3;
+const fixedClassName = css({
+  width,
+  height: width / aspectRatio,
+  position: 'fixed',
+  bottom: spacing,
+  left: spacing,
+  zIndex: theme.zIndex.modal
 });
 
 const DenseTable = withProps({padding: 'dense'})(Table);
@@ -80,7 +89,7 @@ class GameCard extends Component {
   };
 
   state = {
-    tab: 0
+    inView: true
   };
 
   get rounds() {
@@ -104,48 +113,6 @@ class GameCard extends Component {
         attempt => (attempt ? skaterIds.indexOf(attempt.skater_id) : 0)
       )
     );
-  }
-
-  renderContent() {
-    switch (this.state.tab) {
-      case 0: {
-        const skaters = keyBy('id')(this.props.game.skaters);
-        return (
-          <DialogContent>
-            <DenseTable>
-              <TableHead>
-                <TableRow>
-                  {this.props.game.skaters.map((skater, index) => (
-                    <StyledTableCell key={skater.id} index={index}>
-                      {skater.full_name}
-                    </StyledTableCell>
-                  ))}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {this.renderRoshambos(skaters)}
-                {this.renderRounds(skaters)}
-              </TableBody>
-            </DenseTable>
-          </DialogContent>
-        );
-      }
-      case 1:
-        return (
-          <Video>
-            <StyledIframe
-              allowFullScreen
-              src={`https://www.youtube.com/embed/${
-                this.props.game.video_id
-              }?rel=0&showinfo=0`}
-              frameBorder={0}
-              allow="autoplay; encrypted-media"
-            />
-          </Video>
-        );
-      default:
-        return null;
-    }
   }
 
   renderRoshambos(skaters) {
@@ -234,7 +201,17 @@ class GameCard extends Component {
     });
   }
 
+  onScroll = event => {
+    const style = getComputedStyle(event.target);
+    const padding = parseInt(style.getPropertyValue('padding-left'));
+    const videoWidth = event.target.offsetWidth - padding * 2;
+    const videoHeight = videoWidth / aspectRatio;
+    const threshold = videoHeight * 0.75;
+    this.setState({inView: event.target.scrollTop < threshold});
+  };
+
   render() {
+    const skaters = keyBy('id')(this.props.game.skaters);
     return (
       <Fragment>
         <DialogTitle disableTypography>
@@ -246,12 +223,36 @@ class GameCard extends Component {
             {this.props.game.event.short_name} {this.props.game.round_name}
           </Typography>
         </DialogTitle>
-        <Tabs centered value={this.state.tab}>
-          <Tab label="Transcript" />
-          <Tab label="Video" disabled={!this.props.game.video_id} />
-        </Tabs>
-        <StyledDivider />
-        {this.renderContent()}
+        <DialogContent onScroll={this.props.game.video_id && this.onScroll}>
+          {this.props.game.video_id && (
+            <Video>
+              <iframe
+                className={this.state.inView ? staticClassName : fixedClassName}
+                allowFullScreen
+                src={`https://www.youtube.com/embed/${
+                  this.props.game.video_id
+                }?rel=0&showinfo=0`}
+                frameBorder={0}
+                allow="autoplay; encrypted-media"
+              />
+            </Video>
+          )}
+          <DenseTable>
+            <TableHead>
+              <TableRow>
+                {this.props.game.skaters.map((skater, index) => (
+                  <StyledTableCell key={skater.id} index={index}>
+                    {skater.full_name}
+                  </StyledTableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {this.renderRoshambos(skaters)}
+              {this.renderRounds(skaters)}
+            </TableBody>
+          </DenseTable>
+        </DialogContent>
       </Fragment>
     );
   }

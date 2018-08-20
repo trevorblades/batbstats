@@ -9,23 +9,25 @@ import React, {Component, Fragment} from 'react';
 import SkaterDialogContent from './skater-dialog-content';
 import SortableTable from '../../components/sortable-table';
 import find from 'lodash/find';
-import styled from 'react-emotion';
+import styled, {css} from 'react-emotion';
 import theme from '@trevorblades/mui-theme';
 import withProps from 'recompose/withProps';
 import {connect} from 'react-redux';
 import {getSkaters} from '../../selectors';
 
-const createButtonSpacing = theme.spacing.unit * 3;
+const spacing = theme.spacing.unit * 3;
 const CreateButton = withProps({
   variant: 'fab',
   color: 'secondary'
 })(
   styled(Button)({
     position: 'absolute',
-    bottom: createButtonSpacing,
-    right: createButtonSpacing
+    bottom: spacing,
+    right: spacing
   })
 );
+
+const overflowVisible = css({overflow: 'visible'});
 
 const title = 'Skaters';
 class Skaters extends Component {
@@ -116,6 +118,7 @@ class Skaters extends Component {
           {this.state.skater && (
             <Dialog
               fullWidth
+              classes={{paper: overflowVisible}}
               open={this.state.dialogOpen}
               onClose={this.closeDialog}
             >
