@@ -18,6 +18,7 @@ import mapValues from 'lodash/mapValues';
 import nest from 'recompose/nest';
 import sortBy from 'lodash/sortBy';
 import styled from 'react-emotion';
+import theme from '@trevorblades/mui-theme';
 import toPairs from 'lodash/toPairs';
 import upperFirst from 'lodash/upperFirst';
 import withProps from 'recompose/withProps';
@@ -50,7 +51,13 @@ const StyledTableCell = mapProps(props => ({
 const Commentary = nest(
   TableRow,
   withProps({colSpan: 2})(TableCell),
-  withProps({align: 'center'})(DialogContentText)
+  withProps({align: 'center'})(
+    styled(DialogContentText)({
+      strong: {
+        color: theme.palette.text.primary
+      }
+    })
+  )
 );
 
 function getAttemptText(attempt) {
@@ -164,18 +171,20 @@ class GameCard extends Component {
           </TableRow>
           {letterAgainst && (
             <Commentary>
-              {letterAgainst.first_name} is at{' '}
-              {LETTERS.slice(0, letters[letterAgainst.id]).join('.')}.
+              {letterAgainst.first_name} gets{' '}
+              <strong>
+                {LETTERS.slice(0, letters[letterAgainst.id]).join('.')}.
+              </strong>
             </Commentary>
           )}
           {attempts.length === 1 &&
-            this.renderMissCommentary(attempts[0].skater_id, skaters)}
+            this.renderMissed(attempts[0].skater_id, skaters)}
         </Fragment>
       );
     });
   }
 
-  renderMissCommentary(id, skaters) {
+  renderMissed(id, skaters) {
     const skaterIds = Object.keys(skaters);
     const opponents = {
       [skaterIds[0]]: skaters[skaterIds[1]],
