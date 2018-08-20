@@ -10,18 +10,18 @@ import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 import Typography from '@material-ui/core/Typography';
 import filter from 'lodash/filter';
-import find from 'lodash/find';
 import groupBy from 'lodash/groupBy';
 import keyBy from 'lodash/fp/keyBy';
 import map from 'lodash/map';
 import mapProps from 'recompose/mapProps';
 import mapValues from 'lodash/mapValues';
+import nest from 'recompose/nest';
 import sortBy from 'lodash/sortBy';
 import styled from 'react-emotion';
 import toPairs from 'lodash/toPairs';
 import upperFirst from 'lodash/upperFirst';
 import withProps from 'recompose/withProps';
-import {getRoshamboEmoji} from '../../../util/game';
+import {getRoshamboEmoji, getInitialLetters} from '../../../util/game';
 import {size} from 'polished';
 import {ROSHAMBO_COUNTERS} from '../../../../../api/common';
 
@@ -46,6 +46,31 @@ const StyledTableCell = mapProps(props => ({
     width: '50%'
   })
 );
+
+const Commentary = nest(
+  TableRow,
+  withProps({colSpan: 2})(TableCell),
+  withProps({align: 'center'})(DialogContentText)
+);
+
+function getAttemptText(attempt) {
+  const {successful} = attempt;
+  if (attempt.offense) {
+    let {name} = attempt.trick;
+    if (attempt.redos) {
+      name += ' 🔄';
+      if (attempt.redos > 1) {
+        name += attempt.redos;
+      }
+    }
+
+    return successful ? name : <s>{name}</s>;
+  }
+
+  return successful ? '✅' : '❌';
+}
+
+const LETTERS = 'SKATE'.split('');
 
 class GameCard extends Component {
   static propTypes = {
@@ -76,7 +101,7 @@ class GameCard extends Component {
     );
   }
 
-  renderRoshambos() {
+  renderRoshambos(skaters) {
     const roshambos = mapValues(
       groupBy(this.props.game.roshambos, 'round'),
       keyBy('skater_id')
@@ -88,7 +113,7 @@ class GameCard extends Component {
       (a, b) => (ROSHAMBO_COUNTERS[a[1]] === b[1] ? 1 : -1)
     );
 
-    const winner = find(this.props.game.skaters, ['id', Number(pairs[0][0])]);
+    const winner = skaters[Number(pairs[0][0])];
     return (
       <Fragment>
         {keys.map(key => (
@@ -103,19 +128,69 @@ class GameCard extends Component {
             })}
           </TableRow>
         ))}
-        <TableRow>
-          <TableCell colSpan={2}>
-            <DialogContentText align="center">
-              {upperFirst(pairs[0][1])} beats {pairs[1][1]}, {winner.first_name}{' '}
-              goes first
-            </DialogContentText>
-          </TableCell>
-        </TableRow>
+        <Commentary>
+          {upperFirst(pairs[0][1])} beats {pairs[1][1]}, {winner.first_name}{' '}
+          goes first
+        </Commentary>
       </Fragment>
     );
   }
 
+  renderRounds(skaters) {
+    const letters = getInitialLetters(this.props.game.skaters);
+    return this.rounds.map(round => {
+      let letterAgainst;
+      const attempts = filter(round);
+      return (
+        <Fragment key={map(attempts, 'id')}>
+          <TableRow>
+            {round.map((attempt, index) => {
+              if (!attempt) {
+                return <StyledTableCell key="miss" index={index} />;
+              }
+
+              if (!attempt.offense && !attempt.successful) {
+                const {skater_id} = attempt;
+                letters[skater_id]++;
+                letterAgainst = skaters[skater_id];
+              }
+
+              return (
+                <StyledTableCell key={attempt.id} index={index}>
+                  {getAttemptText(attempt)}
+                </StyledTableCell>
+              );
+            })}
+          </TableRow>
+          {letterAgainst && (
+            <Commentary>
+              {letterAgainst.first_name} is at{' '}
+              {LETTERS.slice(0, letters[letterAgainst.id]).join('.')}.
+            </Commentary>
+          )}
+          {attempts.length === 1 &&
+            this.renderMissCommentary(attempts[0].skater_id, skaters)}
+        </Fragment>
+      );
+    });
+  }
+
+  renderMissCommentary(id, skaters) {
+    const skaterIds = Object.keys(skaters);
+    const opponents = {
+      [skaterIds[0]]: skaters[skaterIds[1]],
+      [skaterIds[1]]: skaters[skaterIds[0]]
+    };
+
+    return (
+      <Commentary>
+        {skaters[id].first_name} misses, {opponents[id].first_name}&apos;s turn
+      </Commentary>
+    );
+  }
+
   render() {
+    const skaters = keyBy('id')(this.props.game.skaters);
     return (
       <Fragment>
         <DialogTitle disableTypography>
@@ -151,29 +226,8 @@ class GameCard extends Component {
               </TableRow>
             </TableHead>
             <TableBody>
-              {this.renderRoshambos()}
-              {this.rounds.map(round => {
-                const roundId = map(filter(round), 'id');
-                return (
-                  <TableRow key={roundId}>
-                    {round.map((attempt, index) => {
-                      if (!attempt) {
-                        return <StyledTableCell key="miss" index={index} />;
-                      }
-
-                      return (
-                        <StyledTableCell key={attempt.id} index={index}>
-                          {attempt.offense
-                            ? attempt.trick.name
-                            : attempt.successful
-                              ? 'yes'
-                              : 'no'}
-                        </StyledTableCell>
-                      );
-                    })}
-                  </TableRow>
-                );
-              })}
+              {this.renderRoshambos(skaters)}
+              {this.renderRounds(skaters)}
             </TableBody>
           </DenseTable>
         </DialogContent>

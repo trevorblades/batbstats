@@ -33,9 +33,13 @@ export function getRoshamboEmoji(move) {
   }
 }
 
+export function getInitialLetters(skaters) {
+  return fromPairs(skaters.map(skater => [skater.id, 0]));
+}
+
 export function getLetters(game) {
   let trick;
-  const letters = fromPairs(game.skaters.map(skater => [skater.id, 0]));
+  const letters = getInitialLetters(game.skaters);
   game.attempts.forEach(attempt => {
     if (!trick) {
       if (attempt.successful) {
