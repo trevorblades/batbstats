@@ -18,7 +18,6 @@ import mapValues from 'lodash/mapValues';
 import nest from 'recompose/nest';
 import sortBy from 'lodash/sortBy';
 import styled from 'react-emotion';
-import theme from '@trevorblades/mui-theme';
 import toPairs from 'lodash/toPairs';
 import upperFirst from 'lodash/upperFirst';
 import withProps from 'recompose/withProps';
@@ -51,13 +50,7 @@ const StyledTableCell = mapProps(props => ({
 const Commentary = nest(
   TableRow,
   withProps({colSpan: 2})(TableCell),
-  withProps({align: 'center'})(
-    styled(DialogContentText)({
-      strong: {
-        color: theme.palette.text.primary
-      }
-    })
-  )
+  withProps({align: 'center'})(DialogContentText)
 );
 
 function getAttemptText(attempt) {
@@ -144,10 +137,23 @@ class GameCard extends Component {
   }
 
   renderRounds(skaters) {
-    const letters = getInitialLetters(this.props.game.skaters);
+    const skaterIds = Object.keys(skaters);
+    const letters = getInitialLetters(skaterIds);
+    const opponents = {
+      [skaterIds[0]]: skaters[skaterIds[1]],
+      [skaterIds[1]]: skaters[skaterIds[0]]
+    };
+
     return this.rounds.map(round => {
-      let letterAgainst;
+      let commentary;
       const attempts = filter(round);
+      if (attempts.length === 1) {
+        const {skater_id} = attempts[0];
+        const skater = skaters[skater_id].first_name;
+        const opponent = opponents[skater_id].first_name;
+        commentary = `${skater} misses, ${opponent}'s turn to set`;
+      }
+
       return (
         <Fragment key={map(attempts, 'id')}>
           <TableRow>
@@ -159,7 +165,13 @@ class GameCard extends Component {
               if (!attempt.offense && !attempt.successful) {
                 const {skater_id} = attempt;
                 letters[skater_id]++;
-                letterAgainst = skaters[skater_id];
+
+                const count = letters[skater_id];
+                const earned = LETTERS.slice(0, count).join('.');
+                commentary = `${skaters[skater_id].first_name} gets ${earned}.`;
+                if (count === 5) {
+                  commentary += `, ${opponents[skater_id].first_name} wins!`;
+                }
               }
 
               return (
@@ -169,33 +181,10 @@ class GameCard extends Component {
               );
             })}
           </TableRow>
-          {letterAgainst && (
-            <Commentary>
-              {letterAgainst.first_name} gets{' '}
-              <strong>
-                {LETTERS.slice(0, letters[letterAgainst.id]).join('.')}.
-              </strong>
-            </Commentary>
-          )}
-          {attempts.length === 1 &&
-            this.renderMissed(attempts[0].skater_id, skaters)}
+          {commentary && <Commentary>{commentary}</Commentary>}
         </Fragment>
       );
     });
-  }
-
-  renderMissed(id, skaters) {
-    const skaterIds = Object.keys(skaters);
-    const opponents = {
-      [skaterIds[0]]: skaters[skaterIds[1]],
-      [skaterIds[1]]: skaters[skaterIds[0]]
-    };
-
-    return (
-      <Commentary>
-        {skaters[id].first_name} misses, {opponents[id].first_name}&apos;s turn
-      </Commentary>
-    );
   }
 
   render() {

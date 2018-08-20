@@ -1,4 +1,5 @@
 import fromPairs from 'lodash/fromPairs';
+import map from 'lodash/map';
 import {
   ROSHAMBO_MOVE_ROCK,
   ROSHAMBO_MOVE_PAPER,
@@ -33,13 +34,13 @@ export function getRoshamboEmoji(move) {
   }
 }
 
-export function getInitialLetters(skaters) {
-  return fromPairs(skaters.map(skater => [skater.id, 0]));
+export function getInitialLetters(ids) {
+  return fromPairs(ids.map(id => [id, 0]));
 }
 
 export function getLetters(game) {
   let trick;
-  const letters = getInitialLetters(game.skaters);
+  const letters = getInitialLetters(map(game.skaters, 'id'));
   game.attempts.forEach(attempt => {
     if (!trick) {
       if (attempt.successful) {
