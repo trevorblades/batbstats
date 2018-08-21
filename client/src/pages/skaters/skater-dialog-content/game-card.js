@@ -35,6 +35,18 @@ const Video = styled.div({
   position: 'relative'
 });
 
+const closeButtonSpacing = theme.spacing.unit * 1.5;
+const CloseButtonBase = styled(Button)({
+  position: 'absolute',
+  top: closeButtonSpacing,
+  left: closeButtonSpacing
+});
+
+const CloseButton = withProps({
+  variant: 'fab',
+  mini: true
+})(CloseButtonBase);
+
 const positionAbsolute = position('absolute', 0);
 const StyledIframe = styled.iframe(size('100%'), positionAbsolute);
 
@@ -51,19 +63,12 @@ const fixed = css({
 });
 
 const VideoInner = styled.div(
-  props => (props.fixed ? fixed : positionAbsolute)
-);
-
-const closeButtonSpacing = theme.spacing.unit * 1.5;
-const CloseButton = withProps({
-  variant: 'fab',
-  mini: true
-})(
-  styled(Button)({
-    position: 'absolute',
-    top: closeButtonSpacing,
-    left: closeButtonSpacing
-  })
+  props => (props.fixed ? fixed : positionAbsolute),
+  {
+    [`:not(:hover) ${CloseButtonBase}`]: {
+      display: 'none'
+    }
+  }
 );
 
 const DenseTable = withProps({padding: 'dense'})(Table);
