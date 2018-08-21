@@ -66,6 +66,7 @@ class Skaters extends Component {
         <GamesLoader>
           <Header title={title} />
           <SortableTable
+            padding="dense"
             rows={this.props.skaters}
             onRowClick={this.onTableRowClick}
             columns={[
