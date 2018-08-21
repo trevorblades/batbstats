@@ -1,3 +1,5 @@
+import Button from '@material-ui/core/Button';
+import CloseIcon from '@material-ui/icons/Close';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
@@ -22,9 +24,9 @@ import theme from '@trevorblades/mui-theme';
 import toPairs from 'lodash/toPairs';
 import upperFirst from 'lodash/upperFirst';
 import withProps from 'recompose/withProps';
-import {getRoshamboEmoji, getInitialLetters} from '../../../util/game';
-import {size} from 'polished';
 import {ROSHAMBO_COUNTERS} from '../../../../../api/common';
+import {getRoshamboEmoji, getInitialLetters} from '../../../util/game';
+import {size, position} from 'polished';
 
 const aspectRatio = 16 / 9;
 const Video = styled.div({
@@ -33,15 +35,12 @@ const Video = styled.div({
   position: 'relative'
 });
 
-const staticClassName = css(size('100%'), {
-  position: 'absolute',
-  top: 0,
-  left: 0
-});
+const positionAbsolute = position('absolute', 0);
+const StyledIframe = styled.iframe(size('100%'), positionAbsolute);
 
 const width = 360;
 const spacing = theme.spacing.unit * 3;
-const fixedClassName = css({
+const fixed = css({
   width,
   height: width / aspectRatio,
   boxShadow: theme.shadows[3],
@@ -51,8 +50,23 @@ const fixedClassName = css({
   zIndex: theme.zIndex.modal
 });
 
-const DenseTable = withProps({padding: 'dense'})(Table);
+const VideoInner = styled.div(
+  props => (props.fixed ? fixed : positionAbsolute)
+);
 
+const closeButtonSpacing = theme.spacing.unit * 1.5;
+const CloseButton = withProps({
+  variant: 'fab',
+  mini: true
+})(
+  styled(Button)({
+    position: 'absolute',
+    top: closeButtonSpacing,
+    left: closeButtonSpacing
+  })
+);
+
+const DenseTable = withProps({padding: 'dense'})(Table);
 const StyledTableCell = mapProps(props => ({
   ...props,
   numeric: !props.index
@@ -90,7 +104,8 @@ class GameCard extends Component {
   };
 
   state = {
-    inView: true
+    videoInView: false,
+    fixedVideo: false
   };
 
   get rounds() {
@@ -115,6 +130,24 @@ class GameCard extends Component {
       )
     );
   }
+
+  onScroll = event => {
+    const style = getComputedStyle(event.target);
+    const padding = parseInt(style.getPropertyValue('padding-left'));
+    const videoWidth = event.target.offsetWidth - padding * 2;
+    const videoHeight = videoWidth / aspectRatio;
+    const threshold = videoHeight * 0.75;
+    const videoInView = event.target.scrollTop < threshold;
+    this.setState(prevState => ({
+      videoInView,
+      fixedVideo:
+        videoInView === prevState.videoInView
+          ? prevState.fixedVideo
+          : !videoInView
+    }));
+  };
+
+  onCloseClick = () => this.setState({fixedVideo: false});
 
   renderRoshambos(skaters) {
     const roshambos = mapValues(
@@ -202,15 +235,6 @@ class GameCard extends Component {
     });
   }
 
-  onScroll = event => {
-    const style = getComputedStyle(event.target);
-    const padding = parseInt(style.getPropertyValue('padding-left'));
-    const videoWidth = event.target.offsetWidth - padding * 2;
-    const videoHeight = videoWidth / aspectRatio;
-    const threshold = videoHeight * 0.75;
-    this.setState({inView: event.target.scrollTop < threshold});
-  };
-
   render() {
     const skaters = keyBy('id')(this.props.game.skaters);
     return (
@@ -227,15 +251,21 @@ class GameCard extends Component {
         <DialogContent onScroll={this.props.game.video_id && this.onScroll}>
           {this.props.game.video_id && (
             <Video>
-              <iframe
-                className={this.state.inView ? staticClassName : fixedClassName}
-                allowFullScreen
-                src={`https://www.youtube.com/embed/${
-                  this.props.game.video_id
-                }?rel=0&showinfo=0`}
-                frameBorder={0}
-                allow="autoplay; encrypted-media"
-              />
+              <VideoInner fixed={this.state.fixedVideo}>
+                <StyledIframe
+                  allowFullScreen
+                  src={`https://www.youtube.com/embed/${
+                    this.props.game.video_id
+                  }?rel=0&showinfo=0`}
+                  frameBorder={0}
+                  allow="autoplay; encrypted-media"
+                />
+                {this.state.fixedVideo && (
+                  <CloseButton onClick={this.onCloseClick}>
+                    <CloseIcon />
+                  </CloseButton>
+                )}
+              </VideoInner>
             </Video>
           )}
           <DenseTable>
