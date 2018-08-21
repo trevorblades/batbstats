@@ -55,7 +55,7 @@ export const getSkaters = createSelector(
       const makes = filter(skaterAttempts, 'successful').length;
       return {
         ...skater,
-        games: skaterGames,
+        games: sortBy(skaterGames, ['event_id', 'round']),
         wins,
         losses: skaterGames.length - wins,
         attempts: skaterAttempts,
