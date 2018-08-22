@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import React, {Component, Fragment} from 'react';
 import SortableTable from '../../components/sortable-table';
 import TrickDialogContent from './trick-dialog-content';
+import Typography from '@material-ui/core/Typography';
 import find from 'lodash/find';
 import {connect} from 'react-redux';
 import {getTricks} from '../../selectors';
@@ -71,7 +72,9 @@ class Tricks extends Component {
           <title>{title}</title>
         </Helmet>
         <GamesLoader>
-          <Header title={title} />
+          <Header>
+            <Typography variant="display1">{title}</Typography>
+          </Header>
           <SortableTable
             rows={this.props.tricks}
             onRowClick={this.onTrickClick}

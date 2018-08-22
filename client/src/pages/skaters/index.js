@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import React, {Component, Fragment} from 'react';
 import SkaterDialogContent from './skater-dialog-content';
 import SortableTable from '../../components/sortable-table';
+import Typography from '@material-ui/core/Typography';
 import find from 'lodash/find';
 import styled, {css} from 'react-emotion';
 import theme from '@trevorblades/mui-theme';
@@ -64,7 +65,9 @@ class Skaters extends Component {
           <title>{title}</title>
         </Helmet>
         <GamesLoader>
-          <Header title={title} />
+          <Header>
+            <Typography variant="display1">{title}</Typography>
+          </Header>
           <SortableTable
             padding="dense"
             rows={this.props.skaters}

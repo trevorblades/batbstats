@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import React, {Component, Fragment} from 'react';
 import Select from '@material-ui/core/Select';
 import TrickCharts from './trick-charts';
+import Typography from '@material-ui/core/Typography';
 import styled from 'react-emotion';
 import withProps from 'recompose/withProps';
 import {Link, Switch, Route} from 'react-router-dom';
@@ -60,7 +61,8 @@ class TrickDistribution extends Component {
           <title>{title}</title>
         </Helmet>
         <GamesLoader>
-          <Header title={title}>
+          <Header>
+            <Typography variant="display1">{title}</Typography>
             <StyledSelect value={this.props.location.pathname}>
               {this.renderMenuLink(this.props.match.path, 'Stance variations')}
               {this.renderMenuLink(
