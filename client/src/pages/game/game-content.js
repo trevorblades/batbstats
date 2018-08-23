@@ -28,8 +28,20 @@ import {ROSHAMBO_COUNTERS} from '../../../../api/common';
 import {getRoshamboEmoji, getInitialLetters} from '../../util/game';
 import {size, position} from 'polished';
 
-const StyledDialogContent = styled(DialogContent)({
-  overflowY: 'visible'
+const Container = styled.div({
+  display: 'flex'
+});
+
+const Main = styled.main({
+  flexGrow: 1,
+  overflowY: 'auto'
+});
+
+const sidebarWidth = 250;
+const Sidebar = styled.aside({
+  flexShrink: 0,
+  width: sidebarWidth,
+  backgroundColor: theme.palette.grey[50]
 });
 
 const aspectRatio = 16 / 9;
@@ -54,16 +66,20 @@ const CloseButton = withProps({
 const positionAbsolute = position('absolute', 0);
 const StyledIframe = styled.iframe(size('100%'), positionAbsolute);
 
-const width = 360;
-const spacing = theme.spacing.unit * 3;
+const fixedWidth = 360;
+const fixedHeight = fixedWidth / aspectRatio;
+const fixedSpacing = theme.spacing.unit * 3;
 const fixed = css({
-  width,
-  height: width / aspectRatio,
+  width: fixedWidth,
+  height: fixedHeight,
   position: 'fixed',
-  bottom: spacing,
-  right: spacing,
+  bottom: fixedSpacing,
+  right: sidebarWidth + fixedSpacing,
   zIndex: theme.zIndex.modal
 });
+
+const videoPadding = css({paddingBottom: fixedHeight + fixedSpacing * 2});
+const StyledDialogContent = styled(DialogContent)({overflowY: 'visible'});
 
 const VideoInner = styled.div(
   props => (props.fixed ? fixed : positionAbsolute),
@@ -113,14 +129,6 @@ class GameContent extends Component {
     videoInView: false,
     fixedVideo: false
   };
-
-  componentDidMount() {
-    this.container.parentNode.addEventListener('scroll', this.onScroll);
-  }
-
-  componentWillUnmount() {
-    this.container.parentNode.removeEventListener('scroll', this.onScroll);
-  }
 
   get rounds() {
     const rounds = [];
@@ -252,62 +260,63 @@ class GameContent extends Component {
   render() {
     const skaters = keyBy('id')(this.props.game.skaters);
     return (
-      <div
-        ref={node => {
-          this.container = node;
-        }}
-      >
-        <Header>
-          <div>
-            <Typography variant="headline">
-              {map(this.props.game.skaters, 'full_name').join(' vs. ')}
-            </Typography>
-            <Typography variant="subheading">
-              {this.props.game.event.short_name} {this.props.game.round_name}
-            </Typography>
-          </div>
-        </Header>
-        <StyledDialogContent>
-          {this.props.game.video_id && (
-            <Video
-              innerRef={node => {
-                this.video = node;
-              }}
-            >
-              <VideoInner fixed={this.state.fixedVideo}>
-                <StyledIframe
-                  allowFullScreen
-                  src={`https://www.youtube.com/embed/${
-                    this.props.game.video_id
-                  }?rel=0&showinfo=0`}
-                  frameBorder={0}
-                  allow="autoplay; encrypted-media"
-                />
-                {this.state.fixedVideo && (
-                  <CloseButton onClick={this.onCloseClick}>
-                    <CloseIcon />
-                  </CloseButton>
-                )}
-              </VideoInner>
-            </Video>
-          )}
-          <DenseTable>
-            <TableHead>
-              <TableRow>
-                {this.props.game.skaters.map((skater, index) => (
-                  <StyledTableCell key={skater.id} index={index}>
-                    {skater.full_name}
-                  </StyledTableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {this.renderRoshambos(skaters)}
-              {this.renderRounds(skaters)}
-            </TableBody>
-          </DenseTable>
-        </StyledDialogContent>
-      </div>
+      <Container>
+        <Main onScroll={this.onScroll}>
+          <Header>
+            <div>
+              <Typography variant="headline">
+                {map(this.props.game.skaters, 'full_name').join(' vs. ')}
+              </Typography>
+              <Typography variant="subheading">
+                {this.props.game.event.short_name} {this.props.game.round_name}
+              </Typography>
+            </div>
+          </Header>
+          <StyledDialogContent
+            className={this.state.fixedVideo && videoPadding}
+          >
+            {this.props.game.video_id && (
+              <Video
+                innerRef={node => {
+                  this.video = node;
+                }}
+              >
+                <VideoInner fixed={this.state.fixedVideo}>
+                  <StyledIframe
+                    allowFullScreen
+                    src={`https://www.youtube.com/embed/${
+                      this.props.game.video_id
+                    }?rel=0&showinfo=0`}
+                    frameBorder={0}
+                    allow="autoplay; encrypted-media"
+                  />
+                  {this.state.fixedVideo && (
+                    <CloseButton onClick={this.onCloseClick}>
+                      <CloseIcon />
+                    </CloseButton>
+                  )}
+                </VideoInner>
+              </Video>
+            )}
+            <DenseTable>
+              <TableHead>
+                <TableRow>
+                  {this.props.game.skaters.map((skater, index) => (
+                    <StyledTableCell key={skater.id} index={index}>
+                      {skater.full_name}
+                    </StyledTableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {this.renderRoshambos(skaters)}
+                {this.renderRounds(skaters)}
+              </TableBody>
+            </DenseTable>
+          </StyledDialogContent>
+        </Main>
+        <Sidebar>Stuff</Sidebar>
+      </Container>
     );
   }
 }
