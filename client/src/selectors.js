@@ -15,7 +15,24 @@ import {createSelector} from 'reselect';
 import {getLetters, getRoundName} from './util/game';
 import {getShortName} from './util/event';
 
-const getGames = state => state.games.data;
+export const getGames = createSelector(
+  state => state.games.data,
+  games =>
+    games.map(game => {
+      const {event} = game;
+      const letters = getLetters(game);
+      return {
+        ...game,
+        letters,
+        round_name: getRoundName(game.round),
+        event: {
+          ...event,
+          short_name: getShortName(event)
+        }
+      };
+    })
+);
+
 const getAttempts = createSelector(getGames, games =>
   flatMap(games, game => {
     const skaters = keyBy(game.skaters, 'id');
@@ -35,20 +52,10 @@ export const getSkaters = createSelector(
     return skaters.map(skater => {
       const skaterGames = games
         .filter(game => some(game.skaters, ['id', skater.id]))
-        .map(game => {
-          const {event} = game;
-          const letters = getLetters(game);
-          return {
-            ...game,
-            letters,
-            win: letters[skater.id] < 5,
-            round_name: getRoundName(game.round),
-            event: {
-              ...event,
-              short_name: getShortName(event)
-            }
-          };
-        });
+        .map(game => ({
+          ...game,
+          win: game.letters[skater.id] < 5
+        }));
 
       const wins = filter(skaterGames, 'win').length;
       const skaterAttempts = filter(attempts, ['skater_id', skater.id]);

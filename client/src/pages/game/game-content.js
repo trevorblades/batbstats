@@ -1,8 +1,8 @@
 import Button from '@material-ui/core/Button';
 import CloseIcon from '@material-ui/icons/Close';
-import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
+import Header from '../../components/header';
 import PropTypes from 'prop-types';
 import React, {Component, Fragment} from 'react';
 import Table from '@material-ui/core/Table';
@@ -24,9 +24,13 @@ import theme from '@trevorblades/mui-theme';
 import toPairs from 'lodash/toPairs';
 import upperFirst from 'lodash/upperFirst';
 import withProps from 'recompose/withProps';
-import {ROSHAMBO_COUNTERS} from '../../../../../api/common';
-import {getRoshamboEmoji, getInitialLetters} from '../../../util/game';
+import {ROSHAMBO_COUNTERS} from '../../../../api/common';
+import {getRoshamboEmoji, getInitialLetters} from '../../util/game';
 import {size, position} from 'polished';
+
+const StyledDialogContent = styled(DialogContent)({
+  overflowY: 'visible'
+});
 
 const aspectRatio = 16 / 9;
 const Video = styled.div({
@@ -55,10 +59,9 @@ const spacing = theme.spacing.unit * 3;
 const fixed = css({
   width,
   height: width / aspectRatio,
-  boxShadow: theme.shadows[3],
   position: 'fixed',
   bottom: spacing,
-  left: spacing,
+  right: spacing,
   zIndex: theme.zIndex.modal
 });
 
@@ -102,9 +105,8 @@ function getAttemptText(attempt) {
 
 const LETTERS = 'SKATE'.split('');
 
-class GameCard extends Component {
+class GameContent extends Component {
   static propTypes = {
-    children: PropTypes.node,
     game: PropTypes.object.isRequired
   };
 
@@ -112,6 +114,14 @@ class GameCard extends Component {
     videoInView: false,
     fixedVideo: false
   };
+
+  componentDidMount() {
+    this.container.parentNode.addEventListener('scroll', this.onScroll);
+  }
+
+  componentWillUnmount() {
+    this.container.parentNode.removeEventListener('scroll', this.onScroll);
+  }
 
   get rounds() {
     const rounds = [];
@@ -137,19 +147,17 @@ class GameCard extends Component {
   }
 
   onScroll = event => {
-    const style = getComputedStyle(event.target);
-    const padding = parseInt(style.getPropertyValue('padding-left'));
-    const videoWidth = event.target.offsetWidth - padding * 2;
-    const videoHeight = videoWidth / aspectRatio;
-    const threshold = videoHeight * 0.75;
-    const videoInView = event.target.scrollTop < threshold;
-    this.setState(prevState => ({
-      videoInView,
-      fixedVideo:
-        videoInView === prevState.videoInView
-          ? prevState.fixedVideo
-          : !videoInView
-    }));
+    if (this.video) {
+      const threshold = this.video.offsetHeight * 0.75;
+      const videoInView = event.target.scrollTop < threshold;
+      this.setState(prevState => ({
+        videoInView,
+        fixedVideo:
+          videoInView === prevState.videoInView
+            ? prevState.fixedVideo
+            : !videoInView
+      }));
+    }
   };
 
   onCloseClick = () => this.setState({fixedVideo: false});
@@ -175,7 +183,9 @@ class GameCard extends Component {
               const {move} = roshambos[key][skater.id];
               return (
                 <StyledTableCell key={skater.id} index={index}>
-                  <span title={move}>{getRoshamboEmoji(move)}</span>
+                  <Typography variant="subheading" title={move}>
+                    {getRoshamboEmoji(move)}
+                  </Typography>
                 </StyledTableCell>
               );
             })}
@@ -243,19 +253,28 @@ class GameCard extends Component {
   render() {
     const skaters = keyBy('id')(this.props.game.skaters);
     return (
-      <Fragment>
-        <DialogTitle disableTypography>
-          {this.props.children}
-          <Typography variant="title">
-            {map(this.props.game.skaters, 'full_name').join(' vs. ')}
-          </Typography>
-          <Typography variant="subheading">
-            {this.props.game.event.short_name} {this.props.game.round_name}
-          </Typography>
-        </DialogTitle>
-        <DialogContent onScroll={this.props.game.video_id && this.onScroll}>
+      <div
+        ref={node => {
+          this.container = node;
+        }}
+      >
+        <Header>
+          <div>
+            <Typography variant="headline">
+              {map(this.props.game.skaters, 'full_name').join(' vs. ')}
+            </Typography>
+            <Typography variant="subheading">
+              {this.props.game.event.short_name} {this.props.game.round_name}
+            </Typography>
+          </div>
+        </Header>
+        <StyledDialogContent>
           {this.props.game.video_id && (
-            <Video>
+            <Video
+              innerRef={node => {
+                this.video = node;
+              }}
+            >
               <VideoInner fixed={this.state.fixedVideo}>
                 <StyledIframe
                   allowFullScreen
@@ -288,10 +307,10 @@ class GameCard extends Component {
               {this.renderRounds(skaters)}
             </TableBody>
           </DenseTable>
-        </DialogContent>
-      </Fragment>
+        </StyledDialogContent>
+      </div>
     );
   }
 }
 
-export default GameCard;
+export default GameContent;

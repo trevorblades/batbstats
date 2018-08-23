@@ -1,10 +1,7 @@
-import ButtonBase from '@material-ui/core/ButtonBase';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import FormDialogContent from '../../../components/form-dialog-content';
-import GameCard from './game-card';
 import Grid from '@material-ui/core/Grid';
 import PropTypes from 'prop-types';
 import React, {Component} from 'react';
@@ -14,13 +11,12 @@ import TableHead from '@material-ui/core/TableHead';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
-import Typography from '@material-ui/core/Typography';
 import differenceInYears from 'date-fns/differenceInYears';
 import theme from '@trevorblades/mui-theme';
 import styled from 'react-emotion';
 import withProps from 'recompose/withProps';
 import {createIsEqualWithKeys} from '../../../util';
-import {size} from 'polished';
+import {withRouter} from 'react-router-dom';
 
 const StyledTable = styled(Table)({
   marginTop: theme.spacing.unit
@@ -30,15 +26,6 @@ const GridItem = withProps({
   item: true,
   xs: true
 })(Grid);
-
-const BackButton = styled(ButtonBase)({
-  marginBottom: theme.spacing.unit
-});
-
-const StyledChevronLeftIcon = styled(ChevronLeftIcon)(
-  size(theme.typography.caption.fontSize),
-  {marginLeft: theme.spacing.unit / -2}
-);
 
 const UNKNOWN = 'unknown';
 const NOW = Date.now();
@@ -54,31 +41,13 @@ const isEqualWithKeys = createIsEqualWithKeys(
 
 class SkaterDialogContent extends Component {
   static propTypes = {
+    history: PropTypes.object.isRequired,
     skater: PropTypes.object.isRequired
   };
 
-  state = {
-    game: null
-  };
-
-  onGameClick = game => this.setState({game});
-
-  onBackClick = () => this.setState({game: null});
+  onGameClick = game => this.props.history.push(`/games/${game.id}`);
 
   render() {
-    if (this.state.game) {
-      return (
-        <GameCard game={this.state.game}>
-          <BackButton onClick={this.onBackClick}>
-            <StyledChevronLeftIcon />
-            <Typography variant="caption" color="inherit">
-              Back to {this.props.skater.full_name}
-            </Typography>
-          </BackButton>
-        </GameCard>
-      );
-    }
-
     return (
       <FormDialogContent
         data={this.props.skater}
@@ -143,4 +112,4 @@ class SkaterDialogContent extends Component {
   }
 }
 
-export default SkaterDialogContent;
+export default withRouter(SkaterDialogContent);

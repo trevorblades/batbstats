@@ -1,4 +1,5 @@
 import About from './about';
+import Game from './game';
 import NotFound from './not-found';
 import Paper from '@material-ui/core/Paper';
 import React from 'react';
@@ -24,10 +25,11 @@ const Container = withProps({
 const Pages = () => (
   <Container>
     <Switch>
-      <Route exact component={About} path="/" />
-      <Route exact component={Skaters} path="/skaters" />
-      <Route exact component={Tricks} path="/tricks" />
-      <Route component={TrickDistribution} path="/trick-distribution" />
+      <Route exact path="/" component={About} />
+      <Route exact path="/skaters" component={Skaters} />
+      <Route exact path="/tricks" component={Tricks} />
+      <Route exact path="/games/:id" component={Game} />
+      <Route path="/trick-distribution" component={TrickDistribution} />
       <Route component={NotFound} />
     </Switch>
   </Container>
