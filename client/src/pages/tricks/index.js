@@ -72,23 +72,25 @@ class Tricks extends Component {
           <title>{title}</title>
         </Helmet>
         <GamesLoader>
-          <Header>
-            <Typography variant="display1">{title}</Typography>
-          </Header>
-          <SortableTable
-            rows={this.props.tricks}
-            onRowClick={this.onTrickClick}
-            columns={columns}
-          />
-          {this.state.trick && (
-            <Dialog
-              fullWidth
-              open={this.state.dialogOpen}
-              onClose={this.closeDialog}
-            >
-              <TrickDialogContent trick={this.state.trick} />
-            </Dialog>
-          )}
+          <Fragment>
+            <Header>
+              <Typography variant="display1">{title}</Typography>
+            </Header>
+            <SortableTable
+              rows={this.props.tricks}
+              onRowClick={this.onTrickClick}
+              columns={columns}
+            />
+            {this.state.trick && (
+              <Dialog
+                fullWidth
+                open={this.state.dialogOpen}
+                onClose={this.closeDialog}
+              >
+                <TrickDialogContent trick={this.state.trick} />
+              </Dialog>
+            )}
+          </Fragment>
         </GamesLoader>
       </Fragment>
     );

@@ -61,34 +61,43 @@ class TrickDistribution extends Component {
           <title>{title}</title>
         </Helmet>
         <GamesLoader>
-          <Header>
-            <Typography variant="display1">{title}</Typography>
-            <StyledSelect value={this.props.location.pathname}>
-              {this.renderMenuLink(this.props.match.path, 'Stance variations')}
-              {this.renderMenuLink(
-                `${this.props.match.path}/flips`,
-                'Flip type'
-              )}
-              {this.renderMenuLink(
-                `${this.props.match.path}/spins`,
-                'Spin direction'
-              )}
-            </StyledSelect>
-          </Header>
-          <Switch>
-            <Route exact path={this.props.match.path} component={Variations} />
-            <Route
-              exact
-              path={`${this.props.match.path}/flips`}
-              component={Flips}
-            />
-            <Route
-              exact
-              path={`${this.props.match.path}/spins`}
-              component={Spins}
-            />
-            <Route component={NotFound} />
-          </Switch>
+          <Fragment>
+            <Header>
+              <Typography variant="display1">{title}</Typography>
+              <StyledSelect value={this.props.location.pathname}>
+                {this.renderMenuLink(
+                  this.props.match.path,
+                  'Stance variations'
+                )}
+                {this.renderMenuLink(
+                  `${this.props.match.path}/flips`,
+                  'Flip type'
+                )}
+                {this.renderMenuLink(
+                  `${this.props.match.path}/spins`,
+                  'Spin direction'
+                )}
+              </StyledSelect>
+            </Header>
+            <Switch>
+              <Route
+                exact
+                path={this.props.match.path}
+                component={Variations}
+              />
+              <Route
+                exact
+                path={`${this.props.match.path}/flips`}
+                component={Flips}
+              />
+              <Route
+                exact
+                path={`${this.props.match.path}/spins`}
+                component={Spins}
+              />
+              <Route component={NotFound} />
+            </Switch>
+          </Fragment>
         </GamesLoader>
       </Fragment>
     );

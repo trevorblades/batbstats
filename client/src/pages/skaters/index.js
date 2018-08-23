@@ -65,70 +65,72 @@ class Skaters extends Component {
           <title>{title}</title>
         </Helmet>
         <GamesLoader>
-          <Header>
-            <Typography variant="display1">{title}</Typography>
-          </Header>
-          <SortableTable
-            padding="dense"
-            rows={this.props.skaters}
-            onRowClick={this.onTableRowClick}
-            columns={[
-              {
-                key: 'full_name',
-                label: 'Name'
-              },
-              {
-                key: 'games.length',
-                label: 'GP',
-                numeric: true
-              },
-              {
-                key: 'wins',
-                label: 'W',
-                numeric: true
-              },
-              {
-                key: 'losses',
-                label: 'L',
-                numeric: true
-              },
-              {
-                key: 'attempts.length',
-                label: 'TA',
-                numeric: true
-              },
-              {
-                key: 'makes',
-                label: 'MA',
-                numeric: true
-              },
-              {
-                key: 'misses',
-                label: 'MI',
-                numeric: true
-              },
-              {
-                key: 'redos',
-                label: 'R',
-                numeric: true
-              }
-            ]}
-          />
-          {this.props.user && (
-            <CreateButton>
-              <AddIcon />
-            </CreateButton>
-          )}
-          {this.state.skater && (
-            <Dialog
-              fullWidth
-              classes={{paper: overflowVisible}}
-              open={this.state.dialogOpen}
-              onClose={this.closeDialog}
-            >
-              <SkaterDialogContent skater={this.state.skater} />
-            </Dialog>
-          )}
+          <Fragment>
+            <Header>
+              <Typography variant="display1">{title}</Typography>
+            </Header>
+            <SortableTable
+              padding="dense"
+              rows={this.props.skaters}
+              onRowClick={this.onTableRowClick}
+              columns={[
+                {
+                  key: 'full_name',
+                  label: 'Name'
+                },
+                {
+                  key: 'games.length',
+                  label: 'GP',
+                  numeric: true
+                },
+                {
+                  key: 'wins',
+                  label: 'W',
+                  numeric: true
+                },
+                {
+                  key: 'losses',
+                  label: 'L',
+                  numeric: true
+                },
+                {
+                  key: 'attempts.length',
+                  label: 'TA',
+                  numeric: true
+                },
+                {
+                  key: 'makes',
+                  label: 'MA',
+                  numeric: true
+                },
+                {
+                  key: 'misses',
+                  label: 'MI',
+                  numeric: true
+                },
+                {
+                  key: 'redos',
+                  label: 'R',
+                  numeric: true
+                }
+              ]}
+            />
+            {this.props.user && (
+              <CreateButton>
+                <AddIcon />
+              </CreateButton>
+            )}
+            {this.state.skater && (
+              <Dialog
+                fullWidth
+                classes={{paper: overflowVisible}}
+                open={this.state.dialogOpen}
+                onClose={this.closeDialog}
+              >
+                <SkaterDialogContent skater={this.state.skater} />
+              </Dialog>
+            )}
+          </Fragment>
         </GamesLoader>
       </Fragment>
     );

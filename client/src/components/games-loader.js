@@ -6,6 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import styled from 'react-emotion';
 import {connect} from 'react-redux';
 import {load as loadGames} from '../actions/games';
+import {getGames} from '../selectors';
 
 const EmptyState = styled.div({
   margin: 'auto'
@@ -13,7 +14,8 @@ const EmptyState = styled.div({
 
 class GamesLoader extends Component {
   static propTypes = {
-    children: PropTypes.node.isRequired,
+    children: PropTypes.oneOfType([PropTypes.element, PropTypes.func])
+      .isRequired,
     dispatch: PropTypes.func.isRequired,
     games: PropTypes.array.isRequired,
     hideSnackbar: PropTypes.bool,
@@ -40,7 +42,9 @@ class GamesLoader extends Component {
 
     return (
       <Fragment>
-        {this.props.children}
+        {React.isValidElement(this.props.children)
+          ? this.props.children
+          : this.props.children(this.props.games, this.props.loading)}
         {!this.props.hideSnackbar && (
           <Snackbar
             open={this.props.loading}
@@ -58,7 +62,7 @@ class GamesLoader extends Component {
 }
 
 const mapStateToProps = state => ({
-  games: state.games.data,
+  games: getGames(state),
   loading: state.games.loading
 });
 
