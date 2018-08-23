@@ -104,7 +104,6 @@ function getAttemptText(attempt) {
 }
 
 const LETTERS = 'SKATE'.split('');
-
 class GameContent extends Component {
   static propTypes = {
     game: PropTypes.object.isRequired

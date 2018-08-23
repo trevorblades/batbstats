@@ -16,6 +16,7 @@ class GamesLoader extends Component {
     children: PropTypes.node.isRequired,
     dispatch: PropTypes.func.isRequired,
     games: PropTypes.array.isRequired,
+    hideSnackbar: PropTypes.bool,
     loading: PropTypes.bool.isRequired
   };
 
@@ -40,15 +41,17 @@ class GamesLoader extends Component {
     return (
       <Fragment>
         {this.props.children}
-        <Snackbar
-          open={this.props.loading}
-          message="Loading data..."
-          action={<CircularProgress color="inherit" size={24} />}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'right'
-          }}
-        />
+        {!this.props.hideSnackbar && (
+          <Snackbar
+            open={this.props.loading}
+            message="Loading data..."
+            action={<CircularProgress color="inherit" size={24} />}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'right'
+            }}
+          />
+        )}
       </Fragment>
     );
   }
