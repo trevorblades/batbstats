@@ -51,7 +51,7 @@ class SkaterDialogContent extends Component {
     return (
       <FormDialogContent
         data={this.props.skater}
-        formComponent={SkaterForm}
+        form={SkaterForm}
         isEqual={isEqualWithKeys}
       >
         <DialogTitle>{this.props.skater.full_name}</DialogTitle>

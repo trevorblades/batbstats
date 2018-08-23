@@ -9,7 +9,7 @@ class FormDialogContent extends Component {
   static propTypes = {
     children: PropTypes.node.isRequired,
     data: PropTypes.object.isRequired,
-    formComponent: PropTypes.func.isRequired,
+    form: PropTypes.func.isRequired,
     isEqual: PropTypes.func,
     user: PropTypes.object
   };
@@ -37,7 +37,7 @@ class FormDialogContent extends Component {
 
   render() {
     if (this.state.editing) {
-      return React.createElement(this.props.formComponent, {
+      return React.createElement(this.props.form, {
         data: this.props.data,
         onCancel: this.stopEditing
       });

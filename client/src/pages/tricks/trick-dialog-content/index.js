@@ -21,7 +21,7 @@ const isEqualWithKeys = createIsEqualWithKeys(
 const TrickDialogContent = props => (
   <FormDialogContent
     data={props.trick}
-    formComponent={TrickForm}
+    form={TrickForm}
     isEqual={isEqualWithKeys}
   >
     <DialogTitle>{props.trick.name}</DialogTitle>
