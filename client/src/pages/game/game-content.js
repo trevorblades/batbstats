@@ -19,10 +19,12 @@ import mapProps from 'recompose/mapProps';
 import mapValues from 'lodash/mapValues';
 import nest from 'recompose/nest';
 import sortBy from 'lodash/sortBy';
+import sum from 'lodash/sum';
 import styled, {css} from 'react-emotion';
 import theme from '@trevorblades/mui-theme';
 import toPairs from 'lodash/toPairs';
 import upperFirst from 'lodash/upperFirst';
+import values from 'lodash/values';
 import withProps from 'recompose/withProps';
 import {ROSHAMBO_COUNTERS} from '../../../../api/common';
 import {getRoshamboEmoji, getInitialLetters} from '../../util/game';
@@ -41,7 +43,8 @@ const sidebarWidth = 250;
 const Sidebar = styled.aside({
   flexShrink: 0,
   width: sidebarWidth,
-  backgroundColor: theme.palette.grey[50]
+  padding: theme.spacing.unit * 3,
+  backgroundColor: theme.palette.background.default
 });
 
 const aspectRatio = 16 / 9;
@@ -315,7 +318,15 @@ class GameContent extends Component {
             </DenseTable>
           </StyledDialogContent>
         </Main>
-        <Sidebar>Stuff</Sidebar>
+        <Sidebar>
+          <Typography gutterBottom variant="title">
+            Game snapshot
+          </Typography>
+          <Typography>{this.rounds.length} rounds</Typography>
+          <Typography>
+            {sum(values(this.props.game.letters))} letters earned
+          </Typography>
+        </Sidebar>
       </Container>
     );
   }
