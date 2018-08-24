@@ -52,6 +52,7 @@ class MenuButton extends Component {
           <MoreHorizIcon />
         </StyledIconButton>
         <Menu
+          disableRestoreFocus
           open={Boolean(this.state.anchorEl)}
           anchorEl={this.state.anchorEl}
           onClose={this.closeMenu}
