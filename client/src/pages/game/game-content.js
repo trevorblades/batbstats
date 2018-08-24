@@ -4,7 +4,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import Header from '../../components/header';
 import PropTypes from 'prop-types';
-import React, {Component, Fragment} from 'react';
+import React, {PureComponent, Fragment} from 'react';
 import Table from '@material-ui/core/Table';
 import TableHead from '@material-ui/core/TableHead';
 import TableBody from '@material-ui/core/TableBody';
@@ -110,7 +110,7 @@ const Commentary = nest(
 function getAttemptText(attempt) {
   let redos = '';
   if (attempt.redos) {
-    redos = '🔄';
+    redos = ' 🔄';
     if (attempt.redos > 1) {
       redos += `x${attempt.redos}`;
     }
@@ -118,7 +118,7 @@ function getAttemptText(attempt) {
 
   const {successful} = attempt;
   if (attempt.offense) {
-    const text = `${attempt.trick.name} ${redos}`;
+    const text = attempt.trick.name + redos;
     return successful ? text : <s>{text}</s>;
   }
 
@@ -127,7 +127,7 @@ function getAttemptText(attempt) {
 }
 
 const LETTERS = 'SKATE'.split('');
-class GameContent extends Component {
+class GameContent extends PureComponent {
   static propTypes = {
     game: PropTypes.object.isRequired
   };
@@ -265,39 +265,34 @@ class GameContent extends Component {
   }
 
   renderSidebar() {
-    let totalRuns = 0;
-    let longestRun = 0;
-    let currentRun = 0;
-    for (let i = 0; i < this.rounds.length; i++) {
-      const round = filter(this.rounds[i]);
-      if (round.length > 1) {
-        if (!currentRun) {
-          totalRuns++;
-        }
+    const runs = this.rounds.reduce(
+      (runs, round) => {
+        const attempts = filter(round);
+        return attempts.length > 1
+          ? [...runs.slice(0, -1), runs[runs.length - 1] + 1]
+          : [...filter(runs), 0];
+      },
+      [0]
+    );
 
-        currentRun++;
-        if (currentRun > longestRun) {
-          longestRun = currentRun;
-        }
-      } else {
-        currentRun = 0;
-      }
-    }
+    const stats = {
+      'Total rounds': this.rounds.length,
+      'Total runs': runs.length,
+      'Longest run': pluralize('trick', Math.max(...runs), true),
+      'Letters earned': sum(values(this.props.game.letters)),
+      'Redos given': sumBy(this.props.game.attempts, 'redos')
+    };
 
-    const lettersEarned = sum(values(this.props.game.letters));
-    const redosGiven = sumBy(this.props.game.attempts, 'redos');
     return (
       <Sidebar>
         <Typography gutterBottom variant="title">
           Game snapshot
         </Typography>
-        <Typography>Total rounds: {this.rounds.length}</Typography>
-        <Typography>Total runs: {totalRuns}</Typography>
-        <Typography>
-          Longest run: {pluralize('trick', longestRun, true)}
-        </Typography>
-        <Typography>Letters earned: {lettersEarned}</Typography>
-        <Typography>Redos given: {redosGiven}</Typography>
+        {Object.keys(stats).map(key => (
+          <Typography gutterBottom key={key}>
+            {key}: {stats[key]}
+          </Typography>
+        ))}
       </Sidebar>
     );
   }
