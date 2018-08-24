@@ -164,7 +164,7 @@ export const getVariationsPieData = createSelector(
 function toLineData(iteratee) {
   return attempts => {
     const groups = groupBy(attempts, iteratee);
-    const eventIds = uniq(map(attempts, 'event_id'));
+    const eventIds = uniq(map(attempts, 'event_id')).sort();
     const data = Object.keys(groups).map(key => {
       const counts = groupBy(groups[key], 'event_id');
       return {
