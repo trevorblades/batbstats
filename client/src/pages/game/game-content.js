@@ -108,20 +108,22 @@ const Commentary = nest(
 );
 
 function getAttemptText(attempt) {
-  const {successful} = attempt;
-  if (attempt.offense) {
-    let {name} = attempt.trick;
-    if (attempt.redos) {
-      name += ' 🔄';
-      if (attempt.redos > 1) {
-        name += attempt.redos;
-      }
+  let redos = '';
+  if (attempt.redos) {
+    redos = '🔄';
+    if (attempt.redos > 1) {
+      redos += `x${attempt.redos}`;
     }
-
-    return successful ? name : <s>{name}</s>;
   }
 
-  return successful ? '✅' : '❌';
+  const {successful} = attempt;
+  if (attempt.offense) {
+    const text = `${attempt.trick.name} ${redos}`;
+    return successful ? text : <s>{text}</s>;
+  }
+
+  const result = successful ? '✅' : '❌';
+  return result + redos;
 }
 
 const LETTERS = 'SKATE'.split('');
