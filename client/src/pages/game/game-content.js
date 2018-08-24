@@ -266,12 +266,10 @@ class GameContent extends PureComponent {
 
   renderSidebar() {
     const runs = this.rounds.reduce(
-      (runs, round) => {
-        const attempts = filter(round);
-        return attempts.length > 1
+      (runs, round) =>
+        filter(round).length > 1
           ? [...runs.slice(0, -1), runs[runs.length - 1] + 1]
-          : [...filter(runs), 0];
-      },
+          : [...filter(runs), 0],
       [0]
     );
 
