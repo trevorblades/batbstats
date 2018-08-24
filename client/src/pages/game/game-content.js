@@ -260,6 +260,39 @@ class GameContent extends Component {
     });
   }
 
+  renderSidebar() {
+    let longestRun = 0;
+    let currentRun = 0;
+    for (let i = 0; i < this.rounds.length; i++) {
+      const round = filter(this.rounds[i]);
+      if (round.length > 1) {
+        currentRun++;
+        if (currentRun > longestRun) {
+          longestRun = currentRun;
+        }
+      } else {
+        currentRun = 0;
+
+        const roundsRemaining = this.rounds.length - (i + 1);
+        if (roundsRemaining <= longestRun) {
+          break;
+        }
+      }
+    }
+
+    const lettersGiven = sum(values(this.props.game.letters));
+    return (
+      <Sidebar>
+        <Typography gutterBottom variant="title">
+          Game snapshot
+        </Typography>
+        <Typography>Total rounds: {this.rounds.length}</Typography>
+        <Typography>Longest run: {longestRun}</Typography>
+        <Typography>Letters given: {lettersGiven}</Typography>
+      </Sidebar>
+    );
+  }
+
   render() {
     const skaters = keyBy('id')(this.props.game.skaters);
     return (
@@ -318,15 +351,7 @@ class GameContent extends Component {
             </DenseTable>
           </StyledDialogContent>
         </Main>
-        <Sidebar>
-          <Typography gutterBottom variant="title">
-            Game snapshot
-          </Typography>
-          <Typography>{this.rounds.length} rounds</Typography>
-          <Typography>
-            {sum(values(this.props.game.letters))} letters earned
-          </Typography>
-        </Sidebar>
+        {this.renderSidebar()}
       </Container>
     );
   }
