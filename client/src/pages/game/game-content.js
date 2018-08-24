@@ -18,6 +18,7 @@ import map from 'lodash/map';
 import mapProps from 'recompose/mapProps';
 import mapValues from 'lodash/mapValues';
 import nest from 'recompose/nest';
+import pluralize from 'pluralize';
 import sortBy from 'lodash/sortBy';
 import sum from 'lodash/sum';
 import styled, {css} from 'react-emotion';
@@ -261,22 +262,22 @@ class GameContent extends Component {
   }
 
   renderSidebar() {
+    let totalRuns = 0;
     let longestRun = 0;
     let currentRun = 0;
     for (let i = 0; i < this.rounds.length; i++) {
       const round = filter(this.rounds[i]);
       if (round.length > 1) {
+        if (!currentRun) {
+          totalRuns++;
+        }
+
         currentRun++;
         if (currentRun > longestRun) {
           longestRun = currentRun;
         }
       } else {
         currentRun = 0;
-
-        const roundsRemaining = this.rounds.length - (i + 1);
-        if (roundsRemaining <= longestRun) {
-          break;
-        }
       }
     }
 
@@ -287,7 +288,10 @@ class GameContent extends Component {
           Game snapshot
         </Typography>
         <Typography>Total rounds: {this.rounds.length}</Typography>
-        <Typography>Longest run: {longestRun}</Typography>
+        <Typography>Total runs: {totalRuns}</Typography>
+        <Typography>
+          Longest run: {pluralize('trick', longestRun, true)}
+        </Typography>
         <Typography>Letters given: {lettersGiven}</Typography>
       </Sidebar>
     );
