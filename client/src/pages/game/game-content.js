@@ -21,6 +21,7 @@ import nest from 'recompose/nest';
 import pluralize from 'pluralize';
 import sortBy from 'lodash/sortBy';
 import sum from 'lodash/sum';
+import sumBy from 'lodash/sumBy';
 import styled, {css} from 'react-emotion';
 import theme from '@trevorblades/mui-theme';
 import toPairs from 'lodash/toPairs';
@@ -281,7 +282,8 @@ class GameContent extends Component {
       }
     }
 
-    const lettersGiven = sum(values(this.props.game.letters));
+    const lettersEarned = sum(values(this.props.game.letters));
+    const redosGiven = sumBy(this.props.game.attempts, 'redos');
     return (
       <Sidebar>
         <Typography gutterBottom variant="title">
@@ -292,7 +294,8 @@ class GameContent extends Component {
         <Typography>
           Longest run: {pluralize('trick', longestRun, true)}
         </Typography>
-        <Typography>Letters given: {lettersGiven}</Typography>
+        <Typography>Letters earned: {lettersEarned}</Typography>
+        <Typography>Redos given: {redosGiven}</Typography>
       </Sidebar>
     );
   }
