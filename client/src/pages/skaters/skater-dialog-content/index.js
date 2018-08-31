@@ -47,6 +47,12 @@ class SkaterDialogContent extends Component {
 
   onGameClick = game => this.props.history.push(`/games/${game.id}`);
 
+  get plusMinus() {
+    const plusMinus =
+      this.props.skater.letters_for - this.props.skater.letters_against;
+    return plusMinus > 0 ? `+${plusMinus}` : plusMinus;
+  }
+
   render() {
     return (
       <FormDialogContent
@@ -56,24 +62,25 @@ class SkaterDialogContent extends Component {
       >
         <DialogTitle>{this.props.skater.full_name}</DialogTitle>
         <DialogContent>
+          <DialogContentText>
+            Hometown: {this.props.skater.hometown || UNKNOWN}
+          </DialogContentText>
           <Grid container spacing={theme.spacing.unit * 2}>
-            <GridItem>
-              <DialogContentText>
-                Record: {this.props.skater.wins}-{this.props.skater.losses}
-              </DialogContentText>
-              <DialogContentText>
-                Hometown: {this.props.skater.hometown || UNKNOWN}
-              </DialogContentText>
-            </GridItem>
             <GridItem>
               <DialogContentText>
                 Stance: {this.props.skater.stance || UNKNOWN}
               </DialogContentText>
+              <DialogContentText>
+                Record: {this.props.skater.wins}-{this.props.skater.losses}
+              </DialogContentText>
+            </GridItem>
+            <GridItem>
               {this.props.skater.birth_date && (
                 <DialogContentText>
                   Age: {differenceInYears(NOW, this.props.skater.birth_date)}
                 </DialogContentText>
               )}
+              <DialogContentText>+/-: {this.plusMinus}</DialogContentText>
             </GridItem>
           </Grid>
           <StyledTable padding="none">

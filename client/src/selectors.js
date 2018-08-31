@@ -68,7 +68,14 @@ export const getSkaters = createSelector(
         attempts: skaterAttempts,
         makes,
         misses: skaterAttempts.length - makes,
-        redos: sumBy(skaterAttempts, 'redos')
+        redos: sumBy(skaterAttempts, 'redos'),
+        letters_for: sumBy(skaterGames, game => {
+          const opponent = Object.keys(game.letters).filter(
+            key => parseInt(key) !== skater.id
+          )[0];
+          return game.letters[opponent];
+        }),
+        letters_against: sumBy(skaterGames, `letters[${skater.id}]`)
       };
     });
   }
