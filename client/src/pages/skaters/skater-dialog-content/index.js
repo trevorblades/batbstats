@@ -83,6 +83,7 @@ class SkaterDialogContent extends Component {
               <DialogContentText>+/-: {this.plusMinus}</DialogContentText>
             </GridItem>
           </Grid>
+          <DialogContentText>Favourite lead-off:</DialogContentText>
           <StyledTable padding="none">
             <TableHead>
               <TableRow>
