@@ -6,7 +6,7 @@ const webpack = require('webpack');
 const title = 'BATB Stats';
 module.exports = {
   context: path.join(__dirname, 'src'),
-  entry: ['babel-polyfill', './index.js'],
+  entry: ['@babel/polyfill', './index.js'],
   output: {
     path: path.resolve(__dirname, 'build'),
     filename: '[name].[hash].js',
