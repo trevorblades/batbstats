@@ -94,6 +94,11 @@ class Skaters extends Component {
                   numeric: true
                 },
                 {
+                  key: 'win_percentage',
+                  label: 'W%',
+                  numeric: true
+                },
+                {
                   key: 'attempts.length',
                   label: 'TA',
                   numeric: true

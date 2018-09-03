@@ -60,11 +60,13 @@ export const getSkaters = createSelector(
       const wins = filter(skaterGames, 'win').length;
       const skaterAttempts = filter(attempts, ['skater_id', skater.id]);
       const makes = filter(skaterAttempts, 'successful').length;
+      const gamesPlayed = skaterGames.length;
       return {
         ...skater,
         games: sortBy(skaterGames, ['event_id', 'round']),
         wins,
-        losses: skaterGames.length - wins,
+        losses: gamesPlayed - wins,
+        win_percentage: round(wins / gamesPlayed * 100, 2),
         attempts: skaterAttempts,
         makes,
         misses: skaterAttempts.length - makes,
@@ -84,7 +86,7 @@ export const getSkaters = createSelector(
 function getSuccessRate(attempts) {
   const rate =
     attempts.length && filter(attempts, 'successful').length / attempts.length;
-  return `${round(rate * 100, 2)} %`;
+  return round(rate * 100, 2);
 }
 
 export const getTricks = createSelector(getAttempts, attempts => {
