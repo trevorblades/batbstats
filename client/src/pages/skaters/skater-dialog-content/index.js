@@ -11,9 +11,13 @@ import TableHead from '@material-ui/core/TableHead';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
+import countBy from 'lodash/countBy';
 import differenceInYears from 'date-fns/differenceInYears';
-import theme from '@trevorblades/mui-theme';
+import find from 'lodash/find';
+import maxBy from 'lodash/maxBy';
 import styled from 'react-emotion';
+import theme from '@trevorblades/mui-theme';
+import uniqBy from 'lodash/uniqBy';
 import withProps from 'recompose/withProps';
 import {createIsEqualWithKeys} from '../../../util';
 import {withRouter} from 'react-router-dom';
@@ -53,6 +57,28 @@ class SkaterDialogContent extends Component {
     return plusMinus > 0 ? `+${plusMinus}` : plusMinus;
   }
 
+  get favouriteLeadOff() {
+    const leadOffs = [];
+    this.props.skater.games.forEach(game => {
+      const leadOff = find(game.attempts, {
+        skater_id: this.props.skater.id,
+        offense: true
+      });
+      if (leadOff) {
+        leadOffs.push(leadOff.trick);
+      }
+    });
+
+    const counts = countBy(leadOffs, 'id');
+    return maxBy(
+      uniqBy(leadOffs, 'id').map(trick => ({
+        ...trick,
+        count: counts[trick.id]
+      })),
+      'count'
+    );
+  }
+
   render() {
     return (
       <FormDialogContent
@@ -83,7 +109,11 @@ class SkaterDialogContent extends Component {
               <DialogContentText>+/-: {this.plusMinus}</DialogContentText>
             </GridItem>
           </Grid>
-          <DialogContentText>Favourite lead-off:</DialogContentText>
+          {this.favouriteLeadOff && (
+            <DialogContentText>
+              Favourite lead-off: {this.favouriteLeadOff.name}
+            </DialogContentText>
+          )}
           <StyledTable padding="none">
             <TableHead>
               <TableRow>
