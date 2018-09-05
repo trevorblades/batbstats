@@ -34,6 +34,10 @@ export const getGames = createSelector(
     })
 );
 
+export const getAverageRounds = createSelector(getGames, games =>
+  round(sumBy(games, 'rounds.length') / games.length, 2)
+);
+
 const getAttempts = createSelector(getGames, games =>
   flatMap(games, game => {
     const skaters = keyBy(game.skaters, 'id');

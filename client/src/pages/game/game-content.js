@@ -28,8 +28,10 @@ import upperFirst from 'lodash/upperFirst';
 import values from 'lodash/values';
 import withProps from 'recompose/withProps';
 import {ROSHAMBO_COUNTERS} from '../../../../api/common';
+import {connect} from 'react-redux';
 import {getRoshamboEmoji, getInitialLetters} from '../../util/game';
 import {size, position} from 'polished';
+import {getAverageRounds} from '../../selectors';
 
 const Container = styled.div({
   display: 'flex'
@@ -40,7 +42,7 @@ const Main = styled.main({
   overflowY: 'auto'
 });
 
-const sidebarWidth = 250;
+const sidebarWidth = 300;
 const Sidebar = styled.aside({
   flexShrink: 0,
   width: sidebarWidth,
@@ -128,6 +130,7 @@ function getAttemptText(attempt) {
 const LETTERS = 'SKATE'.split('');
 class GameContent extends PureComponent {
   static propTypes = {
+    averageRounds: PropTypes.number.isRequired,
     game: PropTypes.object.isRequired
   };
 
@@ -250,7 +253,9 @@ class GameContent extends PureComponent {
     );
 
     const stats = {
-      'Total rounds': this.props.game.rounds.length,
+      'Total rounds': `${this.props.game.rounds.length} (avg. ${
+        this.props.averageRounds
+      })`,
       'Total runs': runs.length,
       'Longest run': pluralize('trick', Math.max(...runs), true),
       'Letters earned': sum(values(this.props.game.letters)),
@@ -335,4 +340,8 @@ class GameContent extends PureComponent {
   }
 }
 
-export default GameContent;
+const mapStateToProps = state => ({
+  averageRounds: getAverageRounds(state)
+});
+
+export default connect(mapStateToProps)(GameContent);
