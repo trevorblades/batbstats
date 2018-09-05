@@ -19,7 +19,6 @@ import mapProps from 'recompose/mapProps';
 import mapValues from 'lodash/mapValues';
 import nest from 'recompose/nest';
 import pluralize from 'pluralize';
-import sortBy from 'lodash/sortBy';
 import sum from 'lodash/sum';
 import sumBy from 'lodash/sumBy';
 import styled, {css} from 'react-emotion';
@@ -137,29 +136,6 @@ class GameContent extends PureComponent {
     fixedVideo: false
   };
 
-  get rounds() {
-    const rounds = [];
-    const {attempts} = this.props.game;
-    for (let i = 0; i < attempts.length; i++) {
-      const attempt = attempts[i];
-      const round = [attempt, null];
-      if (attempt.successful) {
-        i++;
-        round[1] = attempts[i];
-      }
-
-      rounds.push(round);
-    }
-
-    const skaterIds = map(this.props.game.skaters, 'id');
-    return rounds.map(round =>
-      sortBy(
-        round,
-        attempt => (attempt ? skaterIds.indexOf(attempt.skater_id) : 0)
-      )
-    );
-  }
-
   onScroll = event => {
     if (this.video) {
       const threshold = this.video.offsetHeight * 0.75;
@@ -221,7 +197,7 @@ class GameContent extends PureComponent {
       [skaterIds[1]]: skaters[skaterIds[0]]
     };
 
-    return this.rounds.map(round => {
+    return this.props.game.rounds.map(round => {
       let commentary;
       const attempts = filter(round);
       if (attempts.length === 1) {
@@ -265,7 +241,7 @@ class GameContent extends PureComponent {
   }
 
   renderSidebar() {
-    const runs = this.rounds.reduce(
+    const runs = this.props.game.rounds.reduce(
       (runs, round) =>
         filter(round).length > 1
           ? [...runs.slice(0, -1), runs[runs.length - 1] + 1]
@@ -274,7 +250,7 @@ class GameContent extends PureComponent {
     );
 
     const stats = {
-      'Total rounds': this.rounds.length,
+      'Total rounds': this.props.game.rounds.length,
       'Total runs': runs.length,
       'Longest run': pluralize('trick', Math.max(...runs), true),
       'Letters earned': sum(values(this.props.game.letters)),
