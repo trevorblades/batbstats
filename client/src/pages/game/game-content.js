@@ -31,7 +31,7 @@ import {ROSHAMBO_COUNTERS} from '../../../../api/common';
 import {connect} from 'react-redux';
 import {getRoshamboEmoji, getInitialLetters} from '../../util/game';
 import {size, position} from 'polished';
-import {getAverageRounds} from '../../selectors';
+import {getAverageRounds, getAverageRuns} from '../../selectors';
 
 const Container = styled.div({
   display: 'flex'
@@ -131,6 +131,7 @@ const LETTERS = 'SKATE'.split('');
 class GameContent extends PureComponent {
   static propTypes = {
     averageRounds: PropTypes.number.isRequired,
+    averageRuns: PropTypes.number.isRequired,
     game: PropTypes.object.isRequired
   };
 
@@ -244,22 +245,13 @@ class GameContent extends PureComponent {
   }
 
   renderSidebar() {
-    const runs = this.props.game.rounds.reduce(
-      (runs, round) =>
-        filter(round).length > 1
-          ? [...runs.slice(0, -1), runs[runs.length - 1] + 1]
-          : [...filter(runs), 0],
-      [0]
-    );
-
+    const {attempts, rounds, runs, letters} = this.props.game;
     const stats = {
-      'Total rounds': `${this.props.game.rounds.length} (avg. ${
-        this.props.averageRounds
-      })`,
-      'Total runs': runs.length,
+      'Total rounds': `${rounds.length} (avg. ${this.props.averageRounds})`,
+      'Total runs': `${runs.length} (avg. ${this.props.averageRuns})`,
       'Longest run': pluralize('trick', Math.max(...runs), true),
-      'Letters earned': sum(values(this.props.game.letters)),
-      'Redos given': sumBy(this.props.game.attempts, 'redos')
+      'Letters earned': sum(values(letters)),
+      'Redos given': sumBy(attempts, 'redos')
     };
 
     return (
@@ -341,7 +333,8 @@ class GameContent extends PureComponent {
 }
 
 const mapStateToProps = state => ({
-  averageRounds: getAverageRounds(state)
+  averageRounds: getAverageRounds(state),
+  averageRuns: getAverageRuns(state)
 });
 
 export default connect(mapStateToProps)(GameContent);

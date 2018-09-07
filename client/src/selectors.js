@@ -21,11 +21,21 @@ export const getGames = createSelector(
     games.map(game => {
       const {event} = game;
       const letters = getLetters(game);
+      const rounds = getRounds(game);
+      const runs = rounds.reduce(
+        (runs, round) =>
+          filter(round).length > 1
+            ? [...runs.slice(0, -1), runs[runs.length - 1] + 1]
+            : [...filter(runs), 0],
+        [0]
+      );
+
       return {
         ...game,
         letters,
         round_name: getRoundName(game.round),
-        rounds: getRounds(game),
+        rounds,
+        runs,
         event: {
           ...event,
           short_name: getShortName(event)
@@ -34,8 +44,18 @@ export const getGames = createSelector(
     })
 );
 
-export const getAverageRounds = createSelector(getGames, games =>
-  round(sumBy(games, 'rounds.length') / games.length, 2)
+function getAverage(key) {
+  return games => round(sumBy(games, key) / games.length, 2);
+}
+
+export const getAverageRounds = createSelector(
+  getGames,
+  getAverage('rounds.length')
+);
+
+export const getAverageRuns = createSelector(
+  getGames,
+  getAverage('runs.length')
 );
 
 const getAttempts = createSelector(getGames, games =>
