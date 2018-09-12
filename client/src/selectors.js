@@ -44,6 +44,10 @@ export const getGames = createSelector(
     })
 );
 
+export const getEvents = createSelector(getGames, games =>
+  sortBy(uniqBy(map(games, 'event'), 'id'), 'id')
+);
+
 function getAverage(key) {
   return games => round(sumBy(games, key) / games.length, 2);
 }
