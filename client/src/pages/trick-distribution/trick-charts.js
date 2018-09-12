@@ -8,7 +8,7 @@ import React, {Component} from 'react';
 import styled from 'react-emotion';
 import theme from '@trevorblades/mui-theme';
 import upperFirst from 'lodash/upperFirst';
-import withProps from 'recompose/withProps';
+import mapProps from 'recompose/mapProps';
 import {STANCES} from '../../../../api/common';
 import {ResponsiveLine} from '@nivo/line';
 import {ResponsivePie} from '@nivo/pie';
@@ -26,68 +26,23 @@ const Container = styled.div({
   }
 });
 
-const symbolSize = 12;
-const tickSize = 5;
-const leftAxisOffset = -40;
-const bottomAxisOffset = 36;
-const margin = theme.spacing.unit * 4;
-const Line = withProps({
-  margin: {
-    top: margin,
-    right: margin,
-    left: margin - leftAxisOffset + tickSize * 2,
-    bottom: margin * 2 + bottomAxisOffset + symbolSize
-  },
-  axisBottom: {
-    tickSize,
-    tickPadding: tickSize,
-    legend: 'event',
-    legendOffset: 36,
-    legendPosition: 'center'
-  },
-  axisLeft: {
-    tickSize,
-    tickPadding: tickSize,
-    legend: 'count',
-    legendOffset: -40,
-    legendPosition: 'center'
-  },
-  legends: [
-    {
-      anchor: 'bottom',
-      direction: 'row',
-      translateY: margin + bottomAxisOffset + symbolSize,
-      itemWidth: 100,
-      itemHeight: symbolSize,
-      symbolSize,
-      symbolShape: 'circle'
-    }
-  ]
-})(ResponsiveLine);
-
-const Pie = withProps({
-  margin: {
-    top: margin,
-    right: margin,
-    left: margin,
-    bottom: margin
-  },
-  innerRadius: 0.5,
-  padAngle: 0.7,
-  enableRadialLabels: false
-})(ResponsivePie);
-
-const Primary = styled.div({
+const PrimaryChart = styled.div({
   flexGrow: 1,
   height: 0,
   minHeight: 350
 });
 
-const Secondary = styled.div({
+const SecondaryChart = styled.div({
   display: 'flex',
   flexShrink: 0,
   backgroundColor: theme.palette.background.default
 });
+
+const symbolSize = 12;
+const tickSize = 5;
+const leftAxisOffset = -40;
+const bottomAxisOffset = 36;
+const chartMargin = theme.spacing.unit * 4;
 
 const PieContainer = styled.div(size(250));
 const Filters = styled.div({
@@ -95,11 +50,15 @@ const Filters = styled.div({
   alignItems: 'center',
   justifyContent: 'space-around',
   flexGrow: 1,
-  padding: margin,
+  padding: chartMargin,
   paddingLeft: 0
 });
 
-const RadioLabel = withProps({control: <Radio />})(FormControlLabel);
+const RadioLabel = mapProps(props => ({
+  ...props,
+  control: <Radio />,
+  label: upperFirst(props.value)
+}))(FormControlLabel);
 
 class TrickCharts extends Component {
   static propTypes = {
@@ -121,12 +80,56 @@ class TrickCharts extends Component {
   render() {
     return (
       <Container>
-        <Primary>
-          <Line data={this.props.lineData} />
-        </Primary>
-        <Secondary>
+        <PrimaryChart>
+          <ResponsiveLine
+            data={this.props.lineData}
+            margin={{
+              top: chartMargin,
+              right: chartMargin,
+              left: chartMargin - leftAxisOffset + tickSize * 2,
+              bottom: chartMargin * 2 + bottomAxisOffset + symbolSize
+            }}
+            axisBottom={{
+              tickSize,
+              tickPadding: tickSize,
+              legend: 'event',
+              legendOffset: 36,
+              legendPosition: 'center'
+            }}
+            axisLeft={{
+              tickSize,
+              tickPadding: tickSize,
+              legend: 'count',
+              legendOffset: -40,
+              legendPosition: 'center'
+            }}
+            legends={[
+              {
+                anchor: 'bottom',
+                direction: 'row',
+                translateY: chartMargin + bottomAxisOffset + symbolSize,
+                itemWidth: 100,
+                itemHeight: symbolSize,
+                symbolSize,
+                symbolShape: 'circle'
+              }
+            ]}
+          />
+        </PrimaryChart>
+        <SecondaryChart>
           <PieContainer>
-            <Pie data={this.props.pieData} />
+            <ResponsivePie
+              data={this.props.pieData}
+              margin={{
+                top: chartMargin,
+                right: chartMargin,
+                left: chartMargin,
+                bottom: chartMargin
+              }}
+              innerRadius={0.5}
+              padAngle={0.7}
+              enableRadialLabels={false}
+            />
           </PieContainer>
           <Filters>
             <FormControl>
@@ -135,9 +138,9 @@ class TrickCharts extends Component {
                 value={this.props.result}
                 onChange={this.onResultChange}
               >
-                <RadioLabel value="both" label="Both" />
-                <RadioLabel value="make" label="Make" />
-                <RadioLabel value="miss" label="Miss" />
+                <RadioLabel value="both" />
+                <RadioLabel value="make" />
+                <RadioLabel value="miss" />
               </RadioGroup>
             </FormControl>
             <FormControl>
@@ -146,9 +149,9 @@ class TrickCharts extends Component {
                 value={this.props.posture}
                 onChange={this.onPostureChange}
               >
-                <RadioLabel value="both" label="Both" />
-                <RadioLabel value="offense" label="Offense" />
-                <RadioLabel value="defense" label="Defense" />
+                <RadioLabel value="both" />
+                <RadioLabel value="offense" />
+                <RadioLabel value="defense" />
               </RadioGroup>
             </FormControl>
             <FormControl>
@@ -157,18 +160,14 @@ class TrickCharts extends Component {
                 value={this.props.stance}
                 onChange={this.onStanceChange}
               >
-                <RadioLabel value="both" label="Both" />
+                <RadioLabel value="both" />
                 {STANCES.map(stance => (
-                  <RadioLabel
-                    value={stance}
-                    key={stance}
-                    label={upperFirst(stance)}
-                  />
+                  <RadioLabel value={stance} key={stance} />
                 ))}
               </RadioGroup>
             </FormControl>
           </Filters>
-        </Secondary>
+        </SecondaryChart>
       </Container>
     );
   }

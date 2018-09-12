@@ -9,7 +9,6 @@ import Select from '@material-ui/core/Select';
 import TrickCharts from './trick-charts';
 import Typography from '@material-ui/core/Typography';
 import styled from 'react-emotion';
-import withProps from 'recompose/withProps';
 import {Link, Switch, Route} from 'react-router-dom';
 import {connect} from 'react-redux';
 import {
@@ -37,7 +36,6 @@ const Spins = connect(state => ({
 }))(TrickCharts);
 
 const StyledSelect = styled(Select)({marginLeft: 'auto'});
-const MenuLink = withProps({component: Link})(MenuItem);
 
 const title = 'Trick distribution';
 class TrickDistribution extends Component {
@@ -46,11 +44,11 @@ class TrickDistribution extends Component {
     match: PropTypes.object.isRequired
   };
 
-  renderMenuLink(path, text) {
+  renderMenuItem(path, text) {
     return (
-      <MenuLink to={path} value={path}>
+      <MenuItem component={Link} to={path} value={path}>
         {text}
-      </MenuLink>
+      </MenuItem>
     );
   }
 
@@ -65,15 +63,15 @@ class TrickDistribution extends Component {
             <Header>
               <Typography variant="display1">{title}</Typography>
               <StyledSelect value={this.props.location.pathname}>
-                {this.renderMenuLink(
+                {this.renderMenuItem(
                   this.props.match.path,
                   'Stance variations'
                 )}
-                {this.renderMenuLink(
+                {this.renderMenuItem(
                   `${this.props.match.path}/flips`,
                   'Flip type'
                 )}
-                {this.renderMenuLink(
+                {this.renderMenuItem(
                   `${this.props.match.path}/spins`,
                   'Spin direction'
                 )}

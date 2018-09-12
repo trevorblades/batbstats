@@ -58,16 +58,11 @@ const Video = styled.div({
 });
 
 const closeButtonSpacing = theme.spacing.unit * 1.5;
-const CloseButtonBase = styled(Button)({
+const CloseButton = styled(Button)({
   position: 'absolute',
   top: closeButtonSpacing,
   left: closeButtonSpacing
 });
-
-const CloseButton = withProps({
-  variant: 'fab',
-  mini: true
-})(CloseButtonBase);
 
 const positionAbsolute = position('absolute', 0);
 const StyledIframe = styled.iframe(size('100%'), positionAbsolute);
@@ -90,13 +85,12 @@ const StyledDialogContent = styled(DialogContent)({overflowY: 'visible'});
 const VideoInner = styled.div(
   props => (props.fixed ? fixed : positionAbsolute),
   {
-    [`:not(:hover) ${CloseButtonBase}`]: {
+    [`:not(:hover) ${CloseButton}`]: {
       display: 'none'
     }
   }
 );
 
-const DenseTable = withProps({padding: 'dense'})(Table);
 const StyledTableCell = mapProps(props => ({
   ...props,
   numeric: !props.index
@@ -302,14 +296,14 @@ class GameContent extends PureComponent {
                     allow="autoplay; encrypted-media"
                   />
                   {this.state.fixedVideo && (
-                    <CloseButton onClick={this.onCloseClick}>
+                    <CloseButton mini variant="fab" onClick={this.onCloseClick}>
                       <CloseIcon />
                     </CloseButton>
                   )}
                 </VideoInner>
               </Video>
             )}
-            <DenseTable>
+            <Table padding="dense">
               <TableHead>
                 <TableRow>
                   {this.props.game.skaters.map((skater, index) => (
@@ -323,7 +317,7 @@ class GameContent extends PureComponent {
                 {this.renderRoshambos(skaters)}
                 {this.renderRounds(skaters)}
               </TableBody>
-            </DenseTable>
+            </Table>
           </StyledDialogContent>
         </Main>
         {this.renderSidebar()}

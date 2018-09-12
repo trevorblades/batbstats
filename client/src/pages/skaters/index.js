@@ -12,21 +12,15 @@ import Typography from '@material-ui/core/Typography';
 import find from 'lodash/find';
 import styled, {css} from 'react-emotion';
 import theme from '@trevorblades/mui-theme';
-import withProps from 'recompose/withProps';
 import {connect} from 'react-redux';
 import {getSkaters} from '../../selectors';
 
 const spacing = theme.spacing.unit * 3;
-const CreateButton = withProps({
-  variant: 'fab',
-  color: 'secondary'
-})(
-  styled(Button)({
-    position: 'absolute',
-    bottom: spacing,
-    right: spacing
-  })
-);
+const CreateButton = styled(Button)({
+  position: 'absolute',
+  bottom: spacing,
+  right: spacing
+});
 
 const overflowVisible = css({overflow: 'visible'});
 
@@ -121,7 +115,7 @@ class Skaters extends Component {
               ]}
             />
             {this.props.user && (
-              <CreateButton>
+              <CreateButton color="secondary" variant="fab">
                 <AddIcon />
               </CreateButton>
             )}

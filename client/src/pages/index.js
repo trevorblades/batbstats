@@ -9,23 +9,17 @@ import Skaters from './skaters';
 import Tricks from './tricks';
 import TrickDistribution from './trick-distribution';
 import styled from 'react-emotion';
-import withProps from 'recompose/withProps';
 import {Switch, Route} from 'react-router-dom';
 
-const Container = withProps({
-  elevation: 0,
-  square: true
-})(
-  styled(Paper)({
-    display: 'flex',
-    flexDirection: 'column',
-    flexGrow: 1,
-    overflow: 'auto'
-  })
-);
+const Container = styled(Paper)({
+  display: 'flex',
+  flexDirection: 'column',
+  flexGrow: 1,
+  overflow: 'auto'
+});
 
 const Pages = () => (
-  <Container>
+  <Container square elevation={0}>
     <Switch>
       <Route exact path="/" component={About} />
       <Route exact path="/events" component={Events} />
