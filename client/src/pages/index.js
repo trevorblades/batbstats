@@ -1,5 +1,6 @@
 import About from './about';
 import Events from './events';
+import Event from './event';
 import Game from './game';
 import NotFound from './not-found';
 import Paper from '@material-ui/core/Paper';
@@ -28,6 +29,7 @@ const Pages = () => (
     <Switch>
       <Route exact path="/" component={About} />
       <Route exact path="/events" component={Events} />
+      <Route exact path="/events/:id" component={Event} />
       <Route exact path="/skaters" component={Skaters} />
       <Route exact path="/tricks" component={Tricks} />
       <Route exact path="/games/:id" component={Game} />

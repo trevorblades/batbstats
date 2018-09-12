@@ -13,7 +13,7 @@ import uniq from 'lodash/uniq';
 import uniqBy from 'lodash/uniqBy';
 import {createSelector} from 'reselect';
 import {getLetters, getRoundName, getRounds} from './util/game';
-import {getShortName} from './util/event';
+import {getShortName, getEventsFromGames} from './util/event';
 
 export const getGames = createSelector(
   state => state.games.data,
@@ -42,10 +42,6 @@ export const getGames = createSelector(
         }
       };
     })
-);
-
-export const getEvents = createSelector(getGames, games =>
-  sortBy(uniqBy(map(games, 'event'), 'id'), 'id')
 );
 
 function getAverage(key) {
@@ -232,3 +228,5 @@ export const getSpinsLineData = createSelector(
   getFilteredAttempts,
   toLineData(getSpinFromAttempt)
 );
+
+export const getEvents = createSelector(getGames, getEventsFromGames);

@@ -1,19 +1,20 @@
 import CenteredCircularProgress from '../../components/centered-circular-progress';
-import GameContent from './game-content';
 import GamesLoader from '../../components/games-loader';
 import NotFound from '../not-found';
 import PropTypes from 'prop-types';
 import React from 'react';
 import find from 'lodash/find';
+import {getEventsFromGames} from '../../util/event';
 
 const Game = props => (
   <GamesLoader hideSnackbar>
     {(games, loading) => {
-      const game = find(games, ['id', parseInt(props.match.params.id)]);
-      if (!game) {
+      const events = getEventsFromGames(games);
+      const event = find(events, ['id', parseInt(props.match.params.id)]);
+      if (!event) {
         return loading ? <CenteredCircularProgress /> : <NotFound />;
       }
-      return <GameContent game={game} />;
+      return event.name;
     }}
   </GamesLoader>
 );
