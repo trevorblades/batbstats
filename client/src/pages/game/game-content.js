@@ -3,6 +3,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import Header from '../../components/header';
+import Helmet from 'react-helmet';
 import PropTypes from 'prop-types';
 import React, {PureComponent, Fragment} from 'react';
 import Table from '@material-ui/core/Table';
@@ -28,6 +29,7 @@ import upperFirst from 'lodash/upperFirst';
 import values from 'lodash/values';
 import withProps from 'recompose/withProps';
 import {ROSHAMBO_COUNTERS} from '../../../../api/common';
+import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
 import {getRoshamboEmoji, getInitialLetters} from '../../util/game';
 import {size, position} from 'polished';
@@ -264,16 +266,21 @@ class GameContent extends PureComponent {
 
   render() {
     const skaters = keyBy('id')(this.props.game.skaters);
+    const title = map(this.props.game.skaters, 'full_name').join(' vs. ');
     return (
       <Container>
+        <Helmet>
+          <title>{title}</title>
+        </Helmet>
         <Main onScroll={this.onScroll}>
           <Header>
             <div>
-              <Typography variant="headline">
-                {map(this.props.game.skaters, 'full_name').join(' vs. ')}
-              </Typography>
+              <Typography variant="headline">{title}</Typography>
               <Typography variant="subheading">
-                {this.props.game.event.short_name} {this.props.game.round_name}
+                <Link to={`/events/${this.props.game.event.id}`}>
+                  {this.props.game.event.short_name}
+                </Link>{' '}
+                {this.props.game.round_name}
               </Typography>
             </div>
           </Header>
