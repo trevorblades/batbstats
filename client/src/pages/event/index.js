@@ -1,4 +1,5 @@
 import CenteredCircularProgress from '../../components/centered-circular-progress';
+import EventContent from './event-content';
 import GamesLoader from '../../components/games-loader';
 import NotFound from '../not-found';
 import PropTypes from 'prop-types';
@@ -14,7 +15,7 @@ const Game = props => (
       if (!event) {
         return loading ? <CenteredCircularProgress /> : <NotFound />;
       }
-      return event.name;
+      return <EventContent event={event} />;
     }}
   </GamesLoader>
 );
