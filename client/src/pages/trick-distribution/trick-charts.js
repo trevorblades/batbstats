@@ -40,7 +40,7 @@ const SecondaryChart = styled.div({
 
 const symbolSize = 12;
 const tickSize = 5;
-const leftAxisOffset = -40;
+const leftAxisOffset = 40;
 const bottomAxisOffset = 36;
 const chartMargin = theme.spacing.unit * 4;
 
@@ -86,21 +86,21 @@ class TrickCharts extends Component {
             margin={{
               top: chartMargin,
               right: chartMargin,
-              left: chartMargin - leftAxisOffset + tickSize * 2,
+              left: chartMargin + leftAxisOffset + tickSize * 2,
               bottom: chartMargin * 2 + bottomAxisOffset + symbolSize
             }}
             axisBottom={{
               tickSize,
               tickPadding: tickSize,
               legend: 'event',
-              legendOffset: 36,
+              legendOffset: bottomAxisOffset,
               legendPosition: 'center'
             }}
             axisLeft={{
               tickSize,
               tickPadding: tickSize,
               legend: 'count',
-              legendOffset: -40,
+              legendOffset: -leftAxisOffset,
               legendPosition: 'center'
             }}
             legends={[
