@@ -36,7 +36,7 @@ const EventContent = props => {
     groupBy(reject(props.event.games, ['round', 5]), 'round')
   ).reverse();
 
-  const bracket = addGameChildren(rounds[0][0], rounds, 1);
+  const game = addGameChildren(rounds[0][0], rounds, 1);
   return (
     <Fragment>
       <Helmet>
@@ -45,7 +45,11 @@ const EventContent = props => {
       <Header>
         <Typography variant="headline">{props.event.name}</Typography>
       </Header>
-      <StyledDialogContent>{bracket.children.length}</StyledDialogContent>
+      <StyledDialogContent>
+        {game.skaters.map(skater => (
+          <div key={skater.id}>{skater.full_name}</div>
+        ))}
+      </StyledDialogContent>
     </Fragment>
   );
 };
