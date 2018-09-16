@@ -2,7 +2,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import Header from '../../components/header';
 import Helmet from 'react-helmet';
 import PropTypes from 'prop-types';
-import React, {Fragment} from 'react';
+import React, {Component, Fragment} from 'react';
 import Typography from '@material-ui/core/Typography';
 import groupBy from 'lodash/groupBy';
 import map from 'lodash/map';
@@ -31,31 +31,41 @@ function addGameChildren(game, rounds, index) {
   };
 }
 
-const EventContent = props => {
-  const rounds = values(
-    groupBy(reject(props.event.games, ['round', 5]), 'round')
-  ).reverse();
+class EventContent extends Component {
+  static propTypes = {
+    event: PropTypes.object.isRequired
+  };
 
-  const game = addGameChildren(rounds[0][0], rounds, 1);
-  return (
-    <Fragment>
-      <Helmet>
-        <title>{props.event.name}</title>
-      </Helmet>
-      <Header>
-        <Typography variant="headline">{props.event.name}</Typography>
-      </Header>
-      <StyledDialogContent>
-        {game.skaters.map(skater => (
-          <div key={skater.id}>{skater.full_name}</div>
-        ))}
-      </StyledDialogContent>
-    </Fragment>
-  );
-};
+  renderGame = game => {
+    return (
+      <Fragment key={game.id}>
+        <div>
+          {game.skaters.map(skater => (
+            <div key={skater.id}>{skater.full_name}</div>
+          ))}
+        </div>
+        {game.children && game.children.map(this.renderGame)}
+      </Fragment>
+    );
+  };
 
-EventContent.propTypes = {
-  event: PropTypes.object.isRequired
-};
+  render() {
+    const rounds = values(
+      groupBy(reject(this.props.event.games, ['round', 5]), 'round')
+    ).reverse();
+    const game = addGameChildren(rounds[0][0], rounds, 1);
+    return (
+      <Fragment>
+        <Helmet>
+          <title>{this.props.event.name}</title>
+        </Helmet>
+        <Header>
+          <Typography variant="headline">{this.props.event.name}</Typography>
+        </Header>
+        <StyledDialogContent>{this.renderGame(game)}</StyledDialogContent>
+      </Fragment>
+    );
+  }
+}
 
 export default EventContent;
