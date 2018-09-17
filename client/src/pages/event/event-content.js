@@ -36,18 +36,16 @@ class EventContent extends Component {
     event: PropTypes.object.isRequired
   };
 
-  renderGame = game => {
-    return (
-      <Fragment key={game.id}>
-        <div>
-          {game.skaters.map(skater => (
-            <div key={skater.id}>{skater.full_name}</div>
-          ))}
-        </div>
-        {game.children && game.children.map(this.renderGame)}
-      </Fragment>
-    );
-  };
+  renderGame = game => (
+    <Fragment key={game.id}>
+      <div>
+        {game.skaters.map(skater => (
+          <div key={skater.id}>{skater.full_name}</div>
+        ))}
+      </div>
+      {game.children && game.children.map(this.renderGame)}
+    </Fragment>
+  );
 
   render() {
     const rounds = values(
