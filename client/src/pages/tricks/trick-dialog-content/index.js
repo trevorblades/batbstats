@@ -47,6 +47,11 @@ const TrickDialogContent = props => (
             Attempts: {props.trick.attempts}
           </DialogContentText>
         </GridItem>
+        <GridItem>
+          <DialogContentText>
+            Other: {Boolean(props.trick.other).toString()}
+          </DialogContentText>
+        </GridItem>
       </Grid>
     </DialogContent>
   </FormDialogContent>

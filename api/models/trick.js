@@ -6,7 +6,8 @@ export default (sequelize, DataTypes) => {
     variation: DataTypes.ENUM(VARIATIONS),
     spin: DataTypes.INTEGER,
     flip: DataTypes.INTEGER,
-    shuv: DataTypes.INTEGER
+    shuv: DataTypes.INTEGER,
+    other: DataTypes.BOOLEAN
   });
 
   Trick.associate = models => {

@@ -119,7 +119,11 @@ export const getTricks = createSelector(getAttempts, attempts => {
   return uniqBy(flatMap(attempts, 'trick'), 'id').map(trick => {
     const group = groups[trick.id];
     const needsInfo =
-      !trick.variation && !trick.flip && !trick.shuv && !trick.spin;
+      !trick.variation &&
+      !trick.flip &&
+      !trick.shuv &&
+      !trick.spin &&
+      !trick.other;
     return {
       ...trick,
       complete: needsInfo ? '🚨' : '👍',

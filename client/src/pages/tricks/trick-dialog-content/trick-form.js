@@ -1,6 +1,8 @@
+import Checkbox from '@material-ui/core/Checkbox';
 import Form from '../../../components/form';
 import FormField, {formFieldProps} from '../../../components/form-field';
 import FormControl from '@material-ui/core/FormControl';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Grid from '@material-ui/core/Grid';
 import GridItem from './grid-item';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -25,11 +27,14 @@ class TrickForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      other: Boolean(props.data.other),
       variation: props.data.variation || ''
     };
   }
 
   onVariationChange = event => this.setState({variation: event.target.value});
+
+  onOtherChange = (event, checked) => this.setState({other: checked});
 
   render() {
     return (
@@ -88,6 +93,16 @@ class TrickForm extends Component {
                 ))}
               </Select>
             </FormControl>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={this.state.other}
+                  onChange={this.onOtherChange}
+                />
+              }
+              label="Other"
+            />
+            <input type="hidden" name="other" value={this.state.other} />
           </Fragment>
         )}
       />

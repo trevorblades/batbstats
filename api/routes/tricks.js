@@ -33,7 +33,10 @@ const validation = createValidationMiddleware(
     },
     flip: int,
     shuv: int,
-    spin: int
+    spin: int,
+    other: {
+      isBoolean: true
+    }
   })
 );
 
