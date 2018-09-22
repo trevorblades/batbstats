@@ -12,6 +12,7 @@ import reject from 'lodash/reject';
 import styled from 'react-emotion';
 import theme from '@trevorblades/mui-theme';
 import values from 'lodash/values';
+import {Link} from 'react-router-dom';
 
 const StyledDialogContent = styled(DialogContent)({
   overflowY: 'visible'
@@ -27,7 +28,8 @@ const Games = styled.div({
 const Game = styled(Paper)({
   flexShrink: 0,
   width: 200,
-  margin: `${theme.spacing.unit * 2}px 0`
+  margin: `${theme.spacing.unit * 2}px 0`,
+  textDecoration: 'none'
 });
 
 const Skater = styled(Typography)({
@@ -80,10 +82,12 @@ class EventContent extends Component {
 
   renderBracket = game => (
     <Games key={game.id}>
-      <Game>
+      <Game component={Link} to={`/games/${game.id}`}>
         {game.skaters.map((skater, index) => (
           <Fragment key={skater.id}>
             <Skater
+              noWrap
+              title={skater.full_name}
               color={
                 game.letters[skater.id] === 5 ? 'textSecondary' : 'default'
               }
