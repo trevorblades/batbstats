@@ -82,6 +82,7 @@ class TrickCharts extends Component {
       <Container>
         <PrimaryChart>
           <ResponsiveLine
+            colors="category10"
             data={this.props.lineData}
             margin={{
               top: chartMargin,
@@ -119,6 +120,7 @@ class TrickCharts extends Component {
         <SecondaryChart>
           <PieContainer>
             <ResponsivePie
+              colors="category10"
               data={this.props.pieData}
               margin={{
                 top: chartMargin,
