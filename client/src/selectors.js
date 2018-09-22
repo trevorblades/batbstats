@@ -144,11 +144,13 @@ export const getTricks = createSelector(
 function toPieData(iteratee) {
   return attempts => {
     const counts = countBy(attempts, iteratee);
-    return Object.keys(counts).map(key => ({
-      id: key,
-      label: key,
-      value: counts[key]
-    }));
+    return Object.keys(counts)
+      .sort()
+      .map(key => ({
+        id: key,
+        label: key,
+        value: counts[key]
+      }));
   };
 }
 
@@ -210,16 +212,18 @@ function toLineData(iteratee) {
   return attempts => {
     const groups = groupBy(attempts, iteratee);
     const eventIds = uniq(map(attempts, 'event_id')).sort();
-    const data = Object.keys(groups).map(key => {
-      const counts = groupBy(groups[key], 'event_id');
-      return {
-        id: key,
-        data: eventIds.map(eventId => ({
-          x: eventId,
-          y: counts[eventId] ? counts[eventId].length : 0
-        }))
-      };
-    });
+    const data = Object.keys(groups)
+      .sort()
+      .map(key => {
+        const counts = groupBy(groups[key], 'event_id');
+        return {
+          id: key,
+          data: eventIds.map(eventId => ({
+            x: eventId,
+            y: counts[eventId] ? counts[eventId].length : 0
+          }))
+        };
+      });
 
     return sortBy(data, 'id');
   };
