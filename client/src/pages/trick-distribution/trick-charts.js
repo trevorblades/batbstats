@@ -60,6 +60,7 @@ const RadioLabel = mapProps(props => ({
   label: upperFirst(props.value)
 }))(FormControlLabel);
 
+const COLORS = 'category10';
 class TrickCharts extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -82,7 +83,7 @@ class TrickCharts extends Component {
       <Container>
         <PrimaryChart>
           <ResponsiveLine
-            colors="category10"
+            colors={COLORS}
             data={this.props.lineData}
             margin={{
               top: chartMargin,
@@ -120,7 +121,7 @@ class TrickCharts extends Component {
         <SecondaryChart>
           <PieContainer>
             <ResponsivePie
-              colors="category10"
+              colors={COLORS}
               data={this.props.pieData}
               margin={{
                 top: chartMargin,
