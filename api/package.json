@@ -22,7 +22,7 @@
     "sequelize": "^4.37.10"
   },
   "devDependencies": {
-    "@trevorblades/eslint-config": "^6.15.0",
+    "@trevorblades/eslint-config": "^6.16.0",
     "dotenv": "^6.0.0",
     "eslint": "^5.2.0",
     "esm": "^3.0.72",
