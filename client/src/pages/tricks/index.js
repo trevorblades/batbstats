@@ -12,10 +12,28 @@ import {connect} from 'react-redux';
 import {getTricks} from '../../selectors';
 
 const title = 'Tricks';
+const columns = [
+  {key: 'name'},
+  {
+    key: 'attempts',
+    label: 'A',
+    numeric: true
+  },
+  {
+    key: 'offense_success_rate',
+    label: 'OSR',
+    numeric: true
+  },
+  {
+    key: 'defense_success_rate',
+    label: 'DSR',
+    numeric: true
+  }
+];
+
 class Tricks extends Component {
   static propTypes = {
-    tricks: PropTypes.array.isRequired,
-    user: PropTypes.object
+    tricks: PropTypes.array.isRequired
   };
 
   state = {
@@ -40,32 +58,6 @@ class Tricks extends Component {
   closeDialog = () => this.setState({dialogOpen: false});
 
   render() {
-    const columns = [{key: 'name'}];
-    if (this.props.user) {
-      columns.push({
-        key: 'complete',
-        numeric: true
-      });
-    }
-
-    columns.push(
-      {
-        key: 'attempts',
-        label: 'A',
-        numeric: true
-      },
-      {
-        key: 'offense_success_rate',
-        label: 'OSR',
-        numeric: true
-      },
-      {
-        key: 'defense_success_rate',
-        label: 'DSR',
-        numeric: true
-      }
-    );
-
     return (
       <Fragment>
         <Helmet>
@@ -98,8 +90,7 @@ class Tricks extends Component {
 }
 
 const mapStateToProps = state => ({
-  tricks: getTricks(state),
-  user: state.user.data
+  tricks: getTricks(state)
 });
 
 export default connect(mapStateToProps)(Tricks);

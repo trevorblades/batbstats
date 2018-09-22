@@ -114,25 +114,32 @@ function getSuccessRate(attempts) {
   return round(rate * 100, 2);
 }
 
-export const getTricks = createSelector(getAttempts, attempts => {
-  const groups = groupBy(attempts, 'trick.id');
-  return uniqBy(flatMap(attempts, 'trick'), 'id').map(trick => {
-    const group = groups[trick.id];
-    const needsInfo =
-      !trick.variation &&
-      !trick.flip &&
-      !trick.shuv &&
-      !trick.spin &&
-      !trick.other;
-    return {
-      ...trick,
-      complete: needsInfo ? '🚨' : '👍',
-      attempts: group.length,
-      offense_success_rate: getSuccessRate(filter(group, 'offense')),
-      defense_success_rate: getSuccessRate(reject(group, 'offense'))
-    };
-  });
-});
+const getUser = state => state.user.data;
+export const getTricks = createSelector(
+  getAttempts,
+  getUser,
+  (attempts, user) => {
+    const groups = groupBy(attempts, 'trick.id');
+    return uniqBy(flatMap(attempts, 'trick'), 'id').map(trick => {
+      const group = groups[trick.id];
+      return {
+        ...trick,
+        name:
+          user &&
+          !trick.variation &&
+          !trick.flip &&
+          !trick.shuv &&
+          !trick.spin &&
+          !trick.other
+            ? `⚠️ ${trick.name}`
+            : trick.name,
+        attempts: group.length,
+        offense_success_rate: getSuccessRate(filter(group, 'offense')),
+        defense_success_rate: getSuccessRate(reject(group, 'offense'))
+      };
+    });
+  }
+);
 
 function toPieData(iteratee) {
   return attempts => {
