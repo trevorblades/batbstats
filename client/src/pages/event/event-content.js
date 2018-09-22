@@ -1,6 +1,8 @@
 import DialogContent from '@material-ui/core/DialogContent';
+import Divider from '@material-ui/core/Divider';
 import Header from '../../components/header';
 import Helmet from 'react-helmet';
+import Paper from '@material-ui/core/Paper';
 import PropTypes from 'prop-types';
 import React, {Component, Fragment} from 'react';
 import Typography from '@material-ui/core/Typography';
@@ -15,17 +17,43 @@ const StyledDialogContent = styled(DialogContent)({
   overflowY: 'visible'
 });
 
-const Bracket = styled.div({
+const Games = styled.div({
   display: 'flex',
   flexDirection: 'row-reverse',
   alignItems: 'center',
   justifyContent: 'flex-end'
 });
 
-const Game = styled.div({
+const Game = styled(Paper)({
   flexShrink: 0,
   width: 200,
   margin: `${theme.spacing.unit * 2}px 0`
+});
+
+const Skater = styled(Typography)({
+  padding: `${theme.spacing.unit / 2}px ${theme.spacing.unit}px`
+});
+
+const Connector = styled.div({
+  display: 'flex',
+  alignSelf: 'stretch',
+  alignItems: 'center'
+});
+
+const bracketWidth = theme.spacing.unit * 2;
+const bracketColor = theme.palette.grey[300];
+const Bracket = styled.div({
+  flexGrow: 1,
+  width: bracketWidth,
+  height: '50%',
+  border: `solid 1px ${bracketColor}`,
+  borderLeft: 'none'
+});
+
+const Line = styled.div({
+  width: bracketWidth,
+  height: 1,
+  backgroundColor: bracketColor
 });
 
 function addGameChildren(game, rounds, index) {
@@ -51,14 +79,29 @@ class EventContent extends Component {
   };
 
   renderBracket = game => (
-    <Bracket key={game.id}>
+    <Games key={game.id}>
       <Game>
-        {game.skaters.map(skater => (
-          <div key={skater.id}>{skater.full_name}</div>
+        {game.skaters.map((skater, index) => (
+          <Fragment key={skater.id}>
+            <Skater
+              color={
+                game.letters[skater.id] === 5 ? 'textSecondary' : 'default'
+              }
+            >
+              {skater.full_name}
+            </Skater>
+            {!index && <Divider />}
+          </Fragment>
         ))}
       </Game>
+      {game.round > 1 && (
+        <Connector>
+          <Bracket />
+          <Line />
+        </Connector>
+      )}
       <div>{game.children && game.children.map(this.renderBracket)}</div>
-    </Bracket>
+    </Games>
   );
 
   render() {
