@@ -5,6 +5,7 @@ import skaters from './skaters';
 import tricks from './tricks';
 
 const router = express.Router();
+router.get('/', (req, res) => res.sendStatus(200));
 router.use('/auth', auth);
 router.use('/games', games);
 router.use('/skaters', skaters);
