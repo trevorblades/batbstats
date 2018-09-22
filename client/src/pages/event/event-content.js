@@ -8,10 +8,24 @@ import groupBy from 'lodash/groupBy';
 import map from 'lodash/map';
 import reject from 'lodash/reject';
 import styled from 'react-emotion';
+import theme from '@trevorblades/mui-theme';
 import values from 'lodash/values';
 
 const StyledDialogContent = styled(DialogContent)({
   overflowY: 'visible'
+});
+
+const Bracket = styled.div({
+  display: 'flex',
+  flexDirection: 'row-reverse',
+  alignItems: 'center',
+  justifyContent: 'flex-end'
+});
+
+const Game = styled.div({
+  flexShrink: 0,
+  width: 200,
+  margin: `${theme.spacing.unit * 2}px 0`
 });
 
 function addGameChildren(game, rounds, index) {
@@ -36,15 +50,15 @@ class EventContent extends Component {
     event: PropTypes.object.isRequired
   };
 
-  renderGame = game => (
-    <Fragment key={game.id}>
-      <div>
+  renderBracket = game => (
+    <Bracket key={game.id}>
+      <Game>
         {game.skaters.map(skater => (
           <div key={skater.id}>{skater.full_name}</div>
         ))}
-      </div>
-      {game.children && game.children.map(this.renderGame)}
-    </Fragment>
+      </Game>
+      <div>{game.children && game.children.map(this.renderBracket)}</div>
+    </Bracket>
   );
 
   render() {
@@ -60,7 +74,7 @@ class EventContent extends Component {
         <Header>
           <Typography variant="headline">{this.props.event.name}</Typography>
         </Header>
-        <StyledDialogContent>{this.renderGame(game)}</StyledDialogContent>
+        <StyledDialogContent>{this.renderBracket(game)}</StyledDialogContent>
       </Fragment>
     );
   }
