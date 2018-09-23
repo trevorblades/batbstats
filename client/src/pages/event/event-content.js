@@ -17,7 +17,8 @@ import {Link} from 'react-router-dom';
 const BracketContainer = styled.div({
   display: 'flex',
   flexShrink: 0,
-  overflowX: 'auto'
+  overflowX: 'auto',
+  userSelect: 'none'
 });
 
 const StyledDialogContent = styled(DialogContent)({
@@ -81,14 +82,33 @@ function addGameChildren(game, rounds, index) {
   };
 }
 
+const preventDefault = event => event.preventDefault();
 class EventContent extends Component {
   static propTypes = {
     event: PropTypes.object.isRequired
   };
 
+  onMouseDown = () => {
+    window.addEventListener('mousemove', this.onMouseMove);
+    window.addEventListener('mouseup', this.onMouseUp);
+  };
+
+  onMouseMove = event => {
+    this.bracketContainer.scrollLeft -= event.movementX;
+  };
+
+  onMouseUp = () => {
+    window.removeEventListener('mousemove', this.onMouseMove);
+    window.removeEventListener('mouseup', this.onMouseUp);
+  };
+
   renderBracket = game => (
     <Games key={game.id}>
-      <Game component={Link} to={`/games/${game.id}`}>
+      <Game
+        component={Link}
+        to={`/games/${game.id}`}
+        onDragStart={preventDefault}
+      >
         {game.skaters.map((skater, index) => (
           <Fragment key={skater.id}>
             <Skater
@@ -127,7 +147,12 @@ class EventContent extends Component {
         <Header>
           <Typography variant="headline">{this.props.event.name}</Typography>
         </Header>
-        <BracketContainer>
+        <BracketContainer
+          onMouseDown={this.onMouseDown}
+          innerRef={node => {
+            this.bracketContainer = node;
+          }}
+        >
           <div />
           {/* the empty div is to force the following DialogContent to behave as if it's :not(:first-child) */}
           <StyledDialogContent>{this.renderBracket(game)}</StyledDialogContent>
