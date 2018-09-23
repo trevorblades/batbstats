@@ -18,11 +18,11 @@ fs.readdirSync(__dirname)
     db[pascalcase(model.name)] = model;
   });
 
-Object.keys(db).forEach(modelName => {
-  if (db[modelName].associate) {
-    db[modelName].associate(db);
+for (const key in db) {
+  if (db[key].associate) {
+    db[key].associate(db);
   }
-});
+}
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
