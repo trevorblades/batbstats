@@ -1,15 +1,15 @@
 import About from './about';
-import Events from './events';
 import Event from './event';
+import Events from './events';
 import Game from './game';
 import NotFound from './not-found';
 import Paper from '@material-ui/core/Paper';
 import React from 'react';
 import Skaters from './skaters';
-import Tricks from './tricks';
 import TrickDistribution from './trick-distribution';
+import Tricks from './tricks';
 import styled from 'react-emotion';
-import {Switch, Route} from 'react-router-dom';
+import {Route, Switch} from 'react-router-dom';
 
 const Container = styled(Paper)({
   display: 'flex',

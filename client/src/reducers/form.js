@@ -1,8 +1,8 @@
 import api from '../api';
+import {Cmd, loop} from 'redux-loop';
+import {failure, submit, success} from '../actions/form';
 import {getFormId} from '../util/form';
 import {handleActions} from 'redux-actions';
-import {loop, Cmd} from 'redux-loop';
-import {submit, success, failure} from '../actions/form';
 
 async function createRequest(method, action, body) {
   const response = await api[method](action, {body});

@@ -1,15 +1,15 @@
-import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import FormDialogContent from '../../../components/form-dialog-content';
 import Grid from '@material-ui/core/Grid';
 import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 import SkaterForm from './skater-form';
 import Table from '@material-ui/core/Table';
-import TableHead from '@material-ui/core/TableHead';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import differenceInYears from 'date-fns/differenceInYears';
 import round from 'lodash/round';

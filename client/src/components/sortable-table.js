@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 import Table from '@material-ui/core/Table';
-import TableRow from '@material-ui/core/TableRow';
-import TableHead from '@material-ui/core/TableHead';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import get from 'lodash/get';
 import orderBy from 'lodash/orderBy';

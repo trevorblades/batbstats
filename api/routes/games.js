@@ -1,11 +1,11 @@
 import express from 'express';
 import {
-  Skater,
-  Game,
-  Event,
-  Roshambo,
-  Replacement,
   Attempt,
+  Event,
+  Game,
+  Replacement,
+  Roshambo,
+  Skater,
   Trick
 } from '../models';
 

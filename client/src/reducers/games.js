@@ -1,13 +1,13 @@
 import api from '../api';
-import {loop, Cmd} from 'redux-loop';
-import {handleActions} from 'redux-actions';
+import {Cmd, loop} from 'redux-loop';
 import {
+  failure,
   load,
   success,
-  failure,
   updateSkater,
   updateTrick
 } from '../actions/games';
+import {handleActions} from 'redux-actions';
 
 async function fetchData(page = 1) {
   const response = await api.get(`/games?page=${page}`);

@@ -1,5 +1,5 @@
-import FormControl from '@material-ui/core/FormControl';
 import Form from '../../../components/form';
+import FormControl from '@material-ui/core/FormControl';
 import FormField, {formFieldProps} from '../../../components/form-field';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -8,8 +8,8 @@ import React, {Component, Fragment} from 'react';
 import Select from '@material-ui/core/Select';
 import sortBy from 'lodash/sortBy';
 import upperFirst from 'lodash/upperFirst';
-import {STANCES, STANCE_REGULAR} from '../../../../../api/common';
 import {DatePicker} from 'material-ui-pickers';
+import {STANCES, STANCE_REGULAR} from '../../../../../api/common';
 import {countries} from 'countries-list';
 import {updateSkater} from '../../../actions/games';
 

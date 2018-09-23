@@ -1,5 +1,5 @@
-import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogActions from '@material-ui/core/DialogActions';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import GitHubLogo from 'react-icons/lib/fa/github';
 import IconButton from '@material-ui/core/IconButton';
 import List from '@material-ui/core/List';

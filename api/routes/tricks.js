@@ -1,8 +1,8 @@
 import createValidationMiddleware from '../middleware/validation';
 import express from 'express';
 import jwt from '../middleware/jwt';
-import {VARIATIONS} from '../common';
 import {Trick} from '../models';
+import {VARIATIONS} from '../common';
 import {checkSchema} from 'express-validator/check';
 import {matchedData} from 'express-validator/filter';
 

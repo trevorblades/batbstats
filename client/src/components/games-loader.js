@@ -5,8 +5,8 @@ import Snackbar from '@material-ui/core/Snackbar';
 import Typography from '@material-ui/core/Typography';
 import styled from 'react-emotion';
 import {connect} from 'react-redux';
-import {load as loadGames} from '../actions/games';
 import {getGames} from '../selectors';
+import {load as loadGames} from '../actions/games';
 
 const EmptyState = styled.div({
   margin: 'auto'

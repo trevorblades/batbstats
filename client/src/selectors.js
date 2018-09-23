@@ -12,8 +12,8 @@ import sumBy from 'lodash/sumBy';
 import uniq from 'lodash/uniq';
 import uniqBy from 'lodash/uniqBy';
 import {createSelector} from 'reselect';
+import {getEventsFromGames, getShortName} from './util/event';
 import {getLetters, getRoundName, getRounds} from './util/game';
-import {getShortName, getEventsFromGames} from './util/event';
 
 export const getGames = createSelector(
   state => state.games.data,

@@ -1,8 +1,8 @@
 import Checkbox from '@material-ui/core/Checkbox';
 import Form from '../../../components/form';
-import FormField, {formFieldProps} from '../../../components/form-field';
 import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormField, {formFieldProps} from '../../../components/form-field';
 import Grid from '@material-ui/core/Grid';
 import GridItem from './grid-item';
 import InputLabel from '@material-ui/core/InputLabel';

@@ -1,6 +1,6 @@
 import {combineReducers} from 'redux-loop';
 import {handleAction} from 'redux-actions';
-import {setResult, setStance, setPosture} from '../actions/settings';
+import {setPosture, setResult, setStance} from '../actions/settings';
 
 export default combineReducers({
   result: handleAction(setResult, (state, {payload}) => payload, 'both'),

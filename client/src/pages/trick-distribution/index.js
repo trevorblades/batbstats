@@ -9,7 +9,7 @@ import Select from '@material-ui/core/Select';
 import TrickCharts from './trick-charts';
 import Typography from '@material-ui/core/Typography';
 import styled from 'react-emotion';
-import {Link, Switch, Route} from 'react-router-dom';
+import {Link, Route, Switch} from 'react-router-dom';
 import {connect} from 'react-redux';
 import {
   getFlipsLineData,

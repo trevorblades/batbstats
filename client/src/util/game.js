@@ -2,8 +2,8 @@ import fromPairs from 'lodash/fromPairs';
 import map from 'lodash/map';
 import sortBy from 'lodash/sortBy';
 import {
-  ROSHAMBO_MOVE_ROCK,
   ROSHAMBO_MOVE_PAPER,
+  ROSHAMBO_MOVE_ROCK,
   ROSHAMBO_MOVE_SCISSORS
 } from '../../../api/common';
 

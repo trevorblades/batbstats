@@ -1,5 +1,5 @@
-import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import Helmet from 'react-helmet';
 import React, {Fragment} from 'react';
 import Typography from '@material-ui/core/Typography';

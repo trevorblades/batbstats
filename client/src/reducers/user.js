@@ -1,10 +1,10 @@
 import api from '../api';
 import jwtDecode from 'jwt-decode';
 import store from 'store';
+import {Cmd, loop} from 'redux-loop';
 import {TOKEN_KEY} from '../constants';
-import {logIn, logOut, renewToken, success, failure} from '../actions/user';
+import {failure, logIn, logOut, renewToken, success} from '../actions/user';
 import {handleActions} from 'redux-actions';
-import {loop, Cmd} from 'redux-loop';
 
 function userFromToken(token) {
   try {

@@ -1,19 +1,19 @@
 import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormLabel from '@material-ui/core/FormLabel';
 import PropTypes from 'prop-types';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import React, {Component} from 'react';
+import mapProps from 'recompose/mapProps';
 import styled from 'react-emotion';
 import theme from '@trevorblades/mui-theme';
 import upperFirst from 'lodash/upperFirst';
-import mapProps from 'recompose/mapProps';
-import {STANCES} from '../../../../api/common';
 import {ResponsiveLine} from '@nivo/line';
 import {ResponsivePie} from '@nivo/pie';
+import {STANCES} from '../../../../api/common';
 import {connect} from 'react-redux';
-import {setResult, setStance, setPosture} from '../../actions/settings';
+import {setPosture, setResult, setStance} from '../../actions/settings';
 import {size} from 'polished';
 
 const Container = styled.div({
