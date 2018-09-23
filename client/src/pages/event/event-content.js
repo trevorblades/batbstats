@@ -79,28 +79,21 @@ function addGameChildren(game, rounds, index) {
     ...game,
     children: children
       .filter(child => intersection(skaters, map(child.skaters, 'id')).length)
-      .map(child => {
-        if (replacements.length) {
-          console.log(replacements);
-        }
-        return addGameChildren(
-          {
-            ...child,
-            skaters: child.skaters.map(skater => {
-              if (!replacements.length) {
-                return skater;
+      .map(child =>
+        addGameChildren(
+          replacements.length
+            ? {
+                ...child,
+                skaters: child.skaters.map(skater => ({
+                  ...skater,
+                  replaced: replacements.includes(skater.id)
+                }))
               }
-
-              return {
-                ...skater,
-                replaced: replacements.includes(skater.id)
-              };
-            })
-          },
+            : child,
           rounds,
           index + 1
-        );
-      })
+        )
+      )
   };
 }
 
