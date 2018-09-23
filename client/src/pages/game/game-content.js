@@ -2,6 +2,9 @@ import Button from '@material-ui/core/Button';
 import CloseIcon from '@material-ui/icons/Close';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
 import Header from '../../components/header';
 import Helmet from 'react-helmet';
 import PropTypes from 'prop-types';
@@ -48,7 +51,6 @@ const sidebarWidth = 300;
 const Sidebar = styled.aside({
   flexShrink: 0,
   width: sidebarWidth,
-  padding: theme.spacing.unit * 3,
   backgroundColor: theme.palette.background.default
 });
 
@@ -250,16 +252,29 @@ class GameContent extends PureComponent {
       'Redos given': sumBy(attempts, 'redos')
     };
 
+    const listItems = [];
+    for (const key in stats) {
+      listItems.push(
+        <ListItem key={key}>
+          <ListItemText
+            primary={key}
+            primaryTypographyProps={{
+              variant: 'body1',
+              color: 'textSecondary'
+            }}
+            secondary={stats[key]}
+            secondaryTypographyProps={{
+              variant: 'subheading',
+              color: 'default'
+            }}
+          />
+        </ListItem>
+      );
+    }
+
     return (
       <Sidebar>
-        <Typography gutterBottom variant="title">
-          Game snapshot
-        </Typography>
-        {Object.keys(stats).map(key => (
-          <Typography gutterBottom key={key}>
-            {key}: {stats[key]}
-          </Typography>
-        ))}
+        <List>{listItems}</List>
       </Sidebar>
     );
   }
