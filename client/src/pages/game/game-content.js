@@ -244,12 +244,18 @@ class GameContent extends PureComponent {
 
   renderSidebar() {
     const {attempts, rounds, runs, letters} = this.props.game;
+    const offensiveAttempts = filter(attempts, 'offense');
+    const totalFlips = sumBy(offensiveAttempts, attempt =>
+      Math.abs(attempt.trick.flip)
+    );
+
     const stats = {
       'Total rounds': `${rounds.length} (avg. ${this.props.averageRounds})`,
       'Total runs': `${runs.length} (avg. ${this.props.averageRuns})`,
       'Longest run': pluralize('trick', Math.max(...runs), true),
       'Letters earned': sum(values(letters)),
-      'Redos given': sumBy(attempts, 'redos')
+      'Redos given': sumBy(attempts, 'redos'),
+      'Avg. flips per trick': totalFlips / offensiveAttempts.length
     };
 
     const listItems = [];
