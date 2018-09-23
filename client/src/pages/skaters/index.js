@@ -12,14 +12,15 @@ import Typography from '@material-ui/core/Typography';
 import find from 'lodash/find';
 import styled, {css} from 'react-emotion';
 import theme from '@trevorblades/mui-theme';
+import {SIDEBAR_WIDTH} from '../../components/sidebar';
 import {connect} from 'react-redux';
 import {getSkaters} from '../../selectors';
 
 const spacing = theme.spacing.unit * 3;
 const CreateButton = styled(Button)({
-  position: 'absolute',
+  position: 'fixed',
   bottom: spacing,
-  right: spacing
+  left: SIDEBAR_WIDTH + spacing
 });
 
 const overflowVisible = css({overflow: 'visible'});
