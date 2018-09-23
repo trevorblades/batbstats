@@ -12,7 +12,6 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import differenceInYears from 'date-fns/differenceInYears';
-import filter from 'lodash/filter';
 import round from 'lodash/round';
 import styled from 'react-emotion';
 import theme from '@trevorblades/mui-theme';
@@ -42,6 +41,10 @@ const isEqualWithKeys = createIsEqualWithKeys(
   'updated_at'
 );
 
+function formatPercent(percent) {
+  return `${round(percent * 100, 2)} %`;
+}
+
 class SkaterDialogContent extends Component {
   static propTypes = {
     history: PropTypes.object.isRequired,
@@ -57,11 +60,22 @@ class SkaterDialogContent extends Component {
   }
 
   get flipTendency() {
-    const flips = filter(this.props.skater.attempts, 'trick.flip');
+    const flips = this.props.skater.attempts.filter(
+      attempt => attempt.offense && attempt.trick.flip
+    );
+    if (!flips.length) {
+      return 'N/A';
+    }
+
     const kickflips = flips.filter(attempt => attempt.trick.flip > 0);
     const percent = kickflips.length / flips.length;
-    const text = `${round(percent * 100, 2)} %`;
-    return percent === 0.5 ? text : `${percent > 0.5 ? 'K' : 'H'} ${text}`;
+    if (percent === 0.5) {
+      return formatPercent(percent);
+    }
+
+    const isKickflip = percent > 0.5;
+    const normalized = isKickflip ? percent : 1 - percent;
+    return `${isKickflip ? 'K' : 'H'} ${formatPercent(normalized)}`;
   }
 
   render() {
