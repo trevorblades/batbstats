@@ -6,6 +6,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import PropTypes from 'prop-types';
 import React, {Component, Fragment} from 'react';
 import Select from '@material-ui/core/Select';
+import sortBy from 'lodash/sortBy';
 import upperFirst from 'lodash/upperFirst';
 import {STANCES, STANCE_REGULAR} from '../../../../../api/common';
 import {DatePicker} from 'material-ui-pickers';
@@ -31,18 +32,6 @@ class SkaterForm extends Component {
     this.setState({[event.target.name]: event.target.value});
 
   onBirthDateChange = date => this.setState({birthDate: date});
-
-  renderCountries() {
-    const items = [];
-    for (const key in countries) {
-      items.push(
-        <MenuItem key={key} value={key}>
-          {countries[key].name}
-        </MenuItem>
-      );
-    }
-    return items;
-  }
 
   render() {
     return (
@@ -87,7 +76,17 @@ class SkaterForm extends Component {
                 value={this.state.country}
                 onChange={this.onSelectChange}
               >
-                {this.renderCountries()}
+                {sortBy(
+                  Object.keys(countries).map(key => ({
+                    ...countries[key],
+                    code: key
+                  })),
+                  'name'
+                ).map(country => (
+                  <MenuItem key={country.code} value={country.code}>
+                    {country.name}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
             <DatePicker
