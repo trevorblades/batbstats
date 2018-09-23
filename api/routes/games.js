@@ -1,5 +1,13 @@
 import express from 'express';
-import {Skater, Game, Event, Roshambo, Attempt, Trick} from '../models';
+import {
+  Skater,
+  Game,
+  Event,
+  Roshambo,
+  Replacement,
+  Attempt,
+  Trick
+} from '../models';
 
 const router = express.Router();
 
@@ -15,6 +23,7 @@ router.get('/', async (req, res) => {
       Event,
       Skater,
       Roshambo,
+      Replacement,
       {
         model: Attempt,
         include: Trick
