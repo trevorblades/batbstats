@@ -14,6 +14,12 @@ import theme from '@trevorblades/mui-theme';
 import values from 'lodash/values';
 import {Link} from 'react-router-dom';
 
+const BracketContainer = styled.div({
+  display: 'flex',
+  flexShrink: 0,
+  overflowX: 'auto'
+});
+
 const StyledDialogContent = styled(DialogContent)({
   overflowY: 'visible'
 });
@@ -121,7 +127,11 @@ class EventContent extends Component {
         <Header>
           <Typography variant="headline">{this.props.event.name}</Typography>
         </Header>
-        <StyledDialogContent>{this.renderBracket(game)}</StyledDialogContent>
+        <BracketContainer>
+          <div />
+          {/* the empty div is to force the following DialogContent to behave as if it's :not(:first-child) */}
+          <StyledDialogContent>{this.renderBracket(game)}</StyledDialogContent>
+        </BracketContainer>
       </Fragment>
     );
   }
