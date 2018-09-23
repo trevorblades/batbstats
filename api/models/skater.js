@@ -14,7 +14,7 @@ export default (sequelize, DataTypes) => {
     },
     stance: DataTypes.ENUM(STANCES),
     birth_date: DataTypes.DATE,
-    hometown: DataTypes.STRING
+    country: DataTypes.STRING
   });
 
   Skater.associate = models => {

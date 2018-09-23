@@ -35,7 +35,7 @@ const validation = createValidationMiddleware(
       },
       isISO8601: true
     },
-    hometown: {
+    country: {
       exists: true,
       trim: true
     }

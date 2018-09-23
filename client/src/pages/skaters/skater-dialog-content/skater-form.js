@@ -22,7 +22,7 @@ class SkaterForm extends Component {
     super(props);
     this.state = {
       birthDate: props.data.birth_date ? new Date(props.data.birth_date) : null,
-      country: props.data.country || '',
+      country: props.data.country || 'US',
       stance: props.data.stance || STANCE_REGULAR
     };
   }

@@ -19,6 +19,7 @@ import styled from 'react-emotion';
 import theme from '@trevorblades/mui-theme';
 import uniqBy from 'lodash/uniqBy';
 import withProps from 'recompose/withProps';
+import {countries} from 'countries-list';
 import {createIsEqualWithKeys} from '../../../util';
 import {withRouter} from 'react-router-dom';
 
@@ -38,7 +39,7 @@ const isEqualWithKeys = createIsEqualWithKeys(
   'first_name',
   'last_name',
   'stance',
-  'hometown',
+  'country',
   'birth_date',
   'updated_at'
 );
@@ -80,30 +81,38 @@ class SkaterDialogContent extends Component {
   }
 
   render() {
+    const {
+      id,
+      full_name,
+      country,
+      stance,
+      wins,
+      losses,
+      birth_date,
+      games
+    } = this.props.skater;
     return (
       <FormDialogContent
         data={this.props.skater}
         form={SkaterForm}
         isEqual={isEqualWithKeys}
       >
-        <DialogTitle>{this.props.skater.full_name}</DialogTitle>
+        <DialogTitle>{full_name}</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Hometown: {this.props.skater.hometown || UNKNOWN}
+            Country: {country ? countries[country].name : UNKNOWN}
           </DialogContentText>
           <Grid container spacing={theme.spacing.unit * 2}>
             <GridItem>
+              <DialogContentText>Stance: {stance || UNKNOWN}</DialogContentText>
               <DialogContentText>
-                Stance: {this.props.skater.stance || UNKNOWN}
-              </DialogContentText>
-              <DialogContentText>
-                Record: {this.props.skater.wins}-{this.props.skater.losses}
+                Record: {wins}-{losses}
               </DialogContentText>
             </GridItem>
             <GridItem>
-              {this.props.skater.birth_date && (
+              {birth_date && (
                 <DialogContentText>
-                  Age: {differenceInYears(NOW, this.props.skater.birth_date)}
+                  Age: {differenceInYears(NOW, birth_date)}
                 </DialogContentText>
               )}
               <DialogContentText>+/-: {this.plusMinus}</DialogContentText>
@@ -124,11 +133,9 @@ class SkaterDialogContent extends Component {
               </TableRow>
             </TableHead>
             <TableBody>
-              {this.props.skater.games.map(game => {
+              {games.map(game => {
                 const {event} = game;
-                const opponent = game.skaters.find(
-                  skater => skater.id !== this.props.skater.id
-                );
+                const opponent = game.skaters.find(skater => skater.id !== id);
                 return (
                   <TableRow
                     hover

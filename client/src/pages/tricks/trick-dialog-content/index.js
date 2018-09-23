@@ -16,7 +16,8 @@ const isEqualWithKeys = createIsEqualWithKeys(
   'flip',
   'shuv',
   'spin',
-  'other'
+  'other',
+  'updated_at'
 );
 
 const TrickDialogContent = props => (
