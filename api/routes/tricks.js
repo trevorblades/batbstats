@@ -48,7 +48,9 @@ router.put('/:id', validation, async (req, res) => {
   }
 
   const data = matchedData(req);
-  await trick.update(data);
+  trick.set(data);
+  trick.changed('updated_at', true);
+  await trick.save();
   res.send(trick);
 });
 

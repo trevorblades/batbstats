@@ -50,7 +50,9 @@ router.put('/:id', validation, async (req, res) => {
   }
 
   const data = matchedData(req);
-  await skater.update(data);
+  skater.set(data);
+  skater.changed('updated_at', true);
+  await skater.save();
   res.send(skater);
 });
 
