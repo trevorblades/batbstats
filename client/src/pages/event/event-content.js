@@ -123,64 +123,57 @@ class EventContent extends Component {
     window.removeEventListener('mouseup', this.onMouseUp);
   };
 
-  renderBracket = game => {
-    const replacements = game.replacements.reduce(
-      (map, replacement) => ({
-        ...map,
-        [replacement.out_id]: replacement.in_id
-      }),
-      {}
-    );
-
-    return (
-      <Games key={game.id}>
-        <Game
-          component={Link}
-          to={`/games/${game.id}`}
-          onDragStart={preventDefault}
-        >
-          {game.skaters.map((skater, index) => {
-            const replaced = replacements[skater.id] === null;
-            const loss = game.letters[skater.id] === 5 || replaced;
-            return (
-              <Fragment key={skater.id}>
-                <Skater
-                  noWrap
-                  title={skater.full_name}
-                  color={loss ? 'textSecondary' : 'default'}
-                >
-                  {replaced ? (
-                    'Bye'
-                  ) : (
-                    <Fragment>
-                      {skater.country && `${getEmojiFlag(skater.country)} `}
-                      <span
-                        style={{
-                          textDecoration: skater.replaced
-                            ? 'line-through'
-                            : 'none'
-                        }}
-                      >
-                        {skater.full_name}
-                      </span>
-                    </Fragment>
-                  )}
-                </Skater>
-                {!index && <Divider />}
-              </Fragment>
-            );
-          })}
-        </Game>
-        {game.round > 1 && (
-          <Connector>
-            <Bracket />
-            <Line />
-          </Connector>
-        )}
-        <div>{game.children && game.children.map(this.renderBracket)}</div>
-      </Games>
-    );
-  };
+  renderBracket = game => (
+    <Games key={game.id}>
+      <Game
+        component={game.bye ? 'div' : Link}
+        to={game.bye ? null : `/games/${game.id}`}
+        onDragStart={preventDefault}
+      >
+        {game.skaters.map((skater, index) => {
+          const bye = game.bye === skater.id;
+          return (
+            <Fragment key={skater.id}>
+              <Skater
+                noWrap
+                title={skater.full_name}
+                color={
+                  game.letters[skater.id] === 5 || bye
+                    ? 'textSecondary'
+                    : 'default'
+                }
+              >
+                {bye ? (
+                  'Bye'
+                ) : (
+                  <Fragment>
+                    {skater.country && `${getEmojiFlag(skater.country)} `}
+                    <span
+                      style={{
+                        textDecoration: skater.replaced
+                          ? 'line-through'
+                          : 'none'
+                      }}
+                    >
+                      {skater.full_name}
+                    </span>
+                  </Fragment>
+                )}
+              </Skater>
+              {!index && <Divider />}
+            </Fragment>
+          );
+        })}
+      </Game>
+      {game.round > 1 && (
+        <Connector>
+          <Bracket />
+          <Line />
+        </Connector>
+      )}
+      <div>{game.children && game.children.map(this.renderBracket)}</div>
+    </Games>
+  );
 
   render() {
     const rounds = values(

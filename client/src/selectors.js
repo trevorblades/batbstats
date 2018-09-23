@@ -30,12 +30,24 @@ export const getGames = createSelector(
         [0]
       );
 
+      let bye = null;
+      for (let i = 0; i < game.replacements.length; i++) {
+        // the heuristic for determining a bye is if the game has a replacement
+        // where the value of in_id is NULL
+        const replacement = game.replacements[i];
+        if (replacement.in_id === null) {
+          bye = replacement.out_id;
+          break;
+        }
+      }
+
       return {
         ...game,
         letters,
         round_name: getRoundName(game.round),
         rounds,
         runs,
+        bye,
         event: {
           ...event,
           short_name: getShortName(event)
