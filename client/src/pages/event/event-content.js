@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import React, {Component, Fragment} from 'react';
 import Typography from '@material-ui/core/Typography';
 import groupBy from 'lodash/groupBy';
+import intersection from 'lodash/intersection';
 import map from 'lodash/map';
 import reject from 'lodash/reject';
 import styled from 'react-emotion';
@@ -72,14 +73,34 @@ function addGameChildren(game, rounds, index) {
     return game;
   }
 
+  const replacements = map(game.replacements, 'out_id');
+  const skaters = map(game.skaters, 'id').concat(replacements);
   return {
     ...game,
     children: children
-      .filter(child => {
-        const skaters = map(child.skaters, 'id');
-        return game.skaters.some(skater => skaters.includes(skater.id));
+      .filter(child => intersection(skaters, map(child.skaters, 'id')).length)
+      .map(child => {
+        if (replacements.length) {
+          console.log(replacements);
+        }
+        return addGameChildren(
+          {
+            ...child,
+            skaters: child.skaters.map(skater => {
+              if (!replacements.length) {
+                return skater;
+              }
+
+              return {
+                ...skater,
+                replaced: replacements.includes(skater.id)
+              };
+            })
+          },
+          rounds,
+          index + 1
+        );
       })
-      .map(child => addGameChildren(child, rounds, index + 1))
   };
 }
 
@@ -126,7 +147,13 @@ class EventContent extends Component {
               }
             >
               {skater.country && `${getEmojiFlag(skater.country)} `}
-              {skater.full_name}
+              <span
+                style={{
+                  textDecoration: skater.replaced ? 'line-through' : 'none'
+                }}
+              >
+                {skater.full_name}
+              </span>
             </Skater>
             {!index && <Divider />}
           </Fragment>
