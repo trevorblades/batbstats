@@ -9,6 +9,7 @@ import Select from '@material-ui/core/Select';
 import upperFirst from 'lodash/upperFirst';
 import {STANCES, STANCE_REGULAR} from '../../../../../api/common';
 import {DatePicker} from 'material-ui-pickers';
+import {countries} from 'countries-list';
 import {updateSkater} from '../../../actions/games';
 
 class SkaterForm extends Component {
@@ -21,13 +22,27 @@ class SkaterForm extends Component {
     super(props);
     this.state = {
       birthDate: props.data.birth_date ? new Date(props.data.birth_date) : null,
+      country: props.data.country || '',
       stance: props.data.stance || STANCE_REGULAR
     };
   }
 
-  onStanceChange = event => this.setState({stance: event.target.value});
+  onSelectChange = event =>
+    this.setState({[event.target.name]: event.target.value});
 
   onBirthDateChange = date => this.setState({birthDate: date});
+
+  renderCountries() {
+    const items = [];
+    for (const key in countries) {
+      items.push(
+        <MenuItem key={key} value={key}>
+          {countries[key].name}
+        </MenuItem>
+      );
+    }
+    return items;
+  }
 
   render() {
     return (
@@ -56,7 +71,7 @@ class SkaterForm extends Component {
               <Select
                 name="stance"
                 value={this.state.stance}
-                onChange={this.onStanceChange}
+                onChange={this.onSelectChange}
               >
                 {STANCES.map(stance => (
                   <MenuItem key={stance} value={stance}>
@@ -65,12 +80,16 @@ class SkaterForm extends Component {
                 ))}
               </Select>
             </FormControl>
-            <FormField
-              errors={errors}
-              label="Hometown"
-              name="hometown"
-              defaultValue={this.props.data.hometown}
-            />
+            <FormControl {...formFieldProps}>
+              <InputLabel>Country</InputLabel>
+              <Select
+                name="country"
+                value={this.state.country}
+                onChange={this.onSelectChange}
+              >
+                {this.renderCountries()}
+              </Select>
+            </FormControl>
             <DatePicker
               {...formFieldProps}
               disableFuture

@@ -29,6 +29,7 @@
     "@nivo/line": "^0.49.1",
     "@nivo/pie": "^0.49.0",
     "@trevorblades/mui-theme": "^1.2.0",
+    "countries-list": "^2.3.2",
     "date-fns": "^2.0.0-alpha.7",
     "emotion": "^9.1.3",
     "frisbee": "^2.0.4",
