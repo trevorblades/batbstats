@@ -88,7 +88,7 @@ export const getSkaters = createSelector(
     const skaters = uniqBy(flatMap(games, 'skaters'), 'id');
     return skaters.map(skater => {
       const skaterGames = games
-        .filter(game => some(game.skaters, ['id', skater.id]))
+        .filter(game => !game.bye && some(game.skaters, ['id', skater.id]))
         .map(game => ({
           ...game,
           win: game.letters[skater.id] < 5
