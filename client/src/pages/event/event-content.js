@@ -13,6 +13,7 @@ import styled from 'react-emotion';
 import theme from '@trevorblades/mui-theme';
 import values from 'lodash/values';
 import {Link} from 'react-router-dom';
+import {getEmojiFlag} from 'countries-list';
 
 const BracketContainer = styled.div({
   display: 'flex',
@@ -102,42 +103,38 @@ class EventContent extends Component {
     window.removeEventListener('mouseup', this.onMouseUp);
   };
 
-  renderBracket = game => {
-    const isChampionshipGame = game.round === 6;
-    return (
-      <Games key={game.id}>
-        <Game
-          component={Link}
-          to={`/games/${game.id}`}
-          onDragStart={preventDefault}
-        >
-          {game.skaters.map((skater, index) => {
-            const loss = game.letters[skater.id] === 5;
-            return (
-              <Fragment key={skater.id}>
-                <Skater
-                  noWrap
-                  title={skater.full_name}
-                  color={loss ? 'textSecondary' : 'default'}
-                >
-                  {isChampionshipGame && !loss && '🏆 '}
-                  {skater.full_name}
-                </Skater>
-                {!index && <Divider />}
-              </Fragment>
-            );
-          })}
-        </Game>
-        {game.round > 1 && (
-          <Connector>
-            <Bracket />
-            <Line />
-          </Connector>
-        )}
-        <div>{game.children && game.children.map(this.renderBracket)}</div>
-      </Games>
-    );
-  };
+  renderBracket = game => (
+    <Games key={game.id}>
+      <Game
+        component={Link}
+        to={`/games/${game.id}`}
+        onDragStart={preventDefault}
+      >
+        {game.skaters.map((skater, index) => (
+          <Fragment key={skater.id}>
+            <Skater
+              noWrap
+              title={skater.full_name}
+              color={
+                game.letters[skater.id] === 5 ? 'textSecondary' : 'default'
+              }
+            >
+              {skater.country && `${getEmojiFlag(skater.country)} `}
+              {skater.full_name}
+            </Skater>
+            {!index && <Divider />}
+          </Fragment>
+        ))}
+      </Game>
+      {game.round > 1 && (
+        <Connector>
+          <Bracket />
+          <Line />
+        </Connector>
+      )}
+      <div>{game.children && game.children.map(this.renderBracket)}</div>
+    </Games>
+  );
 
   render() {
     const rounds = values(
