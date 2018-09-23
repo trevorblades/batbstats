@@ -23,6 +23,7 @@ import mapProps from 'recompose/mapProps';
 import mapValues from 'lodash/mapValues';
 import nest from 'recompose/nest';
 import pluralize from 'pluralize';
+import round from 'lodash/round';
 import styled, {css} from 'react-emotion';
 import sum from 'lodash/sum';
 import sumBy from 'lodash/sumBy';
@@ -255,7 +256,7 @@ class GameContent extends PureComponent {
       'Longest run': pluralize('trick', Math.max(...runs), true),
       'Letters earned': sum(values(letters)),
       'Redos given': sumBy(attempts, 'redos'),
-      'Avg. flips per trick': totalFlips / offensiveAttempts.length
+      'Avg. flips per trick': round(totalFlips / offensiveAttempts.length, 2)
     };
 
     const listItems = [];
