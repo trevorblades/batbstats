@@ -89,7 +89,12 @@ class EventContent extends Component {
     event: PropTypes.object.isRequired
   };
 
+  state = {
+    dragging: false
+  };
+
   onMouseDown = () => {
+    this.setState({dragging: true});
     window.addEventListener('mousemove', this.onMouseMove);
     window.addEventListener('mouseup', this.onMouseUp);
   };
@@ -99,6 +104,7 @@ class EventContent extends Component {
   };
 
   onMouseUp = () => {
+    this.setState({dragging: false});
     window.removeEventListener('mousemove', this.onMouseMove);
     window.removeEventListener('mouseup', this.onMouseUp);
   };
@@ -151,6 +157,7 @@ class EventContent extends Component {
         </Header>
         <BracketContainer
           onMouseDown={this.onMouseDown}
+          style={{cursor: this.state.dragging ? 'grabbing' : 'grab'}}
           innerRef={node => {
             this.bracketContainer = node;
           }}
