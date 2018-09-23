@@ -11,13 +11,11 @@ import TableHead from '@material-ui/core/TableHead';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
-import countBy from 'lodash/countBy';
 import differenceInYears from 'date-fns/differenceInYears';
-import find from 'lodash/find';
-import maxBy from 'lodash/maxBy';
+import filter from 'lodash/filter';
+import round from 'lodash/round';
 import styled from 'react-emotion';
 import theme from '@trevorblades/mui-theme';
-import uniqBy from 'lodash/uniqBy';
 import withProps from 'recompose/withProps';
 import {countries} from 'countries-list';
 import {createIsEqualWithKeys} from '../../../util';
@@ -29,7 +27,7 @@ const StyledTable = styled(Table)({
 
 const GridItem = withProps({
   item: true,
-  xs: true
+  xs: 6
 })(Grid);
 
 const UNKNOWN = 'unknown';
@@ -58,26 +56,12 @@ class SkaterDialogContent extends Component {
     return plusMinus > 0 ? `+${plusMinus}` : plusMinus;
   }
 
-  get favouriteLeadOff() {
-    const leadOffs = [];
-    this.props.skater.games.forEach(game => {
-      const leadOff = find(game.attempts, {
-        skater_id: this.props.skater.id,
-        offense: true
-      });
-      if (leadOff) {
-        leadOffs.push(leadOff.trick);
-      }
-    });
-
-    const counts = countBy(leadOffs, 'id');
-    return maxBy(
-      uniqBy(leadOffs, 'id').map(trick => ({
-        ...trick,
-        count: counts[trick.id]
-      })),
-      'count'
-    );
+  get flipTendency() {
+    const flips = filter(this.props.skater.attempts, 'trick.flip');
+    const kickflips = flips.filter(attempt => attempt.trick.flip > 0);
+    const percent = kickflips.length / flips.length;
+    const text = `${round(percent * 100, 2)} %`;
+    return percent === 0.5 ? text : `${percent > 0.5 ? 'K' : 'H'} ${text}`;
   }
 
   render() {
@@ -99,30 +83,34 @@ class SkaterDialogContent extends Component {
       >
         <DialogTitle>{full_name}</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            Country: {country ? countries[country].name : UNKNOWN}
-          </DialogContentText>
-          <Grid container spacing={theme.spacing.unit * 2}>
+          <Grid container>
+            <GridItem>
+              <DialogContentText>
+                Country: {country ? countries[country].name : UNKNOWN}
+              </DialogContentText>
+            </GridItem>
+            <GridItem>
+              <DialogContentText>
+                Age: {birth_date ? differenceInYears(NOW, birth_date) : UNKNOWN}
+              </DialogContentText>
+            </GridItem>
             <GridItem>
               <DialogContentText>Stance: {stance || UNKNOWN}</DialogContentText>
+            </GridItem>
+            <GridItem>
               <DialogContentText>
                 Record: {wins}-{losses}
               </DialogContentText>
             </GridItem>
             <GridItem>
-              {birth_date && (
-                <DialogContentText>
-                  Age: {differenceInYears(NOW, birth_date)}
-                </DialogContentText>
-              )}
               <DialogContentText>+/-: {this.plusMinus}</DialogContentText>
             </GridItem>
+            <GridItem>
+              <DialogContentText>
+                Flip tendency: {this.flipTendency}
+              </DialogContentText>
+            </GridItem>
           </Grid>
-          {this.favouriteLeadOff && (
-            <DialogContentText>
-              Favourite lead-off: {this.favouriteLeadOff.name}
-            </DialogContentText>
-          )}
           <StyledTable padding="none">
             <TableHead>
               <TableRow>
