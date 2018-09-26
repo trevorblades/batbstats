@@ -64,7 +64,7 @@ jobs:
       - persist_to_workspace:
           root: ~/batbstats/client
           paths: 
-            - build
+            - dist
 
   deploy:
     docker:
@@ -75,7 +75,7 @@ jobs:
       - run: aws configure set region us-west-2
       - run: aws configure set preview.cloudfront true
       - run: aws configure set preview.create-invalidation true
-      - run: aws s3 sync ~/batbstats/client/build s3://batbstats/$CIRCLE_BRANCH --delete
+      - run: aws s3 sync ~/batbstats/client/dist s3://batbstats/$CIRCLE_BRANCH --delete
       - run: aws cloudfront create-invalidation --cli-input-json "{\"DistributionId\":\"$AWS_CLOUDFRONT_ID\",\"InvalidationBatch\":{\"Paths\":{\"Quantity\":2,\"Items\":[\"/index.html\",\"/*\"]},\"CallerReference\":\"$(date +%s)\"}}"
 
 workflows:
