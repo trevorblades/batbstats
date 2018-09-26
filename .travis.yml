@@ -8,3 +8,21 @@ cache:
     - node_modules
 before_install:
   - cd api
+after_success:
+  - cd ../client
+before_deploy:
+  - npm install
+  - npm run build
+deploy:
+  provider: s3
+  region: us-west-2
+  access_key_id: $AWS_ACCESS_KEY_ID
+  secret_access_key: $AWS_SECRET_ACCESS_KEY
+  bucket: batbstats
+  local_dir: dist
+  upload-dir: $TRAVIS_BRANCH
+  skip_cleanup: true
+after_deploy:
+  - aws configure set preview.cloudfront true
+  - aws configure set preview.create-invalidation true
+  - aws cloudfront create-invalidation --cli-input-json "{\"DistributionId\":\"$AWS_CLOUDFRONT_ID\",\"InvalidationBatch\":{\"Paths\":{\"Quantity\":2,\"Items\":[\"/index.html\",\"/*\"]},\"CallerReference\":\"$(date+%s)\"}}"
