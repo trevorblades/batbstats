@@ -11,6 +11,7 @@ before_install:
 after_success:
   - cd ../client
 before_deploy:
+  - pip install awscli
   - npm install
   - npm run build
 deploy:
