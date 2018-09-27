@@ -1,7 +1,7 @@
 import CircularProgress from '@material-ui/core/CircularProgress';
+import LoadingSnackbar from './loading-snackbar';
 import PropTypes from 'prop-types';
 import React, {Component, Fragment} from 'react';
-import Snackbar from '@material-ui/core/Snackbar';
 import Typography from '@material-ui/core/Typography';
 import styled from 'react-emotion';
 import {connect} from 'react-redux';
@@ -46,15 +46,7 @@ class GamesLoader extends Component {
           ? this.props.children
           : this.props.children(this.props.games, this.props.loading)}
         {!this.props.hideSnackbar && (
-          <Snackbar
-            open={this.props.loading}
-            message="Loading data..."
-            action={<CircularProgress color="inherit" size={24} />}
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'right'
-            }}
-          />
+          <LoadingSnackbar open={this.props.loading} />
         )}
       </Fragment>
     );

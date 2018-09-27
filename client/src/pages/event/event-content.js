@@ -2,6 +2,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import Divider from '@material-ui/core/Divider';
 import Header from '../../components/header';
 import Helmet from 'react-helmet';
+import LoadingSnackbar from '../../components/loading-snackbar';
 import Paper from '@material-ui/core/Paper';
 import PropTypes from 'prop-types';
 import React, {Component, Fragment} from 'react';
@@ -97,6 +98,15 @@ function addGameChildren(game, rounds, index) {
   };
 }
 
+// calculate the amount of games needed to fill out a 5-round bracket that
+// starts with 16 competitors
+let gameCount = 0;
+let lastRoundLength = 16;
+for (let i = 0; i < 5; i++) {
+  gameCount += lastRoundLength;
+  lastRoundLength = lastRoundLength / 2;
+}
+
 const preventDefault = event => event.preventDefault();
 class EventContent extends Component {
   static propTypes = {
@@ -176,9 +186,8 @@ class EventContent extends Component {
   );
 
   render() {
-    const rounds = values(
-      groupBy(reject(this.props.event.games, ['round', 5]), 'round')
-    ).reverse();
+    const games = reject(this.props.event.games, ['round', 5]);
+    const rounds = values(groupBy(games, 'round')).reverse();
     const game = addGameChildren(rounds[0][0], rounds, 1);
     return (
       <Fragment>
@@ -199,6 +208,7 @@ class EventContent extends Component {
           {/* the empty div is to force the following DialogContent to behave as if it's :not(:first-child) */}
           <StyledDialogContent>{this.renderBracket(game)}</StyledDialogContent>
         </BracketContainer>
+        <LoadingSnackbar open={games.length < gameCount} />
       </Fragment>
     );
   }
