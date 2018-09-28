@@ -13,19 +13,20 @@ import map from 'lodash/map';
 import reject from 'lodash/reject';
 import styled from 'react-emotion';
 import theme from '@trevorblades/mui-theme';
+import uniqBy from 'lodash/uniqBy';
 import values from 'lodash/values';
 import {Link} from 'react-router-dom';
 import {getEmojiFlag} from 'countries-list';
+
+const StyledDialogContent = styled(DialogContent)({
+  overflowY: 'visible'
+});
 
 const BracketContainer = styled.div({
   display: 'flex',
   flexShrink: 0,
   overflowX: 'auto',
   userSelect: 'none'
-});
-
-const StyledDialogContent = styled(DialogContent)({
-  overflowY: 'visible'
 });
 
 const Games = styled.div({
@@ -187,6 +188,8 @@ class EventContent extends Component {
 
   render() {
     const games = reject(this.props.event.games, ['round', 5]);
+    const tricks = games.flatMap(game => map(game.attempts, 'trick'));
+    const uniqueTricks = uniqBy(tricks, 'id');
     const rounds = values(groupBy(games, 'round')).reverse();
     const game = addGameChildren(rounds[0][0], rounds, 1);
     return (
@@ -197,6 +200,10 @@ class EventContent extends Component {
         <Header>
           <Typography variant="headline">{this.props.event.name}</Typography>
         </Header>
+        <StyledDialogContent>
+          <Typography>Total tricks: {tricks.length}</Typography>
+          <Typography>Unique tricks: {uniqueTricks.length}</Typography>
+        </StyledDialogContent>
         <BracketContainer
           onMouseDown={this.onMouseDown}
           style={{cursor: this.state.dragging ? 'grabbing' : 'grab'}}
