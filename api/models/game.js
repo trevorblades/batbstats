@@ -6,11 +6,11 @@ export default (sequelize, DataTypes) => {
   });
 
   Game.associate = models => {
-    models.Game.hasMany(models.Attempt);
-    models.Game.hasMany(models.Roshambo);
-    models.Game.hasMany(models.Replacement);
-    models.Game.belongsTo(models.Event);
-    models.Game.belongsToMany(models.Skater, {through: models.Participant});
+    Game.hasMany(models.attempt);
+    Game.hasMany(models.roshambo);
+    Game.hasMany(models.replacement);
+    Game.belongsTo(models.event);
+    Game.belongsToMany(models.skater, {through: models.participant});
   };
 
   return Game;

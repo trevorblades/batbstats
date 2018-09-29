@@ -5,7 +5,7 @@ export default (sequelize, DataTypes) => {
   });
 
   Event.associate = models => {
-    models.Event.hasMany(models.Game);
+    Event.hasMany(models.game);
   };
 
   return Event;

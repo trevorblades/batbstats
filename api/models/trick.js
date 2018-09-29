@@ -11,7 +11,7 @@ export default (sequelize, DataTypes) => {
   });
 
   Trick.associate = models => {
-    models.Trick.hasMany(models.Attempt);
+    Trick.hasMany(models.attempt);
   };
 
   return Trick;
