@@ -13,7 +13,7 @@ import uniq from 'lodash/uniq';
 import uniqBy from 'lodash/uniqBy';
 import {createSelector} from 'reselect';
 import {getEventsFromGames, getShortName} from './util/event';
-import {getLetters, getRoundName, getRounds} from './util/game';
+import {getLetters, getRoundName} from './util/game';
 
 export const getGames = createSelector(
   state => state.games.data,
@@ -21,15 +21,6 @@ export const getGames = createSelector(
     games.map(game => {
       const {event} = game;
       const letters = getLetters(game);
-      const rounds = getRounds(game);
-      const runs = rounds.reduce(
-        (runs, round) =>
-          filter(round).length > 1
-            ? [...runs.slice(0, -1), runs[runs.length - 1] + 1]
-            : [...filter(runs), 0],
-        [0]
-      );
-
       let bye = null;
       for (let i = 0; i < game.replacements.length; i++) {
         // the heuristic for determining a bye is if the game has a replacement
@@ -45,8 +36,6 @@ export const getGames = createSelector(
         ...game,
         letters,
         round_name: getRoundName(game.round),
-        rounds,
-        runs,
         bye,
         event: {
           ...event,

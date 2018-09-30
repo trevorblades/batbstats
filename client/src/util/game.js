@@ -1,6 +1,5 @@
 import fromPairs from 'lodash/fromPairs';
 import map from 'lodash/map';
-import sortBy from 'lodash/sortBy';
 import {
   ROSHAMBO_MOVE_PAPER,
   ROSHAMBO_MOVE_ROCK,
@@ -39,10 +38,11 @@ export function getInitialLetters(ids) {
   return fromPairs(ids.map(id => [id, 0]));
 }
 
-export function getLetters(game) {
+export function getLetters(attempts, skaters) {
   let trick;
-  const letters = getInitialLetters(map(game.skaters, 'id'));
-  game.attempts.forEach(attempt => {
+  const skaterIds = map(skaters, 'id');
+  const letters = getInitialLetters(skaterIds);
+  attempts.forEach(attempt => {
     if (!trick) {
       if (attempt.successful) {
         trick = attempt;
@@ -63,26 +63,4 @@ export function getLetters(game) {
   });
 
   return letters;
-}
-
-export function getRounds(game) {
-  const rounds = [];
-  for (let i = 0; i < game.attempts.length; i++) {
-    const attempt = game.attempts[i];
-    const round = [attempt, null];
-    if (attempt.successful) {
-      i++;
-      round[1] = game.attempts[i];
-    }
-
-    rounds.push(round);
-  }
-
-  const skaterIds = map(game.skaters, 'id');
-  return rounds.map(round =>
-    sortBy(
-      round,
-      attempt => (attempt ? skaterIds.indexOf(attempt.skater_id) : 0)
-    )
-  );
 }

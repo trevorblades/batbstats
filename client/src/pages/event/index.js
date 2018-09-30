@@ -70,7 +70,7 @@ const Event = props => (
         return {
           ...game,
           bye,
-          letters: getLetters(game)
+          letters: getLetters(game.attempts, game.skaters)
         };
       });
 

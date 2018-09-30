@@ -21,6 +21,7 @@ export default gql`
     id: ID
     round: Int
     move: String
+    skater_id: ID
   }
 
   type Trick {
@@ -64,6 +65,7 @@ export default gql`
   type Query {
     event(id: ID): Event
     events: [Event]
+    game(id: ID): Game
     games(offset: Int): [Game]
   }
 `;
