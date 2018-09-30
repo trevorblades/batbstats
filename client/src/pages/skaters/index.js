@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import filter from 'lodash/filter';
 import gql from 'graphql-tag';
 import round from 'lodash/round';
+import sumBy from 'lodash/sumBy';
 import {Query} from 'react-apollo';
 import {getBye, getLetters} from '../../util/game';
 
@@ -64,6 +65,7 @@ const Skaters = () => (
           const attempts = skater.games.flatMap(game =>
             filter(game.attempts, ['skater_id', skater.id])
           );
+          const makes = filter(attempts, 'successful').length;
 
           const gamesPlayed = skater.games.length;
           return {
@@ -71,7 +73,10 @@ const Skaters = () => (
             wins,
             losses: gamesPlayed - wins,
             win_percentage: gamesPlayed && round(wins / gamesPlayed * 100, 2),
-            attempts
+            attempts,
+            makes,
+            misses: attempts.length - makes,
+            redos: sumBy(attempts, 'redos')
           };
         });
 
