@@ -1,3 +1,4 @@
+import ApolloClient from 'apollo-boost';
 import App from './components/app';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import DateFnsUtils from 'material-ui-pickers/utils/date-fns-utils';
@@ -10,6 +11,7 @@ import ReactGA from 'react-ga';
 import injectStyles from './styles';
 import store from './store';
 import theme from '@trevorblades/mui-theme';
+import {ApolloProvider} from 'react-apollo';
 import {BrowserRouter} from 'react-router-dom';
 import {
   MuiThemeProvider,
@@ -18,6 +20,10 @@ import {
 } from '@material-ui/core/styles';
 import {Provider} from 'react-redux';
 import {create} from 'jss';
+
+const client = new ApolloClient({
+  uri: 'http://localhost:4000'
+});
 
 const generateClassName = createGenerateClassName();
 const jss = create(jssPreset());
@@ -28,18 +34,20 @@ injectStyles();
 
 ReactGA.initialize('UA-34658521-2');
 ReactDOM.render(
-  <Provider store={store}>
-    <BrowserRouter>
-      <JssProvider jss={jss} generateClassName={generateClassName}>
-        <MuiThemeProvider theme={theme}>
-          <CssBaseline />
-          <Helmet defaultTitle={TITLE} titleTemplate={`%s · ${TITLE}`} />
-          <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <App />
-          </MuiPickersUtilsProvider>
-        </MuiThemeProvider>
-      </JssProvider>
-    </BrowserRouter>
-  </Provider>,
+  <ApolloProvider client={client}>
+    <Provider store={store}>
+      <BrowserRouter>
+        <JssProvider jss={jss} generateClassName={generateClassName}>
+          <MuiThemeProvider theme={theme}>
+            <CssBaseline />
+            <Helmet defaultTitle={TITLE} titleTemplate={`%s · ${TITLE}`} />
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+              <App />
+            </MuiPickersUtilsProvider>
+          </MuiThemeProvider>
+        </JssProvider>
+      </BrowserRouter>
+    </Provider>
+  </ApolloProvider>,
   document.getElementById('root')
 );
