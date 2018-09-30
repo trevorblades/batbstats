@@ -13,22 +13,22 @@ import {Link} from 'react-router-dom';
 import {Query} from 'react-apollo';
 
 const title = 'Events';
+const query = gql`
+  {
+    events {
+      id
+      name
+      image
+    }
+  }
+`;
+
 const Events = () => (
   <Fragment>
     <Helmet>
       <title>{title}</title>
     </Helmet>
-    <Query
-      query={gql`
-        {
-          events {
-            id
-            name
-            image
-          }
-        }
-      `}
-    >
+    <Query query={query}>
       {({loading, error, data}) => {
         if (loading) return <CenteredCircularProgress />;
         if (error) return <div>{error.message}</div>;
