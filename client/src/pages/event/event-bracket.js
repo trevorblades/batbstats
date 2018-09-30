@@ -1,11 +1,8 @@
-import DialogContent from '@material-ui/core/DialogContent';
 import Divider from '@material-ui/core/Divider';
-import Header from '../../components/header';
-import Helmet from 'react-helmet';
-import LoadingSnackbar from '../../components/loading-snackbar';
 import Paper from '@material-ui/core/Paper';
 import PropTypes from 'prop-types';
 import React, {Component, Fragment} from 'react';
+import StyledDialogContent from '../../components/styled-dialog-content';
 import Typography from '@material-ui/core/Typography';
 import groupBy from 'lodash/groupBy';
 import intersection from 'lodash/intersection';
@@ -13,16 +10,10 @@ import map from 'lodash/map';
 import reject from 'lodash/reject';
 import styled from 'react-emotion';
 import theme from '@trevorblades/mui-theme';
-import uniqBy from 'lodash/uniqBy';
-import values from 'lodash/values';
 import {Link} from 'react-router-dom';
 import {getEmojiFlag} from 'countries-list';
 
-const StyledDialogContent = styled(DialogContent)({
-  overflowY: 'visible'
-});
-
-const BracketContainer = styled.div({
+const Container = styled.div({
   display: 'flex',
   flexShrink: 0,
   overflowX: 'auto',
@@ -99,19 +90,10 @@ function addGameChildren(game, rounds, index) {
   };
 }
 
-// calculate the amount of games needed to fill out a 5-round bracket that
-// starts with 16 competitors
-let gameCount = 0;
-let lastRoundLength = 16;
-for (let i = 0; i < 5; i++) {
-  gameCount += lastRoundLength;
-  lastRoundLength = lastRoundLength / 2;
-}
-
 const preventDefault = event => event.preventDefault();
-class EventContent extends Component {
+class EventBracket extends Component {
   static propTypes = {
-    event: PropTypes.object.isRequired
+    games: PropTypes.array.isRequired
   };
 
   state = {
@@ -125,7 +107,7 @@ class EventContent extends Component {
   };
 
   onMouseMove = event => {
-    this.bracketContainer.scrollLeft -= event.movementX;
+    this.container.scrollLeft -= event.movementX;
   };
 
   onMouseUp = () => {
@@ -187,38 +169,27 @@ class EventContent extends Component {
   );
 
   render() {
-    const games = reject(this.props.event.games, ['round', 5]);
-    const tricks = games.flatMap(game => map(game.attempts, 'trick'));
-    const uniqueTricks = uniqBy(tricks, 'id');
-    const rounds = values(groupBy(games, 'round')).reverse();
+    const games = reject(this.props.games, ['round', 5]);
+    const groups = groupBy(games, 'round');
+    const rounds = Object.values(groups).reverse();
     const game = addGameChildren(rounds[0][0], rounds, 1);
+
+    console.log(rounds);
+
     return (
-      <Fragment>
-        <Helmet>
-          <title>{this.props.event.name}</title>
-        </Helmet>
-        <Header>
-          <Typography variant="headline">{this.props.event.name}</Typography>
-        </Header>
-        <StyledDialogContent>
-          <Typography>Total tricks: {tricks.length}</Typography>
-          <Typography>Unique tricks: {uniqueTricks.length}</Typography>
-        </StyledDialogContent>
-        <BracketContainer
-          onMouseDown={this.onMouseDown}
-          style={{cursor: this.state.dragging ? 'grabbing' : 'grab'}}
-          innerRef={node => {
-            this.bracketContainer = node;
-          }}
-        >
-          <div />
-          {/* the empty div is to force the following DialogContent to behave as if it's :not(:first-child) */}
-          <StyledDialogContent>{this.renderBracket(game)}</StyledDialogContent>
-        </BracketContainer>
-        <LoadingSnackbar open={games.length < gameCount} />
-      </Fragment>
+      <Container
+        onMouseDown={this.onMouseDown}
+        style={{cursor: this.state.dragging ? 'grabbing' : 'grab'}}
+        innerRef={node => {
+          this.container = node;
+        }}
+      >
+        <div />
+        {/* the empty div is to force the following DialogContent to behave as if it's :not(:first-child) */}
+        <StyledDialogContent>{this.renderBracket(game)}</StyledDialogContent>
+      </Container>
     );
   }
 }
 
-export default EventContent;
+export default EventBracket;

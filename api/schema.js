@@ -13,8 +13,8 @@ export default gql`
 
   type Replacement {
     id: ID
-    in: Skater
-    out: Skater
+    in_id: ID
+    out_id: ID
   }
 
   type Roshambo {
@@ -38,6 +38,7 @@ export default gql`
     successful: Boolean
     offense: Boolean
     redos: Int
+    skater_id: ID
     trick: Trick
   }
 
@@ -61,6 +62,7 @@ export default gql`
   }
 
   type Query {
+    event(id: ID): Event
     events: [Event]
     games(offset: Int): [Game]
   }

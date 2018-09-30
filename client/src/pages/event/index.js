@@ -1,27 +1,102 @@
 import CenteredCircularProgress from '../../components/centered-circular-progress';
-import EventContent from './event-content';
-import GamesLoader from '../../components/games-loader';
+import EventBracket from './event-bracket';
+import Header from '../../components/header';
+import Helmet from 'react-helmet';
 import NotFound from '../not-found';
 import PropTypes from 'prop-types';
-import React from 'react';
-import find from 'lodash/find';
-import {getEventsFromGames} from '../../util/event';
+import React, {Fragment} from 'react';
+import StyledDialogContent from '../../components/styled-dialog-content';
+import Typography from '@material-ui/core/Typography';
+import gql from 'graphql-tag';
+import {Query} from 'react-apollo';
+import {getLetters} from '../../util/game';
 
-const Game = props => (
-  <GamesLoader hideSnackbar>
-    {(games, loading) => {
-      const events = getEventsFromGames(games);
-      const event = find(events, ['id', parseInt(props.match.params.id)]);
-      if (!event) {
-        return loading ? <CenteredCircularProgress /> : <NotFound />;
+const query = gql`
+  query Event($id: ID) {
+    event(id: $id) {
+      id
+      name
+      games {
+        id
+        round
+        skaters {
+          id
+          full_name
+          country
+        }
+        replacements {
+          in_id
+          out_id
+        }
+        attempts {
+          offense
+          successful
+          skater_id
+          trick {
+            id
+          }
+        }
       }
-      return <EventContent event={event} />;
+    }
+  }
+`;
+
+const Event = props => (
+  <Query query={query} variables={{id: props.match.params.id}}>
+    {({loading, error, data}) => {
+      if (loading) return <CenteredCircularProgress />;
+      if (error) return <NotFound />;
+
+      const uniqueTricks = {};
+      const tricks = data.event.games.flatMap(game =>
+        game.attempts.map(attempt => {
+          uniqueTricks[attempt.trick.id] = true;
+          return attempt.trick;
+        })
+      );
+
+      const games = data.event.games.map(game => {
+        let bye = null;
+        for (let i = 0; i < game.replacements.length; i++) {
+          // the heuristic for determining a bye is if the game has a replacement
+          // where the value of in_id is NULL
+          const replacement = game.replacements[i];
+          if (replacement.in_id === null) {
+            bye = replacement.out_id;
+            break;
+          }
+        }
+
+        return {
+          ...game,
+          bye,
+          letters: getLetters(game)
+        };
+      });
+
+      return (
+        <Fragment>
+          <Helmet>
+            <title>{data.event.name}</title>
+          </Helmet>
+          <Header>
+            <Typography variant="headline">{data.event.name}</Typography>
+          </Header>
+          <StyledDialogContent>
+            <Typography>Total tricks: {tricks.length}</Typography>
+            <Typography>
+              Unique tricks: {Object.keys(uniqueTricks).length}
+            </Typography>
+          </StyledDialogContent>
+          <EventBracket games={games} />
+        </Fragment>
+      );
     }}
-  </GamesLoader>
+  </Query>
 );
 
-Game.propTypes = {
+Event.propTypes = {
   match: PropTypes.object.isRequired
 };
 
-export default Game;
+export default Event;

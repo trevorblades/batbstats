@@ -1,6 +1,5 @@
 import Button from '@material-ui/core/Button';
 import CloseIcon from '@material-ui/icons/Close';
-import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import Header from '../../components/header';
 import Helmet from 'react-helmet';
@@ -9,6 +8,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import PropTypes from 'prop-types';
 import React, {Fragment, PureComponent} from 'react';
+import StyledDialogContent from '../../components/styled-dialog-content';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -85,8 +85,6 @@ const fixed = css({
 });
 
 const videoPadding = css({paddingBottom: fixedHeight + fixedSpacing * 2});
-const StyledDialogContent = styled(DialogContent)({overflowY: 'visible'});
-
 const VideoInner = styled.div(
   props => (props.fixed ? fixed : positionAbsolute),
   {

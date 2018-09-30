@@ -16,6 +16,7 @@ export default {
     games: event => event.getGames()
   },
   Query: {
+    event: (parent, args, {db}) => db.event.findById(args.id),
     events: (parent, args, {db}) => db.event.findAll({order: ['id']}),
     games: (parent, args, {db}) =>
       db.game.findAll({

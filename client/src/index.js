@@ -1,7 +1,7 @@
-import ApolloClient from 'apollo-boost';
 import App from './components/app';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import DateFnsUtils from 'material-ui-pickers/utils/date-fns-utils';
+import DefaultClient from 'apollo-boost';
 import Helmet from 'react-helmet';
 import JssProvider from 'react-jss/lib/JssProvider';
 import MuiPickersUtilsProvider from 'material-ui-pickers/utils/MuiPickersUtilsProvider';
@@ -21,7 +21,7 @@ import {
 import {Provider} from 'react-redux';
 import {create} from 'jss';
 
-const client = new ApolloClient({
+const client = new DefaultClient({
   uri: 'http://localhost:4000'
 });
 

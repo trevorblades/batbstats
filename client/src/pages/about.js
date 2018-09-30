@@ -1,13 +1,8 @@
-import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Helmet from 'react-helmet';
 import React, {Fragment} from 'react';
+import StyledDialogContent from '../components/styled-dialog-content';
 import Typography from '@material-ui/core/Typography';
-import styled from 'react-emotion';
-
-const StyledDialogContent = styled(DialogContent)({
-  overflow: 'visible'
-});
 
 const About = () => (
   <Fragment>
