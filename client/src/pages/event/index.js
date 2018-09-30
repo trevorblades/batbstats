@@ -58,7 +58,7 @@ const Event = props => (
       const games = data.event.games.map(game => ({
         ...game,
         bye: getBye(game.replacements),
-        letters: getLetters(game.attempts, game.skaters)
+        letters: getLetters(game.attempts)
       }));
 
       return (

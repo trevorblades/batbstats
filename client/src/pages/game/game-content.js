@@ -272,8 +272,8 @@ class GameContent extends PureComponent {
   }
 
   renderSidebar() {
-    const {attempts, skaters} = this.props.game;
-    const letters = getLetters(attempts, skaters);
+    const {attempts} = this.props.game;
+    const letters = getLetters(attempts);
     const offensiveAttempts = filter(attempts, 'offense');
     const totalFlips = sumBy(offensiveAttempts, attempt =>
       Math.abs(attempt.trick.flip)

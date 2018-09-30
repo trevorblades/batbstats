@@ -38,10 +38,17 @@ export function getInitialLetters(ids) {
   return fromPairs(ids.map(id => [id, 0]));
 }
 
-export function getLetters(attempts, skaters) {
+export function getLetters(attempts) {
+  const ids = new Set([attempts[0].skater_id]);
+  for (let i = 0; i < attempts.length; i++) {
+    ids.add(attempts[i].skater_id);
+    if (ids.size > 1) {
+      break;
+    }
+  }
+
   let trick;
-  const skaterIds = map(skaters, 'id');
-  const letters = getInitialLetters(skaterIds);
+  const letters = getInitialLetters(Array.from(ids));
   attempts.forEach(attempt => {
     if (!trick) {
       if (attempt.successful) {

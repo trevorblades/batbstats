@@ -20,10 +20,6 @@ const query = gql`
       full_name
       games {
         id
-        skaters {
-          id
-          full_name
-        }
         replacements {
           in_id
           out_id
@@ -53,7 +49,7 @@ const Skaters = () => (
           const wins = skater.games.reduce((count, game) => {
             const bye = getBye(game.replacements);
             if (!bye) {
-              const letters = getLetters(game.attempts, game.skaters);
+              const letters = getLetters(game.attempts);
               if (letters[skater.id] < 5) {
                 return count + 1;
               }
