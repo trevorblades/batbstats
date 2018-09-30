@@ -9,7 +9,7 @@ import StyledDialogContent from '../../components/styled-dialog-content';
 import Typography from '@material-ui/core/Typography';
 import gql from 'graphql-tag';
 import {Query} from 'react-apollo';
-import {getLetters} from '../../util/game';
+import {getBye, getLetters} from '../../util/game';
 
 const query = gql`
   query Event($id: ID) {
@@ -55,24 +55,11 @@ const Event = props => (
         })
       );
 
-      const games = data.event.games.map(game => {
-        let bye = null;
-        for (let i = 0; i < game.replacements.length; i++) {
-          // the heuristic for determining a bye is if the game has a replacement
-          // where the value of in_id is NULL
-          const replacement = game.replacements[i];
-          if (replacement.in_id === null) {
-            bye = replacement.out_id;
-            break;
-          }
-        }
-
-        return {
-          ...game,
-          bye,
-          letters: getLetters(game.attempts, game.skaters)
-        };
-      });
+      const games = data.event.games.map(game => ({
+        ...game,
+        bye: getBye(game.replacements),
+        letters: getLetters(game.attempts, game.skaters)
+      }));
 
       return (
         <Fragment>

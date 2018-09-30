@@ -1,7 +1,7 @@
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import FormDialogContent from '../../../components/form-dialog-content';
+import FormDialogContent from '../../../../components/form-dialog-content';
 import Grid from '@material-ui/core/Grid';
 import PropTypes from 'prop-types';
 import React, {Component} from 'react';
@@ -17,7 +17,7 @@ import styled from 'react-emotion';
 import theme from '@trevorblades/mui-theme';
 import withProps from 'recompose/withProps';
 import {countries} from 'countries-list';
-import {createIsEqualWithKeys} from '../../../util';
+import {createIsEqualWithKeys} from '../../../../util';
 import {withRouter} from 'react-router-dom';
 
 const StyledTable = styled(Table)({

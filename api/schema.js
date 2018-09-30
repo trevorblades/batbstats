@@ -9,6 +9,7 @@ export default gql`
     stance: String
     birth_date: String
     country: String
+    games: [Game]
   }
 
   type Replacement {
@@ -66,6 +67,6 @@ export default gql`
     event(id: ID): Event
     events: [Event]
     game(id: ID): Game
-    games(offset: Int): [Game]
+    skaters: [Skater]
   }
 `;

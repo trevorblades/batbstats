@@ -1,6 +1,6 @@
-import Form from '../../../components/form';
+import Form from '../../../../components/form';
 import FormControl from '@material-ui/core/FormControl';
-import FormField, {formFieldProps} from '../../../components/form-field';
+import FormField, {formFieldProps} from '../../../../components/form-field';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import PropTypes from 'prop-types';
@@ -9,9 +9,9 @@ import Select from '@material-ui/core/Select';
 import sortBy from 'lodash/sortBy';
 import upperFirst from 'lodash/upperFirst';
 import {DatePicker} from 'material-ui-pickers';
-import {STANCES, STANCE_REGULAR} from '../../../../../api/common';
+import {STANCES, STANCE_REGULAR} from '../../../../../../api/common';
 import {countries} from 'countries-list';
-import {updateSkater} from '../../../actions/games';
+import {updateSkater} from '../../../../actions/games';
 
 class SkaterForm extends Component {
   static propTypes = {

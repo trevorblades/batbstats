@@ -64,3 +64,16 @@ export function getLetters(attempts, skaters) {
 
   return letters;
 }
+
+export function getBye(replacements) {
+  for (let i = 0; i < replacements.length; i++) {
+    // the heuristic for determining a bye is if the game has a replacement
+    // where the value of in_id is NULL
+    const replacement = replacements[i];
+    if (replacement.in_id === null) {
+      return replacement.out_id;
+    }
+  }
+
+  return null;
+}

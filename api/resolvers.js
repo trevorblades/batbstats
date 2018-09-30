@@ -11,7 +11,8 @@ export default {
   },
   Skater: {
     full_name: skater =>
-      [skater.first_name, skater.last_name].filter(Boolean).join(' ')
+      [skater.first_name, skater.last_name].filter(Boolean).join(' '),
+    games: skater => skater.getGames()
   },
   Event: {
     games: event => event.getGames()
@@ -20,10 +21,6 @@ export default {
     event: (parent, args, {db}) => db.event.findById(args.id),
     events: (parent, args, {db}) => db.event.findAll({order: ['id']}),
     game: (parent, args, {db}) => db.game.findById(args.id),
-    games: (parent, args, {db}) =>
-      db.game.findAll({
-        limit: 10,
-        offset: args.offset
-      })
+    skaters: (parent, args, {db}) => db.skater.findAll()
   }
 };
