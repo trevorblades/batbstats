@@ -34,7 +34,12 @@ import upperFirst from 'lodash/upperFirst';
 import withProps from 'recompose/withProps';
 import {Link} from 'react-router-dom';
 import {ROSHAMBO_COUNTERS} from '../../../../api/common';
-import {getInitialLetters, getLetters, getRoshamboEmoji} from '../../util/game';
+import {
+  getInitialLetters,
+  getLetters,
+  getRoshamboEmoji,
+  getRoundName
+} from '../../util/game';
 import {getShortName} from '../../util/event';
 import {position, size} from 'polished';
 
@@ -331,7 +336,7 @@ class GameContent extends PureComponent {
                 <Link to={`/events/${this.props.game.event.id}`}>
                   {getShortName(this.props.game.event.name)}
                 </Link>{' '}
-                {this.props.game.round_name}
+                {getRoundName(this.props.game.round)}
               </Typography>
             </div>
           </Header>

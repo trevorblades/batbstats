@@ -1,28 +1,23 @@
-import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import FormDialogContent from '../../../../components/form-dialog-content';
 import Grid from '@material-ui/core/Grid';
+import Header from '../../components/header';
+import Helmet from 'react-helmet';
 import PropTypes from 'prop-types';
-import React, {Component} from 'react';
-import SkaterForm from './skater-form';
+import React, {Component, Fragment} from 'react';
+import StyledDialogContent from '../../components/styled-dialog-content';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import Typography from '@material-ui/core/Typography';
 import differenceInYears from 'date-fns/differenceInYears';
 import round from 'lodash/round';
-import styled from 'react-emotion';
-import theme from '@trevorblades/mui-theme';
 import withProps from 'recompose/withProps';
 import {countries} from 'countries-list';
-import {createIsEqualWithKeys} from '../../../../util';
+import {getAggregates, getLetters, getRoundName} from '../../util/game';
+import {getShortName} from '../../util/event';
 import {withRouter} from 'react-router-dom';
-
-const StyledTable = styled(Table)({
-  marginTop: theme.spacing.unit
-});
 
 const GridItem = withProps({
   item: true,
@@ -32,20 +27,11 @@ const GridItem = withProps({
 const UNKNOWN = 'unknown';
 const NOW = Date.now();
 
-const isEqualWithKeys = createIsEqualWithKeys(
-  'first_name',
-  'last_name',
-  'stance',
-  'country',
-  'birth_date',
-  'updated_at'
-);
-
 function formatPercent(percent) {
   return `${round(percent * 100, 2)} %`;
 }
 
-class SkaterDialogContent extends Component {
+class SkaterContent extends Component {
   static propTypes = {
     history: PropTypes.object.isRequired,
     skater: PropTypes.object.isRequired
@@ -53,15 +39,9 @@ class SkaterDialogContent extends Component {
 
   onGameClick = game => this.props.history.push(`/games/${game.id}`);
 
-  get plusMinus() {
-    const plusMinus =
-      this.props.skater.letters_for - this.props.skater.letters_against;
-    return plusMinus > 0 ? `+${plusMinus}` : plusMinus;
-  }
-
   get flipTendency() {
-    const flips = this.props.skater.attempts.filter(
-      attempt => attempt.offense && attempt.trick.flip
+    const flips = this.props.skater.games.flatMap(game =>
+      game.attempts.filter(attempt => attempt.offense && attempt.trick.flip)
     );
     if (!flips.length) {
       return 'N/A';
@@ -79,37 +59,43 @@ class SkaterDialogContent extends Component {
   }
 
   render() {
-    const {
-      id,
-      full_name,
-      country,
-      stance,
-      wins,
-      losses,
-      birth_date,
-      games
-    } = this.props.skater;
+    const {wins, plusMinus} = getAggregates(
+      this.props.skater.games,
+      this.props.skater.id
+    );
+    const losses = this.props.skater.games.length - wins;
     return (
-      <FormDialogContent
-        data={this.props.skater}
-        form={SkaterForm}
-        isEqual={isEqualWithKeys}
-      >
-        <DialogTitle>{full_name}</DialogTitle>
-        <DialogContent>
+      <Fragment>
+        <Helmet>
+          <title>{this.props.skater.full_name}</title>
+        </Helmet>
+        <Header>
+          <Typography variant="display1">
+            {this.props.skater.full_name}
+          </Typography>
+        </Header>
+        <StyledDialogContent>
           <Grid container>
             <GridItem>
               <DialogContentText>
-                Country: {country ? countries[country].name : UNKNOWN}
+                Country:{' '}
+                {this.props.skater.country
+                  ? countries[this.props.skater.country].name
+                  : UNKNOWN}
               </DialogContentText>
             </GridItem>
             <GridItem>
               <DialogContentText>
-                Age: {birth_date ? differenceInYears(NOW, birth_date) : UNKNOWN}
+                Age:{' '}
+                {this.props.skater.birth_date
+                  ? differenceInYears(NOW, Number(this.props.skater.birth_date))
+                  : UNKNOWN}
               </DialogContentText>
             </GridItem>
             <GridItem>
-              <DialogContentText>Stance: {stance || UNKNOWN}</DialogContentText>
+              <DialogContentText>
+                Stance: {this.props.skater.stance || UNKNOWN}
+              </DialogContentText>
             </GridItem>
             <GridItem>
               <DialogContentText>
@@ -117,7 +103,9 @@ class SkaterDialogContent extends Component {
               </DialogContentText>
             </GridItem>
             <GridItem>
-              <DialogContentText>+/-: {this.plusMinus}</DialogContentText>
+              <DialogContentText>
+                +/-: {plusMinus > 0 ? `+${plusMinus}` : plusMinus}
+              </DialogContentText>
             </GridItem>
             <GridItem>
               <DialogContentText>
@@ -125,7 +113,8 @@ class SkaterDialogContent extends Component {
               </DialogContentText>
             </GridItem>
           </Grid>
-          <StyledTable padding="none">
+          <br />
+          <Table padding="none">
             <TableHead>
               <TableRow>
                 <TableCell>Opponent</TableCell>
@@ -135,9 +124,11 @@ class SkaterDialogContent extends Component {
               </TableRow>
             </TableHead>
             <TableBody>
-              {games.map(game => {
-                const {event} = game;
-                const opponent = game.skaters.find(skater => skater.id !== id);
+              {this.props.skater.games.map(game => {
+                const letters = getLetters(game.attempts);
+                const opponent = game.skaters.find(
+                  skater => skater.id !== this.props.skater.id
+                );
                 return (
                   <TableRow
                     hover
@@ -145,18 +136,20 @@ class SkaterDialogContent extends Component {
                     onClick={() => this.onGameClick(game)}
                   >
                     <TableCell>{opponent.full_name}</TableCell>
-                    <TableCell>{event.short_name}</TableCell>
-                    <TableCell>{game.round_name}</TableCell>
-                    <TableCell>{game.win ? 'Win' : 'Loss'}</TableCell>
+                    <TableCell>{getShortName(game.event.name)}</TableCell>
+                    <TableCell>{getRoundName(game.round)}</TableCell>
+                    <TableCell>
+                      {letters[this.props.skater.id] < 5 ? 'Win' : 'Loss'}
+                    </TableCell>
                   </TableRow>
                 );
               })}
             </TableBody>
-          </StyledTable>
-        </DialogContent>
-      </FormDialogContent>
+          </Table>
+        </StyledDialogContent>
+      </Fragment>
     );
   }
 }
 
-export default withRouter(SkaterDialogContent);
+export default withRouter(SkaterContent);

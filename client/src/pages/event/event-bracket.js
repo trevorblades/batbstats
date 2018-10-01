@@ -131,7 +131,7 @@ class EventBracket extends Component {
                 noWrap
                 title={skater.full_name}
                 color={
-                  game.letters[skater.id] === 5 || bye
+                  bye || game.letters[skater.id] === 5
                     ? 'textSecondary'
                     : 'default'
                 }
@@ -173,9 +173,6 @@ class EventBracket extends Component {
     const groups = groupBy(games, 'round');
     const rounds = Object.values(groups).reverse();
     const game = addGameChildren(rounds[0][0], rounds, 1);
-
-    console.log(rounds);
-
     return (
       <Container
         onMouseDown={this.onMouseDown}

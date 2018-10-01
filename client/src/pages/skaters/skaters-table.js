@@ -1,14 +1,12 @@
 import AddIcon from '@material-ui/icons/Add';
 import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
 import PropTypes from 'prop-types';
 import React, {Component, Fragment} from 'react';
-import SkaterDialogContent from './skater-dialog-content';
-import SortableTable from '../../../components/sortable-table';
-import find from 'lodash/find';
-import styled, {css} from 'react-emotion';
+import SortableTable from '../../components/sortable-table';
+import styled from 'react-emotion';
 import theme from '@trevorblades/mui-theme';
-import {SIDEBAR_WIDTH} from '../../../components/sidebar';
+import {SIDEBAR_WIDTH} from '../../components/sidebar';
+import {withRouter} from 'react-router-dom';
 
 const spacing = theme.spacing.unit * 3;
 const CreateButton = styled(Button)({
@@ -17,34 +15,14 @@ const CreateButton = styled(Button)({
   left: SIDEBAR_WIDTH + spacing
 });
 
-const overflowVisible = css({overflow: 'visible'});
-
 class SkatersTable extends Component {
   static propTypes = {
+    history: PropTypes.object.isRequired,
     skaters: PropTypes.array.isRequired,
     user: PropTypes.object
   };
 
-  state = {
-    dialogOpen: false,
-    skater: null
-  };
-
-  componentDidUpdate(prevProps) {
-    if (this.state.skater && this.props.skaters !== prevProps.skaters) {
-      this.setState({
-        skater: find(this.props.skaters, ['id', this.state.skater.id])
-      });
-    }
-  }
-
-  onTableRowClick = skater =>
-    this.setState({
-      skater,
-      dialogOpen: true
-    });
-
-  closeDialog = () => this.setState({dialogOpen: false});
+  onTableRowClick = skater => this.props.history.push(`/skaters/${skater.id}`);
 
   render() {
     return (
@@ -105,19 +83,9 @@ class SkatersTable extends Component {
             <AddIcon />
           </CreateButton>
         )}
-        {this.state.skater && (
-          <Dialog
-            fullWidth
-            classes={{paper: overflowVisible}}
-            open={this.state.dialogOpen}
-            onClose={this.closeDialog}
-          >
-            <SkaterDialogContent skater={this.state.skater} />
-          </Dialog>
-        )}
       </Fragment>
     );
   }
 }
 
-export default SkatersTable;
+export default withRouter(SkatersTable);

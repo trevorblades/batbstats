@@ -67,7 +67,7 @@ const Event = props => (
             <title>{data.event.name}</title>
           </Helmet>
           <Header>
-            <Typography variant="headline">{data.event.name}</Typography>
+            <Typography variant="display1">{data.event.name}</Typography>
           </Header>
           <StyledDialogContent>
             <Typography>Total tricks: {tricks.length}</Typography>

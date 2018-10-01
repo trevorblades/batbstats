@@ -1,5 +1,5 @@
 import fromPairs from 'lodash/fromPairs';
-import map from 'lodash/map';
+import sum from 'lodash/sum';
 import {
   ROSHAMBO_MOVE_PAPER,
   ROSHAMBO_MOVE_ROCK,
@@ -39,6 +39,10 @@ export function getInitialLetters(ids) {
 }
 
 export function getLetters(attempts) {
+  if (!attempts.length) {
+    return {};
+  }
+
   const ids = new Set([attempts[0].skater_id]);
   for (let i = 0; i < attempts.length; i++) {
     ids.add(attempts[i].skater_id);
@@ -83,4 +87,30 @@ export function getBye(replacements) {
   }
 
   return null;
+}
+
+export function getAggregates(games, id) {
+  let lettersFor = 0;
+  let lettersAgainst = 0;
+  const wins = games.reduce((count, game) => {
+    const bye = getBye(game.replacements);
+    if (!bye) {
+      const letters = getLetters(game.attempts);
+      const totalLetters = sum(Object.values(letters));
+      lettersAgainst += letters[id];
+      if (letters[id] < 5) {
+        lettersFor += 5;
+        return count + 1;
+      }
+
+      lettersFor += totalLetters - 5;
+    }
+
+    return count;
+  }, 0);
+
+  return {
+    wins,
+    plusMinus: lettersFor - lettersAgainst
+  };
 }
