@@ -34,6 +34,7 @@ export default gql`
     flip: Int
     shuv: Int
     other: Boolean
+    attempts: [Attempt]
   }
 
   type Attempt {
@@ -70,5 +71,6 @@ export default gql`
     game(id: ID): Game
     skater(id: ID): Skater
     skaters: [Skater]
+    tricks: [Trick]
   }
 `;

@@ -18,11 +18,15 @@ export default {
   Event: {
     games: event => event.getGames()
   },
+  Trick: {
+    attempts: trick => trick.getAttempts()
+  },
   Query: {
     event: (parent, args, {db}) => db.event.findById(args.id),
     events: (parent, args, {db}) => db.event.findAll({order: ['id']}),
     game: (parent, args, {db}) => db.game.findById(args.id),
     skater: (parent, args, {db}) => db.skater.findById(args.id),
-    skaters: (parent, args, {db}) => db.skater.findAll()
+    skaters: (parent, args, {db}) => db.skater.findAll(),
+    tricks: (parent, args, {db}) => db.trick.findAll()
   }
 };
