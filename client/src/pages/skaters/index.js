@@ -45,36 +45,38 @@ const Skaters = () => (
         if (loading) return <CenteredCircularProgress />;
         if (error) return <NotFound />;
 
-        const skaters = data.skaters.map(skater => {
-          const wins = skater.games.reduce((count, game) => {
-            const bye = getBye(game.replacements);
-            if (!bye) {
-              const letters = getLetters(game.attempts);
-              if (letters[skater.id] < 5) {
-                return count + 1;
+        const skaters = data.skaters
+          .filter(skater => skater.games.length > 0)
+          .map(skater => {
+            const wins = skater.games.reduce((count, game) => {
+              const bye = getBye(game.replacements);
+              if (!bye) {
+                const letters = getLetters(game.attempts);
+                if (letters[skater.id] < 5) {
+                  return count + 1;
+                }
               }
-            }
 
-            return count;
-          }, 0);
+              return count;
+            }, 0);
 
-          const attempts = skater.games.flatMap(game =>
-            filter(game.attempts, ['skater_id', skater.id])
-          );
-          const makes = filter(attempts, 'successful').length;
+            const attempts = skater.games.flatMap(game =>
+              filter(game.attempts, ['skater_id', skater.id])
+            );
+            const makes = filter(attempts, 'successful').length;
 
-          const gamesPlayed = skater.games.length;
-          return {
-            ...skater,
-            wins,
-            losses: gamesPlayed - wins,
-            win_percentage: gamesPlayed && round(wins / gamesPlayed * 100, 2),
-            attempts,
-            makes,
-            misses: attempts.length - makes,
-            redos: sumBy(attempts, 'redos')
-          };
-        });
+            const gamesPlayed = skater.games.length;
+            return {
+              ...skater,
+              wins,
+              losses: gamesPlayed - wins,
+              win_percentage: gamesPlayed && round(wins / gamesPlayed * 100, 2),
+              attempts,
+              makes,
+              misses: attempts.length - makes,
+              redos: sumBy(attempts, 'redos')
+            };
+          });
 
         return (
           <Fragment>
