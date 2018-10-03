@@ -50,7 +50,6 @@ const Sidebar = () => (
         <NavItem to="/events">Events</NavItem>
         <NavItem to="/skaters">Skaters</NavItem>
         <NavItem to="/tricks">Tricks</NavItem>
-        <NavItem to="/trick-distribution">Trick distribution</NavItem>
       </List>
     </nav>
     <StyledDialogActions>

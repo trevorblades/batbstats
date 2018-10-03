@@ -10,6 +10,7 @@ import Select from '@material-ui/core/Select';
 import StyledDialogContent from '../../components/styled-dialog-content';
 import Typography from '@material-ui/core/Typography';
 import countBy from 'lodash/countBy';
+import filter from 'lodash/filter';
 import groupBy from 'lodash/groupBy';
 import map from 'lodash/map';
 import mapProps from 'recompose/mapProps';
@@ -133,17 +134,22 @@ class EventCharts extends Component {
     );
 
     const groups = groupBy(attempts, this.iteratee);
+    const totals = countBy(attempts, 'round');
     const rounds = uniq(map(attempts, 'round')).sort();
     const lineData = Object.keys(groups)
       .sort()
       .map(key => {
-        const counts = groupBy(groups[key], 'round');
+        const group = groups[key];
         return {
           id: key,
-          data: rounds.map(round => ({
-            x: round,
-            y: counts[round] ? counts[round].length : 0
-          }))
+          data: rounds.map(round => {
+            const total = totals[round];
+            const count = group ? filter(group, {round}).length : 0;
+            return {
+              x: round,
+              y: total && count / total
+            };
+          })
         };
       });
 
@@ -193,7 +199,7 @@ class EventCharts extends Component {
             axisLeft={{
               tickSize,
               tickPadding: tickSize,
-              legend: 'count',
+              legend: 'percentage',
               legendOffset: -leftAxisOffset,
               legendPosition: 'center'
             }}
