@@ -1,10 +1,14 @@
 import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormLabel from '@material-ui/core/FormLabel';
+import MenuItem from '@material-ui/core/MenuItem';
 import PropTypes from 'prop-types';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import React, {Component, Fragment} from 'react';
+import Select from '@material-ui/core/Select';
+import StyledDialogContent from '../../components/styled-dialog-content';
+import Typography from '@material-ui/core/Typography';
 import countBy from 'lodash/countBy';
 import groupBy from 'lodash/groupBy';
 import map from 'lodash/map';
@@ -17,6 +21,22 @@ import {ResponsiveLine} from '@nivo/line';
 import {ResponsivePie} from '@nivo/pie';
 import {STANCES} from '../../../../api/common';
 import {size} from 'polished';
+
+const Header = styled(StyledDialogContent)({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  flexShrink: 0,
+  paddingBottom: 0
+});
+
+const Stat = styled(Typography)({
+  marginRight: theme.spacing.unit * 3
+});
+
+const StyledSelect = styled(Select)({
+  marginLeft: 'auto'
+});
 
 const blockSvg = css({
   svg: {
@@ -38,7 +58,7 @@ const symbolSize = 12;
 const tickSize = 5;
 const leftAxisOffset = 40;
 const bottomAxisOffset = 36;
-const chartMargin = theme.spacing.unit * 4;
+const chartMargin = theme.spacing.unit * 3;
 
 const PieContainer = styled.div(blockSvg, size(250));
 const Filters = styled.div({
@@ -136,8 +156,23 @@ class EventCharts extends Component {
         value: counts[key]
       }));
 
+    const uniqueTricks = {};
+    const tricks = this.props.attempts.map(attempt => {
+      uniqueTricks[attempt.trick.id] = true;
+      return attempt.trick;
+    });
+
     return (
       <Fragment>
+        <Header>
+          <Stat>Total tricks: {tricks.length}</Stat>
+          <Stat>Unique tricks: {Object.keys(uniqueTricks).length}</Stat>
+          <StyledSelect onChange={this.onModeChange} value={this.state.mode}>
+            <MenuItem value="stance">Stance variations</MenuItem>
+            <MenuItem value="flip">Flip type</MenuItem>
+            <MenuItem value="spin">Spin direction</MenuItem>
+          </StyledSelect>
+        </Header>
         <PrimaryChart>
           <ResponsiveLine
             colors={COLORS}

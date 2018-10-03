@@ -6,7 +6,6 @@ import Helmet from 'react-helmet';
 import NotFound from '../not-found';
 import PropTypes from 'prop-types';
 import React, {Fragment} from 'react';
-import StyledDialogContent from '../../components/styled-dialog-content';
 import Typography from '@material-ui/core/Typography';
 import flatMap from 'lodash/flatMap';
 import gql from 'graphql-tag';
@@ -54,14 +53,6 @@ const Event = props => (
       if (loading) return <CenteredCircularProgress />;
       if (error) return <NotFound />;
 
-      const uniqueTricks = {};
-      const tricks = data.event.games.flatMap(game =>
-        game.attempts.map(attempt => {
-          uniqueTricks[attempt.trick.id] = true;
-          return attempt.trick;
-        })
-      );
-
       const games = data.event.games.map(game => ({
         ...game,
         bye: getBye(game.replacements),
@@ -85,12 +76,6 @@ const Event = props => (
           <Header>
             <Typography variant="display1">{data.event.name}</Typography>
           </Header>
-          <StyledDialogContent>
-            <Typography>Total tricks: {tricks.length}</Typography>
-            <Typography>
-              Unique tricks: {Object.keys(uniqueTricks).length}
-            </Typography>
-          </StyledDialogContent>
           <EventCharts attempts={attempts} />
           <EventBracket games={games} />
         </Fragment>
