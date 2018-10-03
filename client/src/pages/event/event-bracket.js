@@ -181,8 +181,6 @@ class EventBracket extends Component {
           this.container = node;
         }}
       >
-        <div />
-        {/* the empty div is to force the following DialogContent to behave as if it's :not(:first-child) */}
         <StyledDialogContent>{this.renderBracket(game)}</StyledDialogContent>
       </Container>
     );

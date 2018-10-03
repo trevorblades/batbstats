@@ -4,32 +4,28 @@ import FormLabel from '@material-ui/core/FormLabel';
 import PropTypes from 'prop-types';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
+import countBy from 'lodash/countBy';
+import groupBy from 'lodash/groupBy';
+import map from 'lodash/map';
 import mapProps from 'recompose/mapProps';
-import styled from 'react-emotion';
+import styled, {css} from 'react-emotion';
 import theme from '@trevorblades/mui-theme';
+import uniq from 'lodash/uniq';
 import upperFirst from 'lodash/upperFirst';
 import {ResponsiveLine} from '@nivo/line';
 import {ResponsivePie} from '@nivo/pie';
 import {STANCES} from '../../../../api/common';
-import {connect} from 'react-redux';
-import {setPosture, setResult, setStance} from '../../actions/settings';
 import {size} from 'polished';
 
-const Container = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-  flexGrow: 1,
-  height: 0,
+const blockSvg = css({
   svg: {
     display: 'block'
   }
 });
 
-const PrimaryChart = styled.div({
-  flexGrow: 1,
-  height: 0,
-  minHeight: 350
+const PrimaryChart = styled.div(blockSvg, {
+  height: 350
 });
 
 const SecondaryChart = styled.div({
@@ -44,7 +40,7 @@ const leftAxisOffset = 40;
 const bottomAxisOffset = 36;
 const chartMargin = theme.spacing.unit * 4;
 
-const PieContainer = styled.div(size(250));
+const PieContainer = styled.div(blockSvg, size(250));
 const Filters = styled.div({
   display: 'flex',
   alignItems: 'center',
@@ -61,30 +57,91 @@ const RadioLabel = mapProps(props => ({
 }))(FormControlLabel);
 
 const COLORS = 'category10';
-class TrickCharts extends Component {
+class EventCharts extends Component {
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
-    lineData: PropTypes.array.isRequired,
-    pieData: PropTypes.array.isRequired,
-    posture: PropTypes.string.isRequired,
-    result: PropTypes.string.isRequired,
-    stance: PropTypes.string.isRequired
+    attempts: PropTypes.array.isRequired
   };
 
-  onResultChange = event => this.props.dispatch(setResult(event.target.value));
+  state = {
+    mode: 'stance',
+    posture: 'both',
+    result: 'both',
+    stance: 'both'
+  };
 
-  onStanceChange = event => this.props.dispatch(setStance(event.target.value));
+  get iteratee() {
+    switch (this.state.mode) {
+      case 'stance':
+        return attempt => attempt.trick.variation || 'none';
+      case 'flip':
+        return attempt => {
+          const {flip} = attempt.trick;
+          if (!flip) {
+            return 'none';
+          }
 
-  onPostureChange = event =>
-    this.props.dispatch(setPosture(event.target.value));
+          return flip > 0 ? 'kickflip' : 'heelflip';
+        };
+      case 'spin':
+        return attempt => {
+          const {spin} = attempt.trick;
+          if (!spin) {
+            return 'none';
+          }
+
+          return spin > 0 ? 'backside' : 'frontside';
+        };
+      default:
+        return null;
+    }
+  }
+
+  onRadioChange = event =>
+    this.setState({[event.target.name]: event.target.value});
+
+  onModeChange = event => this.setState({mode: event.target.value});
 
   render() {
+    const attempts = this.props.attempts.filter(
+      attempt =>
+        (this.state.stance === 'both' ||
+          attempt.skater.stance === this.state.stance) &&
+        (this.state.result === 'both' ||
+          attempt.successful === (this.state.result === 'miss')) &&
+        (this.state.posture === 'both' ||
+          attempt.offense === (this.state.posture === 'offense'))
+    );
+
+    const groups = groupBy(attempts, this.iteratee);
+    const rounds = uniq(map(attempts, 'round')).sort();
+    const lineData = Object.keys(groups)
+      .sort()
+      .map(key => {
+        const counts = groupBy(groups[key], 'round');
+        return {
+          id: key,
+          data: rounds.map(round => ({
+            x: round,
+            y: counts[round] ? counts[round].length : 0
+          }))
+        };
+      });
+
+    const counts = countBy(attempts, this.iteratee);
+    const pieData = Object.keys(counts)
+      .sort()
+      .map(key => ({
+        id: key,
+        label: key,
+        value: counts[key]
+      }));
+
     return (
-      <Container>
+      <Fragment>
         <PrimaryChart>
           <ResponsiveLine
             colors={COLORS}
-            data={this.props.lineData}
+            data={lineData}
             margin={{
               top: chartMargin,
               right: chartMargin,
@@ -94,7 +151,7 @@ class TrickCharts extends Component {
             axisBottom={{
               tickSize,
               tickPadding: tickSize,
-              legend: 'event',
+              legend: 'round',
               legendOffset: bottomAxisOffset,
               legendPosition: 'center'
             }}
@@ -122,7 +179,7 @@ class TrickCharts extends Component {
           <PieContainer>
             <ResponsivePie
               colors={COLORS}
-              data={this.props.pieData}
+              data={pieData}
               margin={{
                 top: chartMargin,
                 right: chartMargin,
@@ -138,8 +195,9 @@ class TrickCharts extends Component {
             <FormControl>
               <FormLabel>Result</FormLabel>
               <RadioGroup
-                value={this.props.result}
-                onChange={this.onResultChange}
+                name="result"
+                value={this.state.result}
+                onChange={this.onRadioChange}
               >
                 <RadioLabel value="both" />
                 <RadioLabel value="make" />
@@ -149,8 +207,9 @@ class TrickCharts extends Component {
             <FormControl>
               <FormLabel>Posture</FormLabel>
               <RadioGroup
-                value={this.props.posture}
-                onChange={this.onPostureChange}
+                name="posture"
+                value={this.state.posture}
+                onChange={this.onRadioChange}
               >
                 <RadioLabel value="both" />
                 <RadioLabel value="offense" />
@@ -160,8 +219,9 @@ class TrickCharts extends Component {
             <FormControl>
               <FormLabel>Stance</FormLabel>
               <RadioGroup
-                value={this.props.stance}
-                onChange={this.onStanceChange}
+                name="stance"
+                value={this.state.stance}
+                onChange={this.onRadioChange}
               >
                 <RadioLabel value="both" />
                 {STANCES.map(stance => (
@@ -171,15 +231,9 @@ class TrickCharts extends Component {
             </FormControl>
           </Filters>
         </SecondaryChart>
-      </Container>
+      </Fragment>
     );
   }
 }
 
-const mapStateToProps = state => ({
-  result: state.settings.result,
-  stance: state.settings.stance,
-  posture: state.settings.posture
-});
-
-export default connect(mapStateToProps)(TrickCharts);
+export default EventCharts;
