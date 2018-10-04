@@ -74,4 +74,16 @@ export default gql`
     trick(id: ID): Trick
     tricks: [Trick]
   }
+
+  type Mutation {
+    updateTrick(
+      id: ID
+      name: String
+      flip: Int
+      shuv: Int
+      spin: Int
+      variation: String
+      other: Boolean
+    ): Trick
+  }
 `;

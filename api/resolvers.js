@@ -29,5 +29,11 @@ export default {
     skaters: (parent, args, {db}) => db.skater.findAll(),
     trick: (parent, args, {db}) => db.trick.findById(args.id),
     tricks: (parent, args, {db}) => db.trick.findAll()
+  },
+  Mutation: {
+    updateTrick: async (parent, {id, ...args}, {db}) => {
+      const trick = await db.trick.findById(id);
+      return trick.update(args);
+    }
   }
 };

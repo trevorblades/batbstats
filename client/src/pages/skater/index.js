@@ -7,7 +7,7 @@ import gql from 'graphql-tag';
 import {Query} from 'react-apollo';
 
 const query = gql`
-  query Skater($id: ID!) {
+  query Skater($id: ID) {
     skater(id: $id) {
       id
       full_name

@@ -1,5 +1,4 @@
 import CenteredCircularProgress from '../../components/centered-circular-progress';
-import DialogButton from '../../components/dialog-button';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import Grid from '@material-ui/core/Grid';
 import GridItem from './grid-item';
@@ -12,11 +11,11 @@ import TrickForm from './trick-form';
 import Typography from '@material-ui/core/Typography';
 import gql from 'graphql-tag';
 import upperFirst from 'lodash/upperFirst';
-import {Mutation, Query} from 'react-apollo';
+import {Query} from 'react-apollo';
 import {connect} from 'react-redux';
 
 const query = gql`
-  query Trick($id: ID!) {
+  query Trick($id: ID) {
     trick(id: $id) {
       id
       name
@@ -32,15 +31,6 @@ const query = gql`
   }
 `;
 
-const mutation = gql`
-  mutation UpdateTrick($id: String!, $name: String!) {
-    updateTrick(id: $id, name: $name) {
-      id
-      type
-    }
-  }
-`;
-
 const Trick = props => (
   <Query query={query} variables={{id: props.match.params.id}}>
     {({loading, error, data}) => {
@@ -50,22 +40,7 @@ const Trick = props => (
         <Fragment>
           <Header>
             <Typography variant="display1">{data.trick.name}</Typography>
-            {props.user && (
-              <DialogButton title="Edit trick" variant="outlined">
-                {onClose => (
-                  <Mutation mutation={mutation}>
-                    {(updateTrick, {loading}) => (
-                      <TrickForm
-                        onClose={onClose}
-                        trick={data.trick}
-                        updateTrick={updateTrick}
-                        loading={loading}
-                      />
-                    )}
-                  </Mutation>
-                )}
-              </DialogButton>
-            )}
+            {props.user && <TrickForm trick={data.trick} />}
           </Header>
           <StyledDialogContent>
             <Grid container>

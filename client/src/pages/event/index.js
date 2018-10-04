@@ -14,7 +14,7 @@ import {Query} from 'react-apollo';
 import {getBye, getLetters} from '../../util/game';
 
 const query = gql`
-  query Event($id: ID!) {
+  query Event($id: ID) {
     event(id: $id) {
       id
       name
