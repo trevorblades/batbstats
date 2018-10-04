@@ -10,7 +10,6 @@ import gql from 'graphql-tag';
 import reject from 'lodash/reject';
 import round from 'lodash/round';
 import {Query} from 'react-apollo';
-import {connect} from 'react-redux';
 
 function getSuccessRate(attempts) {
   const rate =
@@ -34,8 +33,7 @@ const query = gql`
 
 class Tricks extends Component {
   static propTypes = {
-    history: PropTypes.object.isRequired,
-    user: PropTypes.object
+    history: PropTypes.object.isRequired
   };
 
   onTrickClick = trick => this.props.history.push(`/tricks/${trick.id}`);
@@ -52,12 +50,7 @@ class Tricks extends Component {
             if (error) return null;
 
             const columns = [
-              this.props.user
-                ? {
-                    key: 'name_with_icon',
-                    label: 'Name'
-                  }
-                : {key: 'name'},
+              {key: 'name'},
               {
                 key: 'attempts.length',
                 label: 'A',
@@ -109,8 +102,4 @@ class Tricks extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  user: state.user.data
-});
-
-export default connect(mapStateToProps)(Tricks);
+export default Tricks;
