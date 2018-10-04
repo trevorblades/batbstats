@@ -1,6 +1,9 @@
+import basicStrategy from './strategies/basic';
 import cors from 'cors';
 import db from './models';
 import express from 'express';
+import jwtStrategy from './strategies/jwt';
+import passport from 'passport';
 import resolvers from './resolvers';
 import routes from './routes';
 import typeDefs from './schema';
@@ -13,18 +16,18 @@ const server = new ApolloServer({
 });
 
 const app = express();
-app.use('/', routes);
+app.use(passport.initialize());
 app.use(
   cors({
-    origin: /^https?:\/\/(localhost(:\d{4})?|batbstats\.trevorblades\.com)$/,
-    credentials: true
+    origin: /^https?:\/\/(localhost(:\d{4})?|batbstats\.trevorblades\.com)$/
   })
 );
 
-server.applyMiddleware({
-  app,
-  cors: false
-});
+passport.use(basicStrategy);
+passport.use(jwtStrategy);
+
+app.use('/', routes);
+server.applyMiddleware({app});
 
 db.sequelize
   .sync()
