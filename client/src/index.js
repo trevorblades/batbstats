@@ -22,7 +22,7 @@ import {Provider} from 'react-redux';
 import {create} from 'jss';
 
 const client = new DefaultClient({
-  uri: 'http://localhost:4000'
+  uri: `${API_URL}/graphql`
 });
 
 const generateClassName = createGenerateClassName();
