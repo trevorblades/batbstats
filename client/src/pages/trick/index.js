@@ -1,4 +1,5 @@
 import CenteredCircularProgress from '../../components/centered-circular-progress';
+import DialogButton from '../../components/dialog-button';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import Grid from '@material-ui/core/Grid';
 import GridItem from './grid-item';
@@ -7,10 +8,12 @@ import NotFound from '../not-found';
 import PropTypes from 'prop-types';
 import React, {Fragment} from 'react';
 import StyledDialogContent from '../../components/styled-dialog-content';
+import TrickForm from './trick-form';
 import Typography from '@material-ui/core/Typography';
 import gql from 'graphql-tag';
 import upperFirst from 'lodash/upperFirst';
 import {Query} from 'react-apollo';
+import {connect} from 'react-redux';
 // import {createIsEqualWithKeys} from '../../util';
 
 // const isEqualWithKeys = createIsEqualWithKeys(
@@ -49,6 +52,13 @@ const Trick = props => (
         <Fragment>
           <Header>
             <Typography variant="display1">{data.trick.name}</Typography>
+            {props.user && (
+              <DialogButton title="Edit trick" variant="outlined">
+                {onCancel => (
+                  <TrickForm data={data.trick} onCancel={onCancel} />
+                )}
+              </DialogButton>
+            )}
           </Header>
           <StyledDialogContent>
             <Grid container>
@@ -88,7 +98,12 @@ const Trick = props => (
 );
 
 Trick.propTypes = {
-  match: PropTypes.object.isRequired
+  match: PropTypes.object.isRequired,
+  user: PropTypes.object
 };
 
-export default Trick;
+const mapStateToProps = state => ({
+  user: state.user.data
+});
+
+export default connect(mapStateToProps)(Trick);
