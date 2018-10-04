@@ -12,22 +12,11 @@ import TrickForm from './trick-form';
 import Typography from '@material-ui/core/Typography';
 import gql from 'graphql-tag';
 import upperFirst from 'lodash/upperFirst';
-import {Query} from 'react-apollo';
+import {Mutation, Query} from 'react-apollo';
 import {connect} from 'react-redux';
-// import {createIsEqualWithKeys} from '../../util';
-
-// const isEqualWithKeys = createIsEqualWithKeys(
-//   'name',
-//   'variation',
-//   'flip',
-//   'shuv',
-//   'spin',
-//   'other',
-//   'updated_at'
-// );
 
 const query = gql`
-  query Trick($id: ID) {
+  query Trick($id: ID!) {
     trick(id: $id) {
       id
       name
@@ -43,6 +32,15 @@ const query = gql`
   }
 `;
 
+const mutation = gql`
+  mutation UpdateTrick($id: String!, $name: String!) {
+    updateTrick(id: $id, name: $name) {
+      id
+      type
+    }
+  }
+`;
+
 const Trick = props => (
   <Query query={query} variables={{id: props.match.params.id}}>
     {({loading, error, data}) => {
@@ -54,8 +52,17 @@ const Trick = props => (
             <Typography variant="display1">{data.trick.name}</Typography>
             {props.user && (
               <DialogButton title="Edit trick" variant="outlined">
-                {onCancel => (
-                  <TrickForm data={data.trick} onCancel={onCancel} />
+                {onClose => (
+                  <Mutation mutation={mutation}>
+                    {(updateTrick, {loading}) => (
+                      <TrickForm
+                        onClose={onClose}
+                        trick={data.trick}
+                        updateTrick={updateTrick}
+                        loading={loading}
+                      />
+                    )}
+                  </Mutation>
                 )}
               </DialogButton>
             )}

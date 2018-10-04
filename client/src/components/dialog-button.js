@@ -15,16 +15,17 @@ class DialogButton extends Component {
 
   open = () => this.setState({open: true});
 
-  close = () => this.setState({open: false});
+  onClose = () => this.setState({open: false});
 
   render() {
+    const {title, children, ...props} = this.props;
     return (
       <Fragment>
-        <Button variant="outlined" onClick={this.open}>
-          {this.props.title}
+        <Button {...props} onClick={this.open}>
+          {title}
         </Button>
-        <Dialog open={this.state.open} onClose={this.close}>
-          {this.props.children(this.close)}
+        <Dialog open={this.state.open} onClose={this.onClose}>
+          {children(this.onClose)}
         </Dialog>
       </Fragment>
     );

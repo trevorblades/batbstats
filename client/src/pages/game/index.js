@@ -7,7 +7,7 @@ import gql from 'graphql-tag';
 import {Query} from 'react-apollo';
 
 const query = gql`
-  query Game($id: ID) {
+  query Game($id: ID!) {
     game(id: $id) {
       id
       round
