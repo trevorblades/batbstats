@@ -1,8 +1,8 @@
 import Checkbox from '@material-ui/core/Checkbox';
-import Form from '../../../components/form';
+import Form from '../../components/form';
 import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormField, {formFieldProps} from '../../../components/form-field';
+import FormField, {formFieldProps} from '../../components/form-field';
 import Grid from '@material-ui/core/Grid';
 import GridItem from './grid-item';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -13,8 +13,8 @@ import Select from '@material-ui/core/Select';
 import defaultProps from 'recompose/defaultProps';
 import theme from '@trevorblades/mui-theme';
 import upperFirst from 'lodash/upperFirst';
-import {VARIATIONS} from '../../../../../api/common';
-import {updateTrick} from '../../../actions/games';
+import {VARIATIONS} from '../../../../api/common';
+import {updateTrick} from '../../actions/games';
 
 const NumberField = defaultProps({type: 'number'})(FormField);
 

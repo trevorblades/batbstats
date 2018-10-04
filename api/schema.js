@@ -71,6 +71,7 @@ export default gql`
     game(id: ID): Game
     skater(id: ID): Skater
     skaters: [Skater]
+    trick(id: ID): Trick
     tricks: [Trick]
   }
 `;

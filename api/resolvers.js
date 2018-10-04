@@ -27,6 +27,7 @@ export default {
     game: (parent, args, {db}) => db.game.findById(args.id),
     skater: (parent, args, {db}) => db.skater.findById(args.id),
     skaters: (parent, args, {db}) => db.skater.findAll(),
+    trick: (parent, args, {db}) => db.trick.findById(args.id),
     tricks: (parent, args, {db}) => db.trick.findAll()
   }
 };
