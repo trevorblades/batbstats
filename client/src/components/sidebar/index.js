@@ -12,12 +12,11 @@ import styled from 'react-emotion';
 import theme, {getLinearGradient} from '@trevorblades/mui-theme';
 import withProps from 'recompose/withProps';
 
-export const SIDEBAR_WIDTH = 250;
 const Container = styled.div({
   display: 'flex',
   flexDirection: 'column',
   flexShrink: 0,
-  width: SIDEBAR_WIDTH,
+  width: 250,
   color: theme.palette.common.white,
   backgroundImage: getLinearGradient('to bottom right'),
   overflow: 'auto'
