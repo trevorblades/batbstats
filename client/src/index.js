@@ -1,13 +1,13 @@
 import App from './components/app';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import DateFnsUtils from 'material-ui-pickers/utils/date-fns-utils';
-import DefaultClient from 'apollo-boost';
 import Helmet from 'react-helmet';
 import JssProvider from 'react-jss/lib/JssProvider';
 import MuiPickersUtilsProvider from 'material-ui-pickers/utils/MuiPickersUtilsProvider';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactGA from 'react-ga';
+import client from './client';
 import injectStyles from './styles';
 import store from './store';
 import theme from '@trevorblades/mui-theme';
@@ -20,10 +20,6 @@ import {
 } from '@material-ui/core/styles';
 import {Provider} from 'react-redux';
 import {create} from 'jss';
-
-const client = new DefaultClient({
-  uri: `${API_URL}/graphql`
-});
 
 const generateClassName = createGenerateClassName();
 const jss = create(jssPreset());

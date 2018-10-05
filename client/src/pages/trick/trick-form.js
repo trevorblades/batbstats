@@ -3,6 +3,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogButton from '../../components/dialog-button';
 import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormField, {FormFieldControl} from '../../components/form-field';
 import Grid from '@material-ui/core/Grid';
@@ -98,6 +99,7 @@ class TrickForm extends Component {
                   });
                 }}
               >
+                <DialogTitle>Editing trick</DialogTitle>
                 <DialogContent>
                   <FormField
                     defaultValue={this.props.trick.name}

@@ -1,3 +1,5 @@
+import {ForbiddenError} from 'apollo-server-core';
+
 export default {
   Attempt: {
     trick: attempt => attempt.getTrick()
@@ -31,11 +33,19 @@ export default {
     tricks: (parent, args, {db}) => db.trick.findAll()
   },
   Mutation: {
-    updateTrick: async (parent, {id, ...args}, {db}) => {
+    updateTrick: async (parent, {id, ...args}, {db, user}) => {
+      if (!user) {
+        throw new ForbiddenError('Forbidden');
+      }
+
       const trick = await db.trick.findById(id);
       return trick.update(args);
     },
-    updateSkater: async (parent, {id, ...args}, {db}) => {
+    updateSkater: async (parent, {id, ...args}, {db, user}) => {
+      if (!user) {
+        throw new ForbiddenError('Forbidden');
+      }
+
       const skater = await db.skater.findById(id);
       return skater.update(args);
     }

@@ -2,6 +2,7 @@ import Frisbee from 'frisbee';
 import jwtDecode from 'jwt-decode';
 import store from 'store';
 import {Cmd, loop} from 'redux-loop';
+import {TOKEN_KEY} from '../constants';
 import {failure, logIn, logOut, renewToken, success} from '../actions/user';
 import {handleActions} from 'redux-actions';
 
@@ -52,9 +53,7 @@ const api = new Frisbee({
   }
 });
 
-const TOKEN_KEY = 'token';
 const setJwt = api.jwt.bind(api);
-
 const defaultState = {
   loading: false,
   error: null,

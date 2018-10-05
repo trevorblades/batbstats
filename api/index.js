@@ -2,17 +2,32 @@ import basicStrategy from './strategies/basic';
 import cors from 'cors';
 import db from './models';
 import express from 'express';
-import jwtStrategy from './strategies/jwt';
+import jwt from 'jsonwebtoken';
+import jwtStrategy, {jwtFromRequest} from './strategies/jwt';
 import passport from 'passport';
 import resolvers from './resolvers';
 import routes from './routes';
 import typeDefs from './schema';
-import {ApolloServer} from 'apollo-server-express';
+import {ApolloServer, AuthenticationError} from 'apollo-server-express';
+
+const context = ({req}) => {
+  let user;
+  const token = jwtFromRequest(req);
+  if (token) {
+    try {
+      user = jwt.verify(token, process.env.TOKEN_SECRET);
+    } catch (error) {
+      throw new AuthenticationError('Invalid token');
+    }
+  }
+
+  return {db, user};
+};
 
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  context: {db}
+  context
 });
 
 const app = express();
