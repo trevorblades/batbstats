@@ -1,5 +1,4 @@
 import express from 'express';
-import jwt from '../middleware/jwt';
 import passport from 'passport';
 
 function sendToken(req, res) {
@@ -8,6 +7,10 @@ function sendToken(req, res) {
 
 const router = express.Router();
 router.post('/', passport.authenticate('basic', {session: false}), sendToken);
-router.post('/renew', jwt, sendToken);
+router.post(
+  '/renew',
+  passport.authenticate('jwt', {session: false}),
+  sendToken
+);
 
 export default router;
