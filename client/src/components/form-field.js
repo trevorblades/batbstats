@@ -1,19 +1,13 @@
+import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
-import mapProps from 'recompose/mapProps';
+import withProps from 'recompose/withProps';
 
 export const formFieldProps = {
   margin: 'dense',
   fullWidth: true
 };
 
-const FormField = mapProps(props => {
-  const error = props.errors && props.errors[props.name];
-  return {
-    ...props,
-    ...formFieldProps,
-    error: Boolean(error),
-    helperText: error && error.msg
-  };
-})(TextField);
+export const FormFieldControl = withProps(formFieldProps)(FormControl);
+const FormField = withProps(formFieldProps)(TextField);
 
 export default FormField;

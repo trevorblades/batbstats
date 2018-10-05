@@ -34,6 +34,10 @@ export default {
     updateTrick: async (parent, {id, ...args}, {db}) => {
       const trick = await db.trick.findById(id);
       return trick.update(args);
+    },
+    updateSkater: async (parent, {id, ...args}, {db}) => {
+      const skater = await db.skater.findById(id);
+      return skater.update(args);
     }
   }
 };

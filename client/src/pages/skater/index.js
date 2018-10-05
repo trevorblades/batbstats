@@ -10,6 +10,8 @@ const query = gql`
   query Skater($id: ID) {
     skater(id: $id) {
       id
+      first_name
+      last_name
       full_name
       country
       birth_date

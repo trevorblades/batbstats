@@ -85,5 +85,14 @@ export default gql`
       variation: String
       other: Boolean
     ): Trick
+
+    updateSkater(
+      id: ID
+      first_name: String
+      last_name: String
+      stance: String
+      country: String
+      birth_date: String
+    ): Skater
   }
 `;

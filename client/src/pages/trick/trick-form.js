@@ -3,9 +3,8 @@ import Checkbox from '@material-ui/core/Checkbox';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogButton from '../../components/dialog-button';
 import DialogContent from '@material-ui/core/DialogContent';
-import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormField, {formFieldProps} from '../../components/form-field';
+import FormField, {FormFieldControl} from '../../components/form-field';
 import Grid from '@material-ui/core/Grid';
 import GridItem from './grid-item';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -17,13 +16,10 @@ import defaultProps from 'recompose/defaultProps';
 import gql from 'graphql-tag';
 import theme from '@trevorblades/mui-theme';
 import upperFirst from 'lodash/upperFirst';
-import withProps from 'recompose/withProps';
 import {Mutation} from 'react-apollo';
 import {VARIATIONS} from '../../../../api/common';
 
 const NumberField = defaultProps({type: 'number'})(FormField);
-const FormFieldControl = withProps(formFieldProps)(FormControl);
-
 const mutation = gql`
   mutation UpdateTrick(
     $id: ID
@@ -80,6 +76,7 @@ class TrickForm extends Component {
               <form
                 onSubmit={event => {
                   event.preventDefault();
+
                   const {
                     name,
                     flip,
