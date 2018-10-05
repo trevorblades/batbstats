@@ -2,7 +2,6 @@ import Divider from '@material-ui/core/Divider';
 import Paper from '@material-ui/core/Paper';
 import PropTypes from 'prop-types';
 import React, {Component, Fragment} from 'react';
-import StyledDialogContent from '../../components/styled-dialog-content';
 import Typography from '@material-ui/core/Typography';
 import groupBy from 'lodash/groupBy';
 import intersection from 'lodash/intersection';
@@ -11,6 +10,7 @@ import reject from 'lodash/reject';
 import styled from 'react-emotion';
 import theme from '@trevorblades/mui-theme';
 import {Link} from 'react-router-dom';
+import {StyledDialogContent} from '../../components';
 import {getEmojiFlag} from 'countries-list';
 
 const Container = styled.div({

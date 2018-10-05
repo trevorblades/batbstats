@@ -5,7 +5,6 @@ import DialogButton from '../../components/dialog-button';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormField, {FormFieldControl} from '../../components/form-field';
 import Grid from '@material-ui/core/Grid';
 import GridItem from './grid-item';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -17,6 +16,7 @@ import defaultProps from 'recompose/defaultProps';
 import gql from 'graphql-tag';
 import theme from '@trevorblades/mui-theme';
 import upperFirst from 'lodash/upperFirst';
+import {FormField, FormFieldControl} from '../../components';
 import {Mutation} from 'react-apollo';
 import {VARIATIONS} from '../../../../api/common';
 

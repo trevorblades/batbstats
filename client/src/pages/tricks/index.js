@@ -1,4 +1,3 @@
-import CenteredCircularProgress from '../../components/centered-circular-progress';
 import Header from '../../components/header';
 import Helmet from 'react-helmet';
 import PropTypes from 'prop-types';
@@ -9,6 +8,7 @@ import filter from 'lodash/filter';
 import gql from 'graphql-tag';
 import reject from 'lodash/reject';
 import round from 'lodash/round';
+import {CenteredCircularProgress} from '../../components';
 import {Query} from 'react-apollo';
 
 function getSuccessRate(attempts) {

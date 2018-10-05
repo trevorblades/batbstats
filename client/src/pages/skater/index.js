@@ -1,9 +1,9 @@
-import CenteredCircularProgress from '../../components/centered-circular-progress';
 import NotFound from '../not-found';
 import PropTypes from 'prop-types';
 import React from 'react';
 import SkaterContent from './skater-content';
 import gql from 'graphql-tag';
+import {CenteredCircularProgress} from '../../components';
 import {Query} from 'react-apollo';
 
 const query = gql`

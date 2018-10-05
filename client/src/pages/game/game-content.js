@@ -8,7 +8,6 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import PropTypes from 'prop-types';
 import React, {Fragment, PureComponent} from 'react';
-import StyledDialogContent from '../../components/styled-dialog-content';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -34,6 +33,7 @@ import upperFirst from 'lodash/upperFirst';
 import withProps from 'recompose/withProps';
 import {Link} from 'react-router-dom';
 import {ROSHAMBO_COUNTERS} from '../../../../api/common';
+import {StyledDialogContent} from '../../components';
 import {
   getInitialLetters,
   getLetters,

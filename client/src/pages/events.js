@@ -1,5 +1,4 @@
 import Avatar from '@material-ui/core/Avatar';
-import CenteredCircularProgress from '../components/centered-circular-progress';
 import Header from '../components/header';
 import Helmet from 'react-helmet';
 import List from '@material-ui/core/List';
@@ -9,6 +8,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import React, {Fragment} from 'react';
 import Typography from '@material-ui/core/Typography';
 import gql from 'graphql-tag';
+import {CenteredCircularProgress} from '../components';
 import {Link} from 'react-router-dom';
 import {Query} from 'react-apollo';
 

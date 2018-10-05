@@ -1,8 +1,8 @@
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Helmet from 'react-helmet';
 import React, {Fragment} from 'react';
-import StyledDialogContent from '../components/styled-dialog-content';
 import Typography from '@material-ui/core/Typography';
+import {StyledDialogContent} from '../components';
 
 const About = () => (
   <Fragment>

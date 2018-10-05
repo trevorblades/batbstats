@@ -1,4 +1,3 @@
-import CenteredCircularProgress from '../../components/centered-circular-progress';
 import Header from '../../components/header';
 import Helmet from 'react-helmet';
 import NotFound from '../not-found';
@@ -9,6 +8,7 @@ import filter from 'lodash/filter';
 import gql from 'graphql-tag';
 import round from 'lodash/round';
 import sumBy from 'lodash/sumBy';
+import {CenteredCircularProgress} from '../../components';
 import {Query} from 'react-apollo';
 import {getBye, getLetters} from '../../util/game';
 

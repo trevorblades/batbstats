@@ -1,4 +1,3 @@
-import CenteredCircularProgress from '../../components/centered-circular-progress';
 import EventBracket from './event-bracket';
 import EventCharts from './event-charts';
 import Header from '../../components/header';
@@ -10,6 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import flatMap from 'lodash/flatMap';
 import gql from 'graphql-tag';
 import keyBy from 'lodash/keyBy';
+import {CenteredCircularProgress} from '../../components';
 import {Query} from 'react-apollo';
 import {getBye, getLetters} from '../../util/game';
 

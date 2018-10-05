@@ -7,7 +7,6 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import React, {Component, Fragment} from 'react';
 import Select from '@material-ui/core/Select';
-import StyledDialogContent from '../../components/styled-dialog-content';
 import Typography from '@material-ui/core/Typography';
 import countBy from 'lodash/countBy';
 import filter from 'lodash/filter';
@@ -21,6 +20,7 @@ import upperFirst from 'lodash/upperFirst';
 import {ResponsiveLine} from '@nivo/line';
 import {ResponsivePie} from '@nivo/pie';
 import {STANCES} from '../../../../api/common';
+import {StyledDialogContent} from '../../components';
 import {size} from 'polished';
 
 const Header = styled(StyledDialogContent)({

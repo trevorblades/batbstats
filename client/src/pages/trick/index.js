@@ -1,4 +1,3 @@
-import CenteredCircularProgress from '../../components/centered-circular-progress';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import Grid from '@material-ui/core/Grid';
 import GridItem from './grid-item';
@@ -6,11 +5,11 @@ import Header from '../../components/header';
 import NotFound from '../not-found';
 import PropTypes from 'prop-types';
 import React, {Fragment} from 'react';
-import StyledDialogContent from '../../components/styled-dialog-content';
 import TrickForm from './trick-form';
 import Typography from '@material-ui/core/Typography';
 import gql from 'graphql-tag';
 import upperFirst from 'lodash/upperFirst';
+import {CenteredCircularProgress, StyledDialogContent} from '../../components';
 import {Query} from 'react-apollo';
 import {connect} from 'react-redux';
 
