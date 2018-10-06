@@ -31,6 +31,7 @@ class LoginForm extends Component {
 
     const response = await fetch(`${API_URL}/auth`, {headers});
     if (!response.ok) {
+      console.log(response);
       this.setState({
         loading: false,
         error: new Error(response.statusText)
@@ -43,7 +44,6 @@ class LoginForm extends Component {
   };
 
   render() {
-    console.log(this.state.error);
     return (
       <form onSubmit={this.onSubmit}>
         <DialogTitle>Log in</DialogTitle>
