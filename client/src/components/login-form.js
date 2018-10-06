@@ -43,6 +43,7 @@ class LoginForm extends Component {
   };
 
   render() {
+    console.log(this.state.error);
     return (
       <form onSubmit={this.onSubmit}>
         <DialogTitle>Log in</DialogTitle>
