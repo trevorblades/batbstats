@@ -10,8 +10,8 @@ import Typography from '@material-ui/core/Typography';
 import gql from 'graphql-tag';
 import upperFirst from 'lodash/upperFirst';
 import {CenteredCircularProgress, StyledDialogContent} from '../../components';
+import {Consumer} from '../../user-context';
 import {Query} from 'react-apollo';
-import {connect} from 'react-redux';
 
 const query = gql`
   query Trick($id: ID) {
@@ -39,7 +39,9 @@ const Trick = props => (
         <Fragment>
           <Header>
             <Typography variant="display1">{data.trick.name}</Typography>
-            {props.user && <TrickForm trick={data.trick} />}
+            <Consumer>
+              {({token}) => token && <TrickForm trick={data.trick} />}
+            </Consumer>
           </Header>
           <StyledDialogContent>
             <Grid container>
@@ -79,12 +81,7 @@ const Trick = props => (
 );
 
 Trick.propTypes = {
-  match: PropTypes.object.isRequired,
-  user: PropTypes.object
+  match: PropTypes.object.isRequired
 };
 
-const mapStateToProps = state => ({
-  user: state.user.data
-});
-
-export default connect(mapStateToProps)(Trick);
+export default Trick;

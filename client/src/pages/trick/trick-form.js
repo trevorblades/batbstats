@@ -93,7 +93,7 @@ class TrickForm extends Component {
                       flip: Number(flip.value),
                       shuv: Number(shuv.value),
                       spin: Number(spin.value),
-                      variation: variation.value,
+                      variation: variation.value || null,
                       other: other.value === 'true'
                     }
                   });

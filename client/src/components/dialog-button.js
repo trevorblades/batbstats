@@ -13,7 +13,7 @@ class DialogButton extends Component {
     open: false
   };
 
-  open = () => this.setState({open: true});
+  open = () => this.setState({open: true}, this.props.onOpened);
 
   onClose = () => this.setState({open: false});
 
@@ -24,7 +24,7 @@ class DialogButton extends Component {
         <Button {...props} onClick={this.open}>
           {title}
         </Button>
-        <Dialog open={this.state.open} onClose={this.onClose}>
+        <Dialog fullWidth open={this.state.open} onClose={this.onClose}>
           {children(this.onClose)}
         </Dialog>
       </Fragment>

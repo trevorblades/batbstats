@@ -4,20 +4,36 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import PropTypes from 'prop-types';
 import React, {Component} from 'react';
+import api from '../api';
 import {FormField} from '.';
-import {connect} from 'react-redux';
-import {logIn} from '../actions/user';
+import {withUser} from '../user-context';
 
 class LoginForm extends Component {
   static propTypes = {
-    dispatch: PropTypes.func.isRequired
+    setToken: PropTypes.func.isRequired
   };
 
-  onSubmit = event => {
+  state = {
+    loading: false,
+    error: null
+  };
+
+  onSubmit = async event => {
     event.preventDefault();
-    this.props.dispatch(
-      logIn([event.target.email.value, event.target.password.value])
-    );
+    this.setState({loading: true});
+
+    const response = await api
+      .auth(event.target.email.value, event.target.password.value)
+      .post('/auth');
+    if (response.err) {
+      this.setState({
+        loading: false,
+        error: response.err
+      });
+      return;
+    }
+
+    this.props.setToken(response.body);
   };
 
   render() {
@@ -25,11 +41,12 @@ class LoginForm extends Component {
       <form onSubmit={this.onSubmit}>
         <DialogTitle>Log in</DialogTitle>
         <DialogContent>
+          {this.state.error && this.state.error.message}
           <FormField autoFocus label="Email" name="email" />
           <FormField label="Password" name="password" type="password" />
         </DialogContent>
         <DialogActions>
-          <Button type="submit" color="primary">
+          <Button disabled={this.state.loading} type="submit" color="primary">
             Submit
           </Button>
         </DialogActions>
@@ -38,9 +55,4 @@ class LoginForm extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  error: state.user.error,
-  loading: state.user.loading
-});
-
-export default connect(mapStateToProps)(LoginForm);
+export default withUser(LoginForm);

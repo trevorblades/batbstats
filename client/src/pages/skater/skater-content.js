@@ -11,12 +11,11 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Typography from '@material-ui/core/Typography';
-import compose from 'recompose/compose';
 import differenceInYears from 'date-fns/differenceInYears';
 import round from 'lodash/round';
 import withProps from 'recompose/withProps';
+import {Consumer} from '../../user-context';
 import {StyledDialogContent} from '../../components';
-import {connect} from 'react-redux';
 import {countries} from 'countries-list';
 import {getAggregates, getLetters, getRoundName} from '../../util/game';
 import {getShortName} from '../../util/event';
@@ -37,8 +36,7 @@ function formatPercent(percent) {
 class SkaterContent extends Component {
   static propTypes = {
     history: PropTypes.object.isRequired,
-    skater: PropTypes.object.isRequired,
-    user: PropTypes.object
+    skater: PropTypes.object.isRequired
   };
 
   onGameClick = game => this.props.history.push(`/games/${game.id}`);
@@ -77,7 +75,9 @@ class SkaterContent extends Component {
           <Typography variant="display1">
             {this.props.skater.full_name}
           </Typography>
-          {this.props.user && <SkaterForm skater={this.props.skater} />}
+          <Consumer>
+            {({token}) => token && <SkaterForm skater={this.props.skater} />}
+          </Consumer>
         </Header>
         <StyledDialogContent>
           <Grid container>
@@ -157,8 +157,4 @@ class SkaterContent extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  user: state.user.data
-});
-
-export default compose(withRouter, connect(mapStateToProps))(SkaterContent);
+export default withRouter(SkaterContent);
