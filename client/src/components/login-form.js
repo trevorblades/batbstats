@@ -4,7 +4,6 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import PropTypes from 'prop-types';
 import React, {Component} from 'react';
-import api from '../api';
 import {FormField} from '.';
 import {withUser} from '../user-context';
 
@@ -22,18 +21,25 @@ class LoginForm extends Component {
     event.preventDefault();
     this.setState({loading: true});
 
-    const response = await api
-      .auth(event.target.email.value, event.target.password.value)
-      .post('/auth');
-    if (response.err) {
+    const headers = new Headers();
+    headers.append(
+      'Authorization',
+      `Basic ${Buffer.from(
+        [event.target.email.value, event.target.password.value].join(':')
+      ).toString('base64')}`
+    );
+
+    const response = await fetch(`${API_URL}/auth`, {headers});
+    if (!response.ok) {
       this.setState({
         loading: false,
-        error: response.err
+        error: new Error(response.statusText)
       });
       return;
     }
 
-    this.props.setToken(response.body);
+    const token = await response.text();
+    this.props.setToken(token);
   };
 
   render() {

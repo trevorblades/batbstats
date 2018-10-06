@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 import ReactGA from 'react-ga';
 import Sidebar from './sidebar';
-import api from '../api';
 import compose from 'recompose/compose';
 import store from 'store';
 import styled from 'react-emotion';
@@ -29,9 +28,12 @@ class App extends Component {
   async componentDidMount() {
     ReactGA.pageview(this.props.location.pathname);
     if (this.state.token) {
-      const response = await api.jwt(this.state.token).post('/auth/renew');
-      if (!response.err) {
-        this.setState({token: response.body});
+      const headers = new Headers();
+      headers.append('Authorization', `Bearer ${this.state.token}`);
+      const response = await fetch(`${API_URL}/auth/renew`, {headers});
+      if (response.ok) {
+        const token = await response.text();
+        this.setToken(token);
       }
     }
   }
