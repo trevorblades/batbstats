@@ -4,7 +4,7 @@ const path = require('path');
 const webpack = require('webpack');
 
 const title = 'BATB Stats';
-module.exports = {
+module.exports = (env, argv) => ({
   context: path.join(__dirname, 'src'),
   entry: ['@babel/polyfill', './index.js'],
   output: {
@@ -28,10 +28,10 @@ module.exports = {
     new webpack.DefinePlugin({
       TITLE: JSON.stringify(title),
       API_URL: JSON.stringify(
-        process.env.NODE_ENV === 'production'
+        argv.mode === 'production'
           ? 'https://api.batbstats.trevorblades.com'
           : 'http://localhost:3000'
       )
     })
   ]
-};
+});
