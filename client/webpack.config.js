@@ -16,10 +16,6 @@ module.exports = {
         test: /\.js$/,
         exclude: /node_modules/,
         use: 'babel-loader'
-      },
-      {
-        test: /\.png$/,
-        use: 'file-loader'
       }
     ]
   },
@@ -30,7 +26,12 @@ module.exports = {
       template: 'index.html'
     }),
     new webpack.DefinePlugin({
-      TITLE: JSON.stringify(title)
+      TITLE: JSON.stringify(title),
+      API_URL: JSON.stringify(
+        process.env.NODE_ENV === 'production'
+          ? 'https://api.batbstats.trevorblades.com'
+          : 'http://localhost:3000'
+      )
     })
   ]
 };

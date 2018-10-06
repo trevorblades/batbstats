@@ -1,145 +1,94 @@
-import AddIcon from '@material-ui/icons/Add';
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import GamesLoader from '../../components/games-loader';
 import Header from '../../components/header';
 import Helmet from 'react-helmet';
-import PropTypes from 'prop-types';
-import React, {Component, Fragment} from 'react';
-import SkaterDialogContent from './skater-dialog-content';
-import SortableTable from '../../components/sortable-table';
+import NotFound from '../not-found';
+import React, {Fragment} from 'react';
+import SkatersTable from './skaters-table';
 import Typography from '@material-ui/core/Typography';
-import find from 'lodash/find';
-import styled, {css} from 'react-emotion';
-import theme from '@trevorblades/mui-theme';
-import {SIDEBAR_WIDTH} from '../../components/sidebar';
-import {connect} from 'react-redux';
-import {getSkaters} from '../../selectors';
-
-const spacing = theme.spacing.unit * 3;
-const CreateButton = styled(Button)({
-  position: 'fixed',
-  bottom: spacing,
-  left: SIDEBAR_WIDTH + spacing
-});
-
-const overflowVisible = css({overflow: 'visible'});
+import filter from 'lodash/filter';
+import gql from 'graphql-tag';
+import round from 'lodash/round';
+import sumBy from 'lodash/sumBy';
+import {CenteredCircularProgress} from '../../components';
+import {Query} from 'react-apollo';
+import {getBye, getLetters} from '../../util/game';
 
 const title = 'Skaters';
-class Skaters extends Component {
-  static propTypes = {
-    skaters: PropTypes.array.isRequired,
-    user: PropTypes.object
-  };
-
-  state = {
-    dialogOpen: false,
-    skater: null
-  };
-
-  componentDidUpdate(prevProps) {
-    if (this.state.skater && this.props.skaters !== prevProps.skaters) {
-      this.setState({
-        skater: find(this.props.skaters, ['id', this.state.skater.id])
-      });
+const query = gql`
+  {
+    skaters {
+      id
+      full_name
+      games {
+        id
+        replacements {
+          in_id
+          out_id
+        }
+        attempts {
+          offense
+          successful
+          redos
+          skater_id
+        }
+      }
     }
   }
+`;
 
-  onTableRowClick = skater =>
-    this.setState({
-      skater,
-      dialogOpen: true
-    });
+const Skaters = () => (
+  <Fragment>
+    <Helmet>
+      <title>{title}</title>
+    </Helmet>
+    <Query query={query}>
+      {({loading, error, data}) => {
+        if (loading) return <CenteredCircularProgress />;
+        if (error) return <NotFound />;
 
-  closeDialog = () => this.setState({dialogOpen: false});
+        const skaters = data.skaters
+          .filter(skater => skater.games.length > 0)
+          .map(skater => {
+            const wins = skater.games.reduce((count, game) => {
+              const bye = getBye(game.replacements);
+              if (!bye) {
+                const letters = getLetters(game.attempts);
+                if (letters[skater.id] < 5) {
+                  return count + 1;
+                }
+              }
 
-  render() {
-    return (
-      <Fragment>
-        <Helmet>
-          <title>{title}</title>
-        </Helmet>
-        <GamesLoader>
+              return count;
+            }, 0);
+
+            const attempts = skater.games.flatMap(game =>
+              filter(game.attempts, ['skater_id', skater.id])
+            );
+            const makes = filter(attempts, 'successful').length;
+
+            const gamesPlayed = skater.games.length;
+            return {
+              ...skater,
+              wins,
+              losses: gamesPlayed - wins,
+              win_percentage: gamesPlayed && round(wins / gamesPlayed * 100, 2),
+              attempts,
+              makes,
+              misses: attempts.length - makes,
+              redos: sumBy(attempts, 'redos')
+            };
+          });
+
+        return (
           <Fragment>
             <Header>
               <Typography variant="display1">{title}</Typography>
             </Header>
-            <SortableTable
-              padding="dense"
-              rows={this.props.skaters}
-              onRowClick={this.onTableRowClick}
-              columns={[
-                {
-                  key: 'full_name',
-                  label: 'Name'
-                },
-                {
-                  key: 'games.length',
-                  label: 'GP',
-                  numeric: true
-                },
-                {
-                  key: 'wins',
-                  label: 'W',
-                  numeric: true
-                },
-                {
-                  key: 'losses',
-                  label: 'L',
-                  numeric: true
-                },
-                {
-                  key: 'win_percentage',
-                  label: 'W%',
-                  numeric: true
-                },
-                {
-                  key: 'attempts.length',
-                  label: 'TA',
-                  numeric: true
-                },
-                {
-                  key: 'makes',
-                  label: 'MA',
-                  numeric: true
-                },
-                {
-                  key: 'misses',
-                  label: 'MI',
-                  numeric: true
-                },
-                {
-                  key: 'redos',
-                  label: 'R',
-                  numeric: true
-                }
-              ]}
-            />
-            {this.props.user && (
-              <CreateButton color="secondary" variant="fab">
-                <AddIcon />
-              </CreateButton>
-            )}
-            {this.state.skater && (
-              <Dialog
-                fullWidth
-                classes={{paper: overflowVisible}}
-                open={this.state.dialogOpen}
-                onClose={this.closeDialog}
-              >
-                <SkaterDialogContent skater={this.state.skater} />
-              </Dialog>
-            )}
+            <SkatersTable skaters={skaters} />
           </Fragment>
-        </GamesLoader>
-      </Fragment>
-    );
-  }
-}
+        );
+      }}
+    </Query>
+  </Fragment>
+);
 
-const mapStateToProps = state => ({
-  skaters: getSkaters(state),
-  user: state.user.data
-});
-
-export default connect(mapStateToProps)(Skaters);
+export default Skaters;

@@ -2,22 +2,44 @@ import Button from '@material-ui/core/Button';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import FormField from './form-field';
 import PropTypes from 'prop-types';
 import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import {logIn} from '../actions/user';
+import {FormField} from '.';
+import {withUser} from '../user-context';
 
 class LoginForm extends Component {
   static propTypes = {
-    dispatch: PropTypes.func.isRequired
+    setToken: PropTypes.func.isRequired
   };
 
-  onSubmit = event => {
+  state = {
+    loading: false,
+    error: null
+  };
+
+  onSubmit = async event => {
     event.preventDefault();
-    this.props.dispatch(
-      logIn([event.target.email.value, event.target.password.value])
+    this.setState({loading: true});
+
+    const headers = new Headers();
+    headers.append(
+      'Authorization',
+      `Basic ${Buffer.from(
+        [event.target.email.value, event.target.password.value].join(':')
+      ).toString('base64')}`
     );
+
+    const response = await fetch(`${API_URL}/auth`, {headers});
+    if (!response.ok) {
+      this.setState({
+        loading: false,
+        error: new Error(response.statusText)
+      });
+      return;
+    }
+
+    const token = await response.text();
+    this.props.setToken(token);
   };
 
   render() {
@@ -25,11 +47,12 @@ class LoginForm extends Component {
       <form onSubmit={this.onSubmit}>
         <DialogTitle>Log in</DialogTitle>
         <DialogContent>
+          {this.state.error && this.state.error.message}
           <FormField autoFocus label="Email" name="email" />
           <FormField label="Password" name="password" type="password" />
         </DialogContent>
         <DialogActions>
-          <Button type="submit" color="primary">
+          <Button disabled={this.state.loading} type="submit" color="primary">
             Submit
           </Button>
         </DialogActions>
@@ -38,9 +61,4 @@ class LoginForm extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  error: state.user.error,
-  loading: state.user.loading
-});
-
-export default connect(mapStateToProps)(LoginForm);
+export default withUser(LoginForm);

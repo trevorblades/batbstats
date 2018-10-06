@@ -1,103 +1,105 @@
-import Dialog from '@material-ui/core/Dialog';
-import GamesLoader from '../../components/games-loader';
 import Header from '../../components/header';
 import Helmet from 'react-helmet';
 import PropTypes from 'prop-types';
 import React, {Component, Fragment} from 'react';
 import SortableTable from '../../components/sortable-table';
-import TrickDialogContent from './trick-dialog-content';
 import Typography from '@material-ui/core/Typography';
-import find from 'lodash/find';
-import {connect} from 'react-redux';
-import {getTricks} from '../../selectors';
+import filter from 'lodash/filter';
+import gql from 'graphql-tag';
+import reject from 'lodash/reject';
+import round from 'lodash/round';
+import {CenteredCircularProgress} from '../../components';
+import {Query} from 'react-apollo';
+
+function getSuccessRate(attempts) {
+  const rate =
+    attempts.length && filter(attempts, 'successful').length / attempts.length;
+  return round(rate * 100, 2);
+}
 
 const title = 'Tricks';
-class Tricks extends Component {
-  static propTypes = {
-    tricks: PropTypes.array.isRequired,
-    user: PropTypes.object
-  };
-
-  state = {
-    dialogOpen: false,
-    trick: null
-  };
-
-  componentDidUpdate(prevProps) {
-    if (this.state.trick && this.props.tricks !== prevProps.tricks) {
-      this.setState({
-        trick: find(this.props.tricks, ['id', this.state.trick.id])
-      });
+const query = gql`
+  {
+    tricks {
+      id
+      name
+      attempts {
+        offense
+        successful
+      }
     }
   }
+`;
 
-  onTrickClick = trick =>
-    this.setState({
-      trick,
-      dialogOpen: true
-    });
+class Tricks extends Component {
+  static propTypes = {
+    history: PropTypes.object.isRequired
+  };
 
-  closeDialog = () => this.setState({dialogOpen: false});
+  onTrickClick = trick => this.props.history.push(`/tricks/${trick.id}`);
 
   render() {
-    const columns = [
-      this.props.user
-        ? {
-            key: 'name_with_icon',
-            label: 'Name'
-          }
-        : {key: 'name'},
-      {
-        key: 'attempts',
-        label: 'A',
-        numeric: true
-      },
-      {
-        key: 'offense_success_rate',
-        label: 'OSR',
-        numeric: true
-      },
-      {
-        key: 'defense_success_rate',
-        label: 'DSR',
-        numeric: true
-      }
-    ];
-
     return (
       <Fragment>
         <Helmet>
           <title>{title}</title>
         </Helmet>
-        <GamesLoader>
-          <Fragment>
-            <Header>
-              <Typography variant="display1">{title}</Typography>
-            </Header>
-            <SortableTable
-              rows={this.props.tricks}
-              onRowClick={this.onTrickClick}
-              columns={columns}
-            />
-            {this.state.trick && (
-              <Dialog
-                fullWidth
-                open={this.state.dialogOpen}
-                onClose={this.closeDialog}
-              >
-                <TrickDialogContent trick={this.state.trick} />
-              </Dialog>
-            )}
-          </Fragment>
-        </GamesLoader>
+        <Query query={query}>
+          {({loading, error, data}) => {
+            if (loading) return <CenteredCircularProgress />;
+            if (error) return null;
+
+            const columns = [
+              {key: 'name'},
+              {
+                key: 'attempts.length',
+                label: 'A',
+                numeric: true
+              },
+              {
+                key: 'osr',
+                label: 'OSR',
+                numeric: true
+              },
+              {
+                key: 'dsr',
+                label: 'DSR',
+                numeric: true
+              }
+            ];
+
+            const rows = data.tricks.map(trick => ({
+              ...trick,
+              osr: getSuccessRate(filter(trick.attempts, 'offense')),
+              dsr: getSuccessRate(reject(trick.attempts, 'offense'))
+            }));
+
+            return (
+              <Fragment>
+                <Header>
+                  <Typography variant="display1">{title}</Typography>
+                </Header>
+                <SortableTable
+                  rows={rows}
+                  onRowClick={this.onTrickClick}
+                  columns={columns}
+                />
+                {/* {this.state.trick && (
+                  <Dialog
+                    fullWidth
+                    open={this.state.dialogOpen}
+                    onClose={this.closeDialog}
+                  >
+                    <TrickDialogContent trick={this.state.trick} />
+                  </Dialog>
+                )} */}
+              </Fragment>
+            );
+          }}
+        </Query>
       </Fragment>
     );
   }
 }
 
-const mapStateToProps = state => ({
-  tricks: getTricks(state),
-  user: state.user.data
-});
-
-export default connect(mapStateToProps)(Tricks);
+export default Tricks;

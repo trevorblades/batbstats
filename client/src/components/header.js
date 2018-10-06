@@ -6,7 +6,8 @@ import styled from 'react-emotion';
 
 const StyledDialogTitle = styled(DialogTitle)({
   display: 'flex',
-  alignItems: 'center'
+  alignItems: 'center',
+  justifyContent: 'space-between'
 });
 
 const Header = props => (

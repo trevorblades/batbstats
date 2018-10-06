@@ -6,9 +6,9 @@ export default (sequelize, DataTypes) => {
   });
 
   Attempt.associate = models => {
-    models.Attempt.belongsTo(models.Skater);
-    models.Attempt.belongsTo(models.Trick);
-    models.Attempt.belongsTo(models.Game);
+    Attempt.belongsTo(models.skater);
+    Attempt.belongsTo(models.trick);
+    Attempt.belongsTo(models.game);
   };
 
   return Attempt;

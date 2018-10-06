@@ -7,8 +7,7 @@ import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import PropTypes from 'prop-types';
 import React, {Component, Fragment} from 'react';
 import styled from 'react-emotion';
-import {connect} from 'react-redux';
-import {logOut} from '../../actions/user';
+import {withUser} from '../../user-context';
 
 const StyledIconButton = styled(IconButton)({
   marginLeft: 'auto'
@@ -16,8 +15,8 @@ const StyledIconButton = styled(IconButton)({
 
 class MenuButton extends Component {
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
-    user: PropTypes.object
+    setToken: PropTypes.func.isRequired,
+    token: PropTypes.string
   };
 
   state = {
@@ -26,7 +25,7 @@ class MenuButton extends Component {
   };
 
   componentDidUpdate(prevProps) {
-    if (this.props.user && !prevProps.user) {
+    if (this.props.token && !prevProps.token) {
       this.setState({dialogOpen: false});
     }
   }
@@ -39,7 +38,7 @@ class MenuButton extends Component {
       dialogOpen: true
     });
 
-  onLogOutClick = () => this.props.dispatch(logOut());
+  logOut = () => this.props.setToken(null);
 
   closeMenu = () => this.setState({anchorEl: null});
 
@@ -57,8 +56,8 @@ class MenuButton extends Component {
           anchorEl={this.state.anchorEl}
           onClose={this.closeMenu}
         >
-          {this.props.user ? (
-            <MenuItem onClick={this.onLogOutClick}>Log out</MenuItem>
+          {this.props.token ? (
+            <MenuItem onClick={this.logOut}>Log out</MenuItem>
           ) : (
             <MenuItem onClick={this.onLogInClick}>Log in</MenuItem>
           )}
@@ -75,8 +74,4 @@ class MenuButton extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  user: state.user.data
-});
-
-export default connect(mapStateToProps)(MenuButton);
+export default withUser(MenuButton);

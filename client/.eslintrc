@@ -1,11 +1,13 @@
 {
-  "parser": "babel-eslint",
   "extends": "@trevorblades/eslint-config/react",
+  "parser": "babel-eslint",
   "env": {
     "browser": true,
-    "node": true
+    "node": true,
+    "es6": true
   },
   "globals": {
-    "TITLE": true
+    "TITLE": true,
+    "API_URL": true
   }
 }

@@ -1,21 +1,55 @@
-import CenteredCircularProgress from '../../components/centered-circular-progress';
 import GameContent from './game-content';
-import GamesLoader from '../../components/games-loader';
 import NotFound from '../not-found';
 import PropTypes from 'prop-types';
 import React from 'react';
-import find from 'lodash/find';
+import gql from 'graphql-tag';
+import {CenteredCircularProgress} from '../../components';
+import {Query} from 'react-apollo';
+
+const query = gql`
+  query Game($id: ID) {
+    game(id: $id) {
+      id
+      round
+      event {
+        id
+        name
+      }
+      skaters {
+        id
+        first_name
+        full_name
+      }
+      roshambos {
+        id
+        round
+        move
+        skater_id
+      }
+      attempts {
+        id
+        successful
+        offense
+        redos
+        skater_id
+        trick {
+          id
+          name
+          flip
+        }
+      }
+    }
+  }
+`;
 
 const Game = props => (
-  <GamesLoader hideSnackbar>
-    {(games, loading) => {
-      const game = find(games, ['id', parseInt(props.match.params.id)]);
-      if (!game) {
-        return loading ? <CenteredCircularProgress /> : <NotFound />;
-      }
-      return <GameContent game={game} />;
+  <Query query={query} variables={{id: props.match.params.id}}>
+    {({loading, error, data}) => {
+      if (loading) return <CenteredCircularProgress />;
+      if (error) return <NotFound />;
+      return <GameContent game={data.game} />;
     }}
-  </GamesLoader>
+  </Query>
 );
 
 Game.propTypes = {

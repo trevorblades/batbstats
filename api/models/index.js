@@ -1,7 +1,6 @@
 const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
-const pascalcase = require('pascalcase');
 
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
   define: {
@@ -15,7 +14,7 @@ fs.readdirSync(__dirname)
   .filter(file => file.indexOf('.') !== 0 && file !== basename)
   .forEach(file => {
     const model = sequelize.import(path.join(__dirname, file));
-    db[pascalcase(model.name)] = model;
+    db[model.name] = model;
   });
 
 for (const key in db) {

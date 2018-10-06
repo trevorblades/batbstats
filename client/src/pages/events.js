@@ -1,55 +1,62 @@
 import Avatar from '@material-ui/core/Avatar';
-import GamesLoader from '../components/games-loader';
 import Header from '../components/header';
 import Helmet from 'react-helmet';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
-import PropTypes from 'prop-types';
 import React, {Fragment} from 'react';
 import Typography from '@material-ui/core/Typography';
+import gql from 'graphql-tag';
+import {CenteredCircularProgress} from '../components';
 import {Link} from 'react-router-dom';
-import {connect} from 'react-redux';
-import {getEvents} from '../selectors';
+import {Query} from 'react-apollo';
 
 const title = 'Events';
-const Events = props => (
+const query = gql`
+  {
+    events {
+      id
+      name
+      image
+    }
+  }
+`;
+
+const Events = () => (
   <Fragment>
     <Helmet>
       <title>{title}</title>
     </Helmet>
-    <GamesLoader>
-      <Fragment>
-        <Header>
-          <Typography variant="display1">{title}</Typography>
-        </Header>
-        <List>
-          {props.events.map(event => (
-            <ListItem
-              button
-              key={event.id}
-              component={Link}
-              to={`/events/${event.id}`}
-            >
-              <ListItemAvatar>
-                <Avatar src={event.image} />
-              </ListItemAvatar>
-              <ListItemText primary={event.name} />
-            </ListItem>
-          ))}
-        </List>
-      </Fragment>
-    </GamesLoader>
+    <Query query={query}>
+      {({loading, error, data}) => {
+        if (loading) return <CenteredCircularProgress />;
+        if (error) return <div>{error.message}</div>;
+        return (
+          <Fragment>
+            <Header>
+              <Typography variant="display1">{title}</Typography>
+            </Header>
+            <List>
+              {data.events.map(event => (
+                <ListItem
+                  button
+                  key={event.id}
+                  component={Link}
+                  to={`/events/${event.id}`}
+                >
+                  <ListItemAvatar>
+                    <Avatar src={event.image} />
+                  </ListItemAvatar>
+                  <ListItemText primary={event.name} />
+                </ListItem>
+              ))}
+            </List>
+          </Fragment>
+        );
+      }}
+    </Query>
   </Fragment>
 );
 
-Events.propTypes = {
-  events: PropTypes.array.isRequired
-};
-
-const mapStateToProps = state => ({
-  events: getEvents(state)
-});
-
-export default connect(mapStateToProps)(Events);
+export default Events;

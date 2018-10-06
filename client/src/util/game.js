@@ -1,6 +1,5 @@
 import fromPairs from 'lodash/fromPairs';
-import map from 'lodash/map';
-import sortBy from 'lodash/sortBy';
+import sum from 'lodash/sum';
 import {
   ROSHAMBO_MOVE_PAPER,
   ROSHAMBO_MOVE_ROCK,
@@ -39,10 +38,22 @@ export function getInitialLetters(ids) {
   return fromPairs(ids.map(id => [id, 0]));
 }
 
-export function getLetters(game) {
+export function getLetters(attempts) {
+  if (!attempts.length) {
+    return {};
+  }
+
+  const ids = new Set([attempts[0].skater_id]);
+  for (let i = 0; i < attempts.length; i++) {
+    ids.add(attempts[i].skater_id);
+    if (ids.size > 1) {
+      break;
+    }
+  }
+
   let trick;
-  const letters = getInitialLetters(map(game.skaters, 'id'));
-  game.attempts.forEach(attempt => {
+  const letters = getInitialLetters(Array.from(ids));
+  attempts.forEach(attempt => {
     if (!trick) {
       if (attempt.successful) {
         trick = attempt;
@@ -65,24 +76,41 @@ export function getLetters(game) {
   return letters;
 }
 
-export function getRounds(game) {
-  const rounds = [];
-  for (let i = 0; i < game.attempts.length; i++) {
-    const attempt = game.attempts[i];
-    const round = [attempt, null];
-    if (attempt.successful) {
-      i++;
-      round[1] = game.attempts[i];
+export function getBye(replacements) {
+  for (let i = 0; i < replacements.length; i++) {
+    // the heuristic for determining a bye is if the game has a replacement
+    // where the value of in_id is NULL
+    const replacement = replacements[i];
+    if (replacement.in_id === null) {
+      return replacement.out_id;
     }
-
-    rounds.push(round);
   }
 
-  const skaterIds = map(game.skaters, 'id');
-  return rounds.map(round =>
-    sortBy(
-      round,
-      attempt => (attempt ? skaterIds.indexOf(attempt.skater_id) : 0)
-    )
-  );
+  return null;
+}
+
+export function getAggregates(games, id) {
+  let lettersFor = 0;
+  let lettersAgainst = 0;
+  const wins = games.reduce((count, game) => {
+    const bye = getBye(game.replacements);
+    if (!bye) {
+      const letters = getLetters(game.attempts);
+      const totalLetters = sum(Object.values(letters));
+      lettersAgainst += letters[id];
+      if (letters[id] < 5) {
+        lettersFor += 5;
+        return count + 1;
+      }
+
+      lettersFor += totalLetters - 5;
+    }
+
+    return count;
+  }, 0);
+
+  return {
+    wins,
+    plusMinus: lettersFor - lettersAgainst
+  };
 }

@@ -1,6 +1,5 @@
 import Button from '@material-ui/core/Button';
 import CloseIcon from '@material-ui/icons/Close';
-import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import Header from '../../components/header';
 import Helmet from 'react-helmet';
@@ -24,19 +23,24 @@ import mapValues from 'lodash/mapValues';
 import nest from 'recompose/nest';
 import pluralize from 'pluralize';
 import round from 'lodash/round';
+import sortBy from 'lodash/sortBy';
 import styled, {css} from 'react-emotion';
 import sum from 'lodash/sum';
 import sumBy from 'lodash/sumBy';
 import theme from '@trevorblades/mui-theme';
 import toPairs from 'lodash/toPairs';
 import upperFirst from 'lodash/upperFirst';
-import values from 'lodash/values';
 import withProps from 'recompose/withProps';
 import {Link} from 'react-router-dom';
 import {ROSHAMBO_COUNTERS} from '../../../../api/common';
-import {connect} from 'react-redux';
-import {getAverageRounds, getAverageRuns} from '../../selectors';
-import {getInitialLetters, getRoshamboEmoji} from '../../util/game';
+import {StyledDialogContent} from '../../components';
+import {
+  getInitialLetters,
+  getLetters,
+  getRoshamboEmoji,
+  getRoundName
+} from '../../util/game';
+import {getShortName} from '../../util/event';
 import {position, size} from 'polished';
 
 const Container = styled.div({
@@ -48,7 +52,7 @@ const Main = styled.main({
   overflowY: 'auto'
 });
 
-const sidebarWidth = 300;
+const sidebarWidth = 270;
 const Sidebar = styled.aside({
   flexShrink: 0,
   width: sidebarWidth,
@@ -85,8 +89,6 @@ const fixed = css({
 });
 
 const videoPadding = css({paddingBottom: fixedHeight + fixedSpacing * 2});
-const StyledDialogContent = styled(DialogContent)({overflowY: 'visible'});
-
 const VideoInner = styled.div(
   props => (props.fixed ? fixed : positionAbsolute),
   {
@@ -129,8 +131,6 @@ function getAttemptText(attempt) {
 const LETTERS = 'SKATE'.split('');
 class GameContent extends PureComponent {
   static propTypes = {
-    averageRounds: PropTypes.number.isRequired,
-    averageRuns: PropTypes.number.isRequired,
     game: PropTypes.object.isRequired
   };
 
@@ -138,6 +138,39 @@ class GameContent extends PureComponent {
     videoInView: false,
     fixedVideo: false
   };
+
+  get rounds() {
+    const rounds = [];
+    const {attempts, skaters} = this.props.game;
+    for (let i = 0; i < attempts.length; i++) {
+      const attempt = attempts[i];
+      const round = [attempt, null];
+      if (attempt.successful) {
+        i++;
+        round[1] = attempts[i];
+      }
+
+      rounds.push(round);
+    }
+
+    const skaterIds = map(skaters, 'id');
+    return rounds.map(round =>
+      sortBy(
+        round,
+        attempt => (attempt ? skaterIds.indexOf(attempt.skater_id) : 0)
+      )
+    );
+  }
+
+  get runs() {
+    return this.rounds.reduce(
+      (runs, round) =>
+        filter(round).length > 1
+          ? [...runs.slice(0, -1), runs[runs.length - 1] + 1]
+          : [...filter(runs), 0],
+      [0]
+    );
+  }
 
   onScroll = event => {
     if (this.video) {
@@ -200,7 +233,7 @@ class GameContent extends PureComponent {
       [skaterIds[1]]: skaters[skaterIds[0]]
     };
 
-    return this.props.game.rounds.map(round => {
+    return this.rounds.map(round => {
       let commentary;
       const attempts = filter(round);
       if (attempts.length === 1) {
@@ -244,17 +277,18 @@ class GameContent extends PureComponent {
   }
 
   renderSidebar() {
-    const {attempts, rounds, runs, letters} = this.props.game;
+    const {attempts} = this.props.game;
+    const letters = getLetters(attempts);
     const offensiveAttempts = filter(attempts, 'offense');
     const totalFlips = sumBy(offensiveAttempts, attempt =>
       Math.abs(attempt.trick.flip)
     );
 
     const stats = {
-      'Total rounds': `${rounds.length} (avg. ${this.props.averageRounds})`,
-      'Total runs': `${runs.length} (avg. ${this.props.averageRuns})`,
-      'Longest run': pluralize('trick', Math.max(...runs), true),
-      'Letters earned': sum(values(letters)),
+      'Total rounds': this.rounds.length,
+      'Total runs': this.runs.length,
+      'Longest run': pluralize('trick', Math.max(...this.runs), true),
+      'Letters earned': sum(Object.values(letters)),
       'Redos given': sumBy(attempts, 'redos'),
       'Avg. flips per trick': round(totalFlips / offensiveAttempts.length, 2)
     };
@@ -300,9 +334,9 @@ class GameContent extends PureComponent {
               <Typography variant="headline">{title}</Typography>
               <Typography variant="subheading">
                 <Link to={`/events/${this.props.game.event.id}`}>
-                  {this.props.game.event.short_name}
+                  {getShortName(this.props.game.event.name)}
                 </Link>{' '}
-                {this.props.game.round_name}
+                {getRoundName(this.props.game.round)}
               </Typography>
             </div>
           </Header>
@@ -355,9 +389,4 @@ class GameContent extends PureComponent {
   }
 }
 
-const mapStateToProps = state => ({
-  averageRounds: getAverageRounds(state),
-  averageRuns: getAverageRuns(state)
-});
-
-export default connect(mapStateToProps)(GameContent);
+export default GameContent;

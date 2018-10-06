@@ -7,8 +7,8 @@ export default (sequelize, DataTypes) => {
   });
 
   Roshambo.associate = models => {
-    models.Roshambo.belongsTo(models.Skater);
-    models.Roshambo.belongsTo(models.Game);
+    Roshambo.belongsTo(models.skater);
+    Roshambo.belongsTo(models.game);
   };
 
   return Roshambo;

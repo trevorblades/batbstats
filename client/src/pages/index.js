@@ -5,8 +5,9 @@ import Game from './game';
 import NotFound from './not-found';
 import Paper from '@material-ui/core/Paper';
 import React from 'react';
+import Skater from './skater';
 import Skaters from './skaters';
-import TrickDistribution from './trick-distribution';
+import Trick from './trick';
 import Tricks from './tricks';
 import styled from 'react-emotion';
 import {Route, Switch} from 'react-router-dom';
@@ -25,9 +26,10 @@ const Pages = () => (
       <Route exact path="/events" component={Events} />
       <Route exact path="/events/:id" component={Event} />
       <Route exact path="/skaters" component={Skaters} />
+      <Route exact path="/skaters/:id" component={Skater} />
       <Route exact path="/tricks" component={Tricks} />
+      <Route exact path="/tricks/:id" component={Trick} />
       <Route exact path="/games/:id" component={Game} />
-      <Route path="/trick-distribution" component={TrickDistribution} />
       <Route component={NotFound} />
     </Switch>
   </Container>

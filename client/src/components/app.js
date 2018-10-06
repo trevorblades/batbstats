@@ -4,10 +4,11 @@ import React, {Component} from 'react';
 import ReactGA from 'react-ga';
 import Sidebar from './sidebar';
 import compose from 'recompose/compose';
+import store from 'store';
 import styled from 'react-emotion';
-import {connect} from 'react-redux';
+import {Provider} from '../user-context';
+import {TOKEN_KEY} from '../constants';
 import {hot} from 'react-hot-loader';
-import {renewToken} from '../actions/user';
 import {withRouter} from 'react-router-dom';
 
 const Container = styled.div({
@@ -17,15 +18,23 @@ const Container = styled.div({
 
 class App extends Component {
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
-    location: PropTypes.object.isRequired,
-    user: PropTypes.object
+    location: PropTypes.object.isRequired
   };
 
-  componentDidMount() {
+  state = {
+    token: store.get(TOKEN_KEY)
+  };
+
+  async componentDidMount() {
     ReactGA.pageview(this.props.location.pathname);
-    if (this.props.user) {
-      this.props.dispatch(renewToken(this.props.user.token));
+    if (this.state.token) {
+      const headers = new Headers();
+      headers.append('Authorization', `Bearer ${this.state.token}`);
+      const response = await fetch(`${API_URL}/auth/renew`, {headers});
+      if (response.ok) {
+        const token = await response.text();
+        this.setToken(token);
+      }
     }
   }
 
@@ -35,18 +44,23 @@ class App extends Component {
     }
   }
 
+  setToken = token => this.setState({token}, () => store.set(TOKEN_KEY, token));
+
   render() {
     return (
-      <Container>
-        <Sidebar />
-        <Pages />
-      </Container>
+      <Provider
+        value={{
+          token: this.state.token,
+          setToken: this.setToken
+        }}
+      >
+        <Container>
+          <Sidebar />
+          <Pages />
+        </Container>
+      </Provider>
     );
   }
 }
 
-const mapStateToProps = state => ({
-  user: state.user.data
-});
-
-export default compose(hot(module), withRouter, connect(mapStateToProps))(App);
+export default compose(hot(module), withRouter)(App);
