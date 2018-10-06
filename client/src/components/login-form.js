@@ -31,7 +31,6 @@ class LoginForm extends Component {
 
     const response = await fetch(`${API_URL}/auth`, {headers});
     if (!response.ok) {
-      console.log(response);
       this.setState({
         loading: false,
         error: new Error(response.statusText)
