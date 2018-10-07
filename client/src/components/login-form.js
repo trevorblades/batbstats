@@ -4,6 +4,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import PropTypes from 'prop-types';
 import React, {Component} from 'react';
+import Typography from '@material-ui/core/Typography';
 import {FormField} from '.';
 import {withUser} from '../user-context';
 
@@ -47,7 +48,9 @@ class LoginForm extends Component {
       <form onSubmit={this.onSubmit}>
         <DialogTitle>Log in</DialogTitle>
         <DialogContent>
-          {this.state.error && this.state.error.message}
+          {this.state.error && (
+            <Typography color="error">Invalid email/password</Typography>
+          )}
           <FormField autoFocus label="Email" name="email" />
           <FormField label="Password" name="password" type="password" />
         </DialogContent>
