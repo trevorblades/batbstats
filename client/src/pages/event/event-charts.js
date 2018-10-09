@@ -13,6 +13,7 @@ import filter from 'lodash/filter';
 import groupBy from 'lodash/groupBy';
 import map from 'lodash/map';
 import mapProps from 'recompose/mapProps';
+import round from 'lodash/round';
 import styled, {css} from 'react-emotion';
 import theme from '@trevorblades/mui-theme';
 import uniq from 'lodash/uniq';
@@ -78,6 +79,8 @@ const RadioLabel = mapProps(props => ({
 }))(FormControlLabel);
 
 const COLORS = 'category10';
+const tooltipFormat = value => round(value, 2);
+
 class EventCharts extends Component {
   static propTypes = {
     attempts: PropTypes.array.isRequired
@@ -183,6 +186,7 @@ class EventCharts extends Component {
           <ResponsiveLine
             colors={COLORS}
             data={lineData}
+            tooltipFormat={tooltipFormat}
             margin={{
               top: chartMargin,
               right: chartMargin,
