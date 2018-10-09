@@ -27,7 +27,6 @@ import {size} from 'polished';
 const Header = styled(StyledDialogContent)({
   display: 'flex',
   alignItems: 'center',
-  justifyContent: 'space-between',
   flexShrink: 0,
   paddingBottom: 0
 });
@@ -36,7 +35,7 @@ const Stat = styled(Typography)({
   marginRight: theme.spacing.unit * 3
 });
 
-const StyledSelect = styled(Select)({
+const SelectWrapper = styled.div({
   marginLeft: 'auto'
 });
 
@@ -176,11 +175,13 @@ class EventCharts extends Component {
         <Header>
           <Stat>Total tricks: {tricks.length}</Stat>
           <Stat>Unique tricks: {Object.keys(uniqueTricks).length}</Stat>
-          <StyledSelect onChange={this.onModeChange} value={this.state.mode}>
-            <MenuItem value="stance">Stance variations</MenuItem>
-            <MenuItem value="flip">Flip type</MenuItem>
-            <MenuItem value="spin">Spin direction</MenuItem>
-          </StyledSelect>
+          <SelectWrapper>
+            <Select onChange={this.onModeChange} value={this.state.mode}>
+              <MenuItem value="stance">Stance variations</MenuItem>
+              <MenuItem value="flip">Flip type</MenuItem>
+              <MenuItem value="spin">Spin direction</MenuItem>
+            </Select>
+          </SelectWrapper>
         </Header>
         <PrimaryChart>
           <ResponsiveLine
