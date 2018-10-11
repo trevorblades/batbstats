@@ -1,6 +1,6 @@
+import ApolloClient from 'apollo-boost';
 import Button from '@material-ui/core/Button';
 import DialogActions from '@material-ui/core/DialogActions';
-import DialogButton from '../../components/dialog-button';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -13,9 +13,8 @@ import sortBy from 'lodash/sortBy';
 import upperFirst from 'lodash/upperFirst';
 import {DatePicker} from 'material-ui-pickers';
 import {FormField, FormFieldControl, formFieldProps} from '../../components';
-import {Mutation} from 'react-apollo';
+import {Mutation, Query} from 'react-apollo';
 import {STANCES, STANCE_REGULAR} from '../../../../api/common';
-import {countries} from 'countries-list';
 
 const mutation = gql`
   mutation UpdateSkater(
@@ -45,8 +44,22 @@ const mutation = gql`
   }
 `;
 
+const client = new ApolloClient({
+  uri: 'https://countries-list.herokuapp.com'
+});
+
+const query = gql`
+  {
+    countries {
+      code
+      name
+    }
+  }
+`;
+
 class SkaterForm extends Component {
   static propTypes = {
+    onClose: PropTypes.func.isRequired,
     skater: PropTypes.object.isRequired
   };
 
@@ -68,100 +81,101 @@ class SkaterForm extends Component {
 
   render() {
     return (
-      <DialogButton title="Edit skater" variant="outlined">
-        {onClose => (
-          <Mutation mutation={mutation}>
-            {(updateSkater, {loading}) => (
-              <form
-                onSubmit={event => {
-                  event.preventDefault();
+      <Mutation mutation={mutation}>
+        {(updateSkater, {loading}) => (
+          <form
+            onSubmit={event => {
+              event.preventDefault();
 
-                  const {first_name, last_name, stance, country} = event.target;
-                  updateSkater({
-                    variables: {
-                      id: this.props.skater.id,
-                      first_name: first_name.value,
-                      last_name: last_name.value,
-                      stance: stance.value,
-                      country: country.value
-                    }
-                  });
-                }}
-              >
-                <DialogTitle>Editing skater</DialogTitle>
-                <DialogContent>
-                  <FormField
-                    label="First name"
-                    name="first_name"
-                    defaultValue={this.props.skater.first_name}
-                  />
-                  <FormField
-                    label="Last name"
-                    name="last_name"
-                    defaultValue={this.props.skater.last_name}
-                  />
-                  <FormFieldControl>
-                    <InputLabel>Stance</InputLabel>
+              const {first_name, last_name, stance, country} = event.target;
+              updateSkater({
+                variables: {
+                  id: this.props.skater.id,
+                  first_name: first_name.value,
+                  last_name: last_name.value,
+                  stance: stance.value,
+                  country: country.value
+                }
+              });
+            }}
+          >
+            <DialogTitle>Editing skater</DialogTitle>
+            <DialogContent>
+              <FormField
+                label="First name"
+                name="first_name"
+                defaultValue={this.props.skater.first_name}
+              />
+              <FormField
+                label="Last name"
+                name="last_name"
+                defaultValue={this.props.skater.last_name}
+              />
+              <FormFieldControl>
+                <InputLabel>Stance</InputLabel>
+                <Select
+                  name="stance"
+                  value={this.state.stance}
+                  onChange={this.onSelectChange}
+                >
+                  {STANCES.map(stance => (
+                    <MenuItem key={stance} value={stance}>
+                      {upperFirst(stance)}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormFieldControl>
+              <FormFieldControl>
+                <InputLabel>Country</InputLabel>
+                <Query query={query} client={client}>
+                  {({loading, data}) => (
                     <Select
-                      name="stance"
-                      value={this.state.stance}
-                      onChange={this.onSelectChange}
-                    >
-                      {STANCES.map(stance => (
-                        <MenuItem key={stance} value={stance}>
-                          {upperFirst(stance)}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormFieldControl>
-                  <FormFieldControl>
-                    <InputLabel>Country</InputLabel>
-                    <Select
+                      disabled={loading}
                       name="country"
                       value={this.state.country}
                       onChange={this.onSelectChange}
                     >
-                      {sortBy(
-                        Object.keys(countries).map(key => ({
-                          ...countries[key],
-                          code: key
-                        })),
-                        'name'
-                      ).map(country => (
-                        <MenuItem key={country.code} value={country.code}>
-                          {country.name}
+                      {loading ? (
+                        <MenuItem value={this.state.country}>
+                          Loading...
                         </MenuItem>
-                      ))}
+                      ) : (
+                        sortBy(data.countries, 'name').map(country => (
+                          <MenuItem key={country.code} value={country.code}>
+                            {country.name}
+                          </MenuItem>
+                        ))
+                      )}
                     </Select>
-                  </FormFieldControl>
-                  <DatePicker
-                    {...formFieldProps}
-                    disableFuture
-                    openToYearSelection
-                    label="Date of birth"
-                    format="MMMM Do, YYYY"
-                    value={this.state.birthDate}
-                    onChange={this.onBirthDateChange}
-                  />
-                  {this.state.birthDate && (
-                    <input
-                      type="hidden"
-                      name="birth_date"
-                      value={this.state.birthDate.toISOString()}
-                    />
                   )}
-                </DialogContent>
-                <DialogActions>
-                  <Button onClick={onClose}>Cancel</Button>
-                  <Button disabled={loading} type="submit">
-                    Submit
-                  </Button>
-                </DialogActions>
-              </form>
-            )}
-          </Mutation>
+                </Query>
+              </FormFieldControl>
+              <DatePicker
+                {...formFieldProps}
+                disableFuture
+                openToYearSelection
+                label="Date of birth"
+                format="MMMM Do, YYYY"
+                value={this.state.birthDate}
+                onChange={this.onBirthDateChange}
+              />
+              {this.state.birthDate && (
+                <input
+                  type="hidden"
+                  name="birth_date"
+                  value={this.state.birthDate.toISOString()}
+                />
+              )}
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={this.props.onClose}>Cancel</Button>
+              <Button disabled={loading} type="submit">
+                Submit
+              </Button>
+            </DialogActions>
+          </form>
         )}
-      </DialogButton>
+      </Mutation>
     );
   }
 }

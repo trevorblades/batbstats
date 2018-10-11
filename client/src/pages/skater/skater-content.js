@@ -1,3 +1,4 @@
+import DialogButton from '../../components/dialog-button';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import Grid from '@material-ui/core/Grid';
 import Header from '../../components/header';
@@ -76,7 +77,15 @@ class SkaterContent extends Component {
             {this.props.skater.full_name}
           </Typography>
           <Consumer>
-            {({token}) => token && <SkaterForm skater={this.props.skater} />}
+            {({token}) =>
+              token && (
+                <DialogButton title="Edit skater" variant="outlined">
+                  {onClose => (
+                    <SkaterForm onClose={onClose} skater={this.props.skater} />
+                  )}
+                </DialogButton>
+              )
+            }
           </Consumer>
         </Header>
         <StyledDialogContent>

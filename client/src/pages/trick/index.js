@@ -1,3 +1,4 @@
+import DialogButton from '../../components/dialog-button';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import Grid from '@material-ui/core/Grid';
 import GridItem from './grid-item';
@@ -40,7 +41,15 @@ const Trick = props => (
           <Header>
             <Typography variant="display1">{data.trick.name}</Typography>
             <Consumer>
-              {({token}) => token && <TrickForm trick={data.trick} />}
+              {({token}) =>
+                token && (
+                  <DialogButton title="Edit trick" variant="outlined">
+                    {onClose => (
+                      <TrickForm onClose={onClose} trick={data.trick} />
+                    )}
+                  </DialogButton>
+                )
+              }
             </Consumer>
           </Header>
           <StyledDialogContent>
