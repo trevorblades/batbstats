@@ -7,7 +7,7 @@ import {CenteredCircularProgress} from '../../components';
 import {Query} from 'react-apollo';
 
 const query = gql`
-  query Game($id: ID) {
+  query($id: ID) {
     game(id: $id) {
       id
       round

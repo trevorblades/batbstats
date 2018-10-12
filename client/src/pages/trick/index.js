@@ -15,7 +15,7 @@ import {Consumer} from '../../user-context';
 import {Query} from 'react-apollo';
 
 const query = gql`
-  query Trick($id: ID) {
+  query($id: ID) {
     trick(id: $id) {
       id
       name
