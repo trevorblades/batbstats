@@ -7,7 +7,7 @@ import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import PropTypes from 'prop-types';
 import React, {Component, Fragment} from 'react';
 import styled from 'react-emotion';
-import {withUser} from '../../user-context';
+import {withUser} from '../../util/user-context';
 
 const StyledIconButton = styled(IconButton)({
   marginLeft: 'auto'

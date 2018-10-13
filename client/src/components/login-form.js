@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 import Typography from '@material-ui/core/Typography';
 import {FormField} from '.';
-import {withUser} from '../user-context';
+import {withUser} from '../util/user-context';
 
 class LoginForm extends Component {
   static propTypes = {

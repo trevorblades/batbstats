@@ -11,7 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import gql from 'graphql-tag';
 import upperFirst from 'lodash/upperFirst';
 import {CenteredCircularProgress, StyledDialogContent} from '../../components';
-import {Consumer} from '../../user-context';
+import {Consumer} from '../../util/user-context';
 import {Query} from 'react-apollo';
 
 const query = gql`

@@ -8,6 +8,7 @@
   },
   "globals": {
     "TITLE": true,
-    "API_URL": true
+    "API_URL": true,
+    "COUNTRIES_API_URL": true
   }
 }

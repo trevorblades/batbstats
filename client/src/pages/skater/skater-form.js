@@ -1,4 +1,3 @@
-import ApolloClient from 'apollo-boost';
 import Button from '@material-ui/core/Button';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -8,6 +7,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 import Select from '@material-ui/core/Select';
+import countriesClient from '../../util/countries-client';
 import gql from 'graphql-tag';
 import sortBy from 'lodash/sortBy';
 import upperFirst from 'lodash/upperFirst';
@@ -40,19 +40,6 @@ const mutation = gql`
       stance
       country
       birth_date
-    }
-  }
-`;
-
-const client = new ApolloClient({
-  uri: 'https://countries-list.herokuapp.com'
-});
-
-const query = gql`
-  {
-    countries {
-      code
-      name
     }
   }
 `;
@@ -127,7 +114,17 @@ class SkaterForm extends Component {
               </FormFieldControl>
               <FormFieldControl>
                 <InputLabel>Country</InputLabel>
-                <Query query={query} client={client}>
+                <Query
+                  query={gql`
+                    {
+                      countries {
+                        code
+                        name
+                      }
+                    }
+                  `}
+                  client={countriesClient}
+                >
                   {({loading, data}) => (
                     <Select
                       disabled={loading}

@@ -12,12 +12,14 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Typography from '@material-ui/core/Typography';
+import countriesClient from '../../util/countries-client';
 import differenceInYears from 'date-fns/differenceInYears';
+import gql from 'graphql-tag';
 import round from 'lodash/round';
 import withProps from 'recompose/withProps';
-import {Consumer} from '../../user-context';
+import {Consumer} from '../../util/user-context';
+import {Query} from 'react-apollo';
 import {StyledDialogContent} from '../../components';
-import {countries} from 'countries-list';
 import {getAggregates, getLetters, getRoundName} from '../../util/game';
 import {getShortName} from '../../util/event';
 import {withRouter} from 'react-router-dom';
@@ -93,9 +95,25 @@ class SkaterContent extends Component {
             <GridItem>
               <DialogContentText>
                 Country:{' '}
-                {this.props.skater.country
-                  ? countries[this.props.skater.country].name
-                  : UNKNOWN}
+                {this.props.skater.country ? (
+                  <Query
+                    query={gql`
+                      query($code: String) {
+                        country(code: $code) {
+                          name
+                        }
+                      }
+                    `}
+                    client={countriesClient}
+                    variables={{code: this.props.skater.country}}
+                  >
+                    {({loading, data}) =>
+                      loading ? 'Loading...' : data.country.name
+                    }
+                  </Query>
+                ) : (
+                  UNKNOWN
+                )}
               </DialogContentText>
             </GridItem>
             <GridItem>

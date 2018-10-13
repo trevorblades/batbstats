@@ -6,7 +6,7 @@ import Sidebar from './sidebar';
 import compose from 'recompose/compose';
 import store from 'store';
 import styled from 'react-emotion';
-import {Provider} from '../user-context';
+import {Provider} from '../util/user-context';
 import {TOKEN_KEY} from '../constants';
 import {hot} from 'react-hot-loader';
 import {withRouter} from 'react-router-dom';
