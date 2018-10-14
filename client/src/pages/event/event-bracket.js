@@ -3,6 +3,8 @@ import Paper from '@material-ui/core/Paper';
 import PropTypes from 'prop-types';
 import React, {Component, Fragment} from 'react';
 import Typography from '@material-ui/core/Typography';
+import countriesClient from '../../util/countries-client';
+import gql from 'graphql-tag';
 import groupBy from 'lodash/groupBy';
 import intersection from 'lodash/intersection';
 import map from 'lodash/map';
@@ -10,8 +12,8 @@ import reject from 'lodash/reject';
 import styled from 'react-emotion';
 import theme from '@trevorblades/mui-theme';
 import {Link} from 'react-router-dom';
+import {Query} from 'react-apollo';
 import {StyledDialogContent} from '../../components';
-import {getEmojiFlag} from 'countries-list';
 
 const Container = styled.div({
   display: 'flex',
@@ -140,7 +142,23 @@ class EventBracket extends Component {
                   'Bye'
                 ) : (
                   <Fragment>
-                    {skater.country && `${getEmojiFlag(skater.country)} `}
+                    {skater.country && (
+                      <Query
+                        query={gql`
+                          query($code: String) {
+                            country(code: $code) {
+                              emoji
+                            }
+                          }
+                        `}
+                        client={countriesClient}
+                        variables={{code: skater.country}}
+                      >
+                        {({loading, data}) =>
+                          !loading && `${data.country.emoji} `
+                        }
+                      </Query>
+                    )}
                     <span
                       style={{
                         textDecoration: skater.replaced
