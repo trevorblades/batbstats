@@ -75,9 +75,7 @@ class SkaterContent extends Component {
           <title>{this.props.skater.full_name}</title>
         </Helmet>
         <Header>
-          <Typography variant="display1">
-            {this.props.skater.full_name}
-          </Typography>
+          <Typography variant="h3">{this.props.skater.full_name}</Typography>
           <Consumer>
             {({token}) =>
               token && (

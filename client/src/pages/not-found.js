@@ -9,10 +9,10 @@ const Container = styled.div({
 
 const NotFound = () => (
   <Container>
-    <Typography gutterBottom variant="display1">
+    <Typography gutterBottom variant="h3">
       Page not found
     </Typography>
-    <Typography variant="subheading">That&apos;s a bummer 😓</Typography>
+    <Typography variant="subtitle1">That&apos;s a bummer 😓</Typography>
   </Container>
 );
 

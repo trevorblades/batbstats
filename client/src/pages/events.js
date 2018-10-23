@@ -35,7 +35,7 @@ const Events = () => (
         return (
           <Fragment>
             <Header>
-              <Typography variant="display1">{title}</Typography>
+              <Typography variant="h3">{title}</Typography>
             </Header>
             <List>
               {data.events.map(event => (

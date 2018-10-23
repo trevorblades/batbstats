@@ -74,7 +74,7 @@ const Event = props => (
             <title>{data.event.name}</title>
           </Helmet>
           <Header>
-            <Typography variant="display1">{data.event.name}</Typography>
+            <Typography variant="h3">{data.event.name}</Typography>
           </Header>
           <EventCharts attempts={attempts} />
           <EventBracket games={games} />
