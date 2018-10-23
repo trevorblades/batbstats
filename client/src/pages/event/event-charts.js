@@ -5,7 +5,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import PropTypes from 'prop-types';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
-import React, {Component, Fragment} from 'react';
+import React, {Component} from 'react';
 import Select from '@material-ui/core/Select';
 import Typography from '@material-ui/core/Typography';
 import countBy from 'lodash/countBy';
@@ -171,7 +171,7 @@ class EventCharts extends Component {
     });
 
     return (
-      <Fragment>
+      <div>
         <Header>
           <Stat>Total tricks: {tricks.length}</Stat>
           <Stat>Unique tricks: {Object.keys(uniqueTricks).length}</Stat>
@@ -277,7 +277,7 @@ class EventCharts extends Component {
             </FormControl>
           </Filters>
         </SecondaryChart>
-      </Fragment>
+      </div>
     );
   }
 }

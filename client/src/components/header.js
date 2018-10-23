@@ -12,11 +12,14 @@ const StyledDialogTitle = styled(DialogTitle)({
 
 const Header = props => (
   <AppBar elevation={0} position="sticky" color="inherit">
-    <StyledDialogTitle disableTypography>{props.children}</StyledDialogTitle>
+    <StyledDialogTitle className={props.className} disableTypography>
+      {props.children}
+    </StyledDialogTitle>
   </AppBar>
 );
 
 Header.propTypes = {
+  className: PropTypes.string,
   children: PropTypes.node
 };
 

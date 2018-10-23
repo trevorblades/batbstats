@@ -29,11 +29,16 @@ const Games = styled.div({
   justifyContent: 'flex-end'
 });
 
+const gameMargin = theme.spacing.unit * 2;
 const Game = styled(Paper)({
   flexShrink: 0,
   width: 200,
-  margin: `${theme.spacing.unit * 2}px 0`,
+  margin: `${gameMargin}px 0`,
   textDecoration: 'none'
+});
+
+const BracketWrapper = styled.div({
+  margin: `-${gameMargin}px 0`
 });
 
 const Skater = styled(Typography)({
@@ -199,7 +204,9 @@ class EventBracket extends Component {
           this.container = node;
         }}
       >
-        <StyledDialogContent>{this.renderBracket(game)}</StyledDialogContent>
+        <StyledDialogContent>
+          <BracketWrapper>{this.renderBracket(game)}</BracketWrapper>
+        </StyledDialogContent>
       </Container>
     );
   }
