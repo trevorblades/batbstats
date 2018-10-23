@@ -81,7 +81,7 @@ const Skaters = () => (
         return (
           <Fragment>
             <Header>
-              <Typography variant="display1">{title}</Typography>
+              <Typography variant="h3">{title}</Typography>
             </Header>
             <SkatersTable skaters={skaters} />
           </Fragment>

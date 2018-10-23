@@ -10,7 +10,7 @@ const About = () => (
       <title>About</title>
     </Helmet>
     <DialogTitle disableTypography>
-      <Typography variant="display1">About the project</Typography>
+      <Typography variant="h3">About the project</Typography>
     </DialogTitle>
     <StyledDialogContent>
       <Typography paragraph>

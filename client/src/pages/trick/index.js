@@ -39,7 +39,7 @@ const Trick = props => (
       return (
         <Fragment>
           <Header>
-            <Typography variant="display1">{data.trick.name}</Typography>
+            <Typography variant="h3">{data.trick.name}</Typography>
             <Consumer>
               {({token}) =>
                 token && (

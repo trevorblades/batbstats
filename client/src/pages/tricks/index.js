@@ -77,22 +77,13 @@ class Tricks extends Component {
             return (
               <Fragment>
                 <Header>
-                  <Typography variant="display1">{title}</Typography>
+                  <Typography variant="h3">{title}</Typography>
                 </Header>
                 <SortableTable
                   rows={rows}
                   onRowClick={this.onTrickClick}
                   columns={columns}
                 />
-                {/* {this.state.trick && (
-                  <Dialog
-                    fullWidth
-                    open={this.state.dialogOpen}
-                    onClose={this.closeDialog}
-                  >
-                    <TrickDialogContent trick={this.state.trick} />
-                  </Dialog>
-                )} */}
               </Fragment>
             );
           }}

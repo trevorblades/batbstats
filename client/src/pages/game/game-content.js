@@ -209,7 +209,7 @@ class GameContent extends PureComponent {
               const {move} = roshambos[key][skater.id];
               return (
                 <StyledTableCell key={skater.id} index={index}>
-                  <Typography variant="subheading" title={move}>
+                  <Typography variant="subtitle1" title={move}>
                     {getRoshamboEmoji(move)}
                   </Typography>
                 </StyledTableCell>
@@ -300,12 +300,12 @@ class GameContent extends PureComponent {
           <ListItemText
             primary={key}
             primaryTypographyProps={{
-              variant: 'body1',
+              variant: 'body2',
               color: 'textSecondary'
             }}
             secondary={stats[key]}
             secondaryTypographyProps={{
-              variant: 'subheading',
+              variant: 'subtitle1',
               color: 'default'
             }}
           />
@@ -331,8 +331,8 @@ class GameContent extends PureComponent {
         <Main onScroll={this.onScroll}>
           <Header>
             <div>
-              <Typography variant="headline">{title}</Typography>
-              <Typography variant="subheading">
+              <Typography variant="h4">{title}</Typography>
+              <Typography variant="subtitle1">
                 <Link to={`/events/${this.props.game.event.id}`}>
                   {getShortName(this.props.game.event.name)}
                 </Link>{' '}

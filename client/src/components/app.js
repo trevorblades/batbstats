@@ -31,10 +31,13 @@ class App extends Component {
       const headers = new Headers();
       headers.append('Authorization', `Bearer ${this.state.token}`);
       const response = await fetch(`${API_URL}/auth/renew`, {headers});
-      if (response.ok) {
-        const token = await response.text();
-        this.setToken(token);
+      if (!response.ok) {
+        this.setToken(null);
+        return;
       }
+
+      const token = await response.text();
+      this.setToken(token);
     }
   }
 

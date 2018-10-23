@@ -36,11 +36,8 @@ const LinkIconButton = withProps({
 const Sidebar = () => (
   <Container>
     <DialogTitle disableTypography>
-      <Typography variant="display1" color="inherit">
-        {TITLE} ⚡️
-      </Typography>
-      <Typography variant="body2" color="inherit">
-        by Trevor Blades
+      <Typography variant="h4" title="BATB Stats">
+        ⚡️
       </Typography>
     </DialogTitle>
     <nav>
