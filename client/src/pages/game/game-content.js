@@ -6,6 +6,7 @@ import Helmet from 'react-helmet';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import Paper from '@material-ui/core/Paper';
 import PropTypes from 'prop-types';
 import React, {Fragment, PureComponent} from 'react';
 import Table from '@material-ui/core/Table';
@@ -53,10 +54,9 @@ const InnerContainer = styled.div({
 });
 
 const sidebarWidth = 270;
-const Sidebar = styled.aside({
+const Sidebar = styled(Paper)({
   flexShrink: 0,
-  width: sidebarWidth,
-  backgroundColor: theme.palette.background.default
+  width: sidebarWidth
 });
 
 const aspectRatio = 16 / 9;
@@ -314,7 +314,7 @@ class GameContent extends PureComponent {
     }
 
     return (
-      <Sidebar>
+      <Sidebar component="aside" elevation={0} square>
         <List>{listItems}</List>
       </Sidebar>
     );
