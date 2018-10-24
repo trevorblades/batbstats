@@ -23,7 +23,7 @@ const Pages = () => (
     <Switch>
       <Route exact path="/" render={About} />
       <Route exact path="/events" render={Events} />
-      <Route exact path="/events/:id" component={Event} />
+      <Route exact path="/events/:id" render={Event} />
       <Route exact path="/skaters" render={Skaters} />
       <Route exact path="/skaters/:id" render={Skater} />
       <Route exact path="/tricks" render={Tricks} />

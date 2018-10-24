@@ -20,8 +20,8 @@ import uniq from 'lodash/uniq';
 import upperFirst from 'lodash/upperFirst';
 import {ResponsiveLine} from '@nivo/line';
 import {ResponsivePie} from '@nivo/pie';
-import {STANCES} from '../../../../api/common';
-import {StyledDialogContent} from '../../components';
+import {STANCES} from '../../../../../api/common';
+import {StyledDialogContent} from '../../../components';
 import {size} from 'polished';
 
 const Header = styled(StyledDialogContent)({
