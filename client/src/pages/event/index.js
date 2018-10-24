@@ -93,7 +93,7 @@ class Event extends Component {
               <Helmet>
                 <title>{data.event.name}</title>
               </Helmet>
-              <StyledHeader>
+              <StyledHeader withDivider>
                 <Typography gutterBottom variant="h3">
                   {data.event.name}
                 </Typography>

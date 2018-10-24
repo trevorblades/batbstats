@@ -47,7 +47,7 @@ const Container = styled.div({
   display: 'flex'
 });
 
-const Main = styled.main({
+const InnerContainer = styled.div({
   flexGrow: 1,
   overflowY: 'auto'
 });
@@ -328,7 +328,7 @@ class GameContent extends PureComponent {
         <Helmet>
           <title>{title}</title>
         </Helmet>
-        <Main onScroll={this.onScroll}>
+        <InnerContainer onScroll={this.onScroll}>
           <Header>
             <div>
               <Typography variant="h4">{title}</Typography>
@@ -382,7 +382,7 @@ class GameContent extends PureComponent {
               </TableBody>
             </Table>
           </StyledDialogContent>
-        </Main>
+        </InnerContainer>
         {this.renderSidebar()}
       </Container>
     );

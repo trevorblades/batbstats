@@ -51,8 +51,7 @@ const PrimaryChart = styled.div(blockSvg, {
 
 const SecondaryChart = styled.div({
   display: 'flex',
-  flexShrink: 0,
-  backgroundColor: theme.palette.background.default
+  flexShrink: 0
 });
 
 const symbolSize = 12;

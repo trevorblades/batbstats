@@ -8,7 +8,7 @@ import filter from 'lodash/filter';
 import gql from 'graphql-tag';
 import round from 'lodash/round';
 import sumBy from 'lodash/sumBy';
-import {CenteredCircularProgress} from '../../components';
+import {CenteredCircularProgress, StyledDialogContent} from '../../components';
 import {Query} from 'react-apollo';
 import {getBye, getLetters} from '../../util/game';
 
@@ -83,7 +83,9 @@ const Skaters = () => (
             <Header>
               <Typography variant="h3">{title}</Typography>
             </Header>
-            <SkatersTable skaters={skaters} />
+            <StyledDialogContent>
+              <SkatersTable skaters={skaters} />
+            </StyledDialogContent>
           </Fragment>
         );
       }}

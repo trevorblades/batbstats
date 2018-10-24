@@ -15,7 +15,7 @@ class SkatersTable extends Component {
     return (
       <Fragment>
         <SortableTable
-          padding="dense"
+          padding="none"
           rows={this.props.skaters}
           onRowClick={this.onTableRowClick}
           columns={[
