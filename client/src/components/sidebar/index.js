@@ -22,6 +22,10 @@ const Container = styled.div({
   overflow: 'auto'
 });
 
+const Logo = styled(Typography)({
+  color: theme.palette.common.black
+});
+
 const StyledDialogActions = styled(DialogActions)({
   marginTop: 'auto'
 });
@@ -36,9 +40,9 @@ const LinkIconButton = withProps({
 const Sidebar = () => (
   <Container>
     <DialogTitle disableTypography>
-      <Typography variant="h4" title="BATB Stats">
+      <Logo variant="h4" title="BATB Stats">
         ⚡️
-      </Typography>
+      </Logo>
     </DialogTitle>
     <nav>
       <List>
