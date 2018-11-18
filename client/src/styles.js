@@ -1,5 +1,6 @@
 import theme from '@trevorblades/mui-theme';
-import {injectGlobal} from 'emotion';
+import {css, injectGlobal} from 'react-emotion';
+import {size} from 'polished';
 
 export default () =>
   injectGlobal({
@@ -9,5 +10,10 @@ export default () =>
     body: {
       fontFamily: theme.typography.fontFamily,
       color: theme.palette.text.primary
-    }
+    },
+    'img.emoji': css(size('1em'), {
+      marginLeft: '0.1em',
+      marginRight: '0.05em',
+      verticalAlign: '-0.1em'
+    })
   });

@@ -4,6 +4,7 @@ const path = require('path');
 const webpack = require('webpack');
 
 const title = 'BATB Stats';
+const favicon = '⚡️';
 module.exports = (env, argv) => {
   const isProduction = argv.mode === 'production';
   return {
@@ -22,13 +23,14 @@ module.exports = (env, argv) => {
       ]
     },
     plugins: [
-      new EmojiFaviconPlugin('⚡️'),
+      new EmojiFaviconPlugin(favicon),
       new HtmlPlugin({
         title,
         template: 'index.html'
       }),
       new webpack.DefinePlugin({
         TITLE: JSON.stringify(title),
+        FAVICON: JSON.stringify(favicon),
         API_URL: JSON.stringify(
           isProduction
             ? 'https://api.batbstats.trevorblades.com'

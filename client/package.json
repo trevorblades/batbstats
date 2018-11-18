@@ -14,12 +14,12 @@
     "babel-eslint": "^8.2.6",
     "babel-loader": "^8.0.2",
     "babel-plugin-emotion": "^9.1.2",
-    "emoji-favicon-webpack-plugin": "^1.0.0",
+    "emoji-favicon-webpack-plugin": "^1.1.4",
     "eslint": "^5.2.0",
     "html-webpack-plugin": "^3.2.0",
     "webpack": "^4.9.1",
     "webpack-cli": "^2.1.4",
-    "webpack-dev-server": "^3.1.4"
+    "webpack-dev-server": "^3.1.10"
   },
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
@@ -55,6 +55,7 @@
     "react-router-dom": "^4.2.2",
     "recompose": "^0.27.1",
     "sentence-case": "^2.1.1",
-    "store": "^2.0.12"
+    "store": "^2.0.12",
+    "twemoji": "^11.2.0"
   }
 }

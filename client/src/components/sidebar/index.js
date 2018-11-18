@@ -10,6 +10,7 @@ import TwitterLogo from 'react-icons/lib/fa/twitter';
 import Typography from '@material-ui/core/Typography';
 import styled from 'react-emotion';
 import theme, {getLinearGradient} from '@trevorblades/mui-theme';
+import twemoji from 'twemoji';
 import withProps from 'recompose/withProps';
 
 const Container = styled.div({
@@ -40,9 +41,11 @@ const LinkIconButton = withProps({
 const Sidebar = () => (
   <Container>
     <DialogTitle disableTypography>
-      <Logo variant="h4" title="BATB Stats">
-        ⚡️
-      </Logo>
+      <Logo
+        variant="h4"
+        title="BATB Stats"
+        dangerouslySetInnerHTML={{__html: twemoji.parse(FAVICON)}}
+      />
     </DialogTitle>
     <nav>
       <List>
