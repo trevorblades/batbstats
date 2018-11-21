@@ -14,6 +14,6 @@ export default () =>
     'img.emoji': css(size('1em'), {
       marginLeft: '0.1em',
       marginRight: '0.05em',
-      verticalAlign: '-0.1em'
+      verticalAlign: '-0.2em'
     })
   });

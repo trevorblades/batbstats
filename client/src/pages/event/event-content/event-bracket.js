@@ -11,6 +11,7 @@ import map from 'lodash/map';
 import reject from 'lodash/reject';
 import styled from 'react-emotion';
 import theme from '@trevorblades/mui-theme';
+import twemoji from 'twemoji';
 import {Link} from 'react-router-dom';
 import {Query} from 'react-apollo';
 import {StyledDialogContent} from '../../../components';
@@ -160,7 +161,13 @@ class EventBracket extends Component {
                         variables={{code: skater.country}}
                       >
                         {({loading, data}) =>
-                          !loading && `${data.country.emoji} `
+                          !loading && (
+                            <span
+                              dangerouslySetInnerHTML={{
+                                __html: twemoji.parse(data.country.emoji) + ' '
+                              }}
+                            />
+                          )
                         }
                       </Query>
                     )}

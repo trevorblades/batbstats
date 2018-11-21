@@ -30,6 +30,7 @@ import sum from 'lodash/sum';
 import sumBy from 'lodash/sumBy';
 import theme from '@trevorblades/mui-theme';
 import toPairs from 'lodash/toPairs';
+import twemoji from 'twemoji';
 import upperFirst from 'lodash/upperFirst';
 import withProps from 'recompose/withProps';
 import {Link} from 'react-router-dom';
@@ -121,7 +122,7 @@ function getAttemptText(attempt) {
   const {successful} = attempt;
   if (attempt.offense) {
     const text = attempt.trick.name + redos;
-    return successful ? text : <s>{text}</s>;
+    return successful ? text : `<s>${text}</s>`;
   }
 
   const result = successful ? '✅' : '❌';
@@ -209,9 +210,13 @@ class GameContent extends PureComponent {
               const {move} = roshambos[key][skater.id];
               return (
                 <StyledTableCell key={skater.id} index={index}>
-                  <Typography variant="subtitle1" title={move}>
-                    {getRoshamboEmoji(move)}
-                  </Typography>
+                  <Typography
+                    variant="subtitle1"
+                    title={move}
+                    dangerouslySetInnerHTML={{
+                      __html: twemoji.parse(getRoshamboEmoji(move))
+                    }}
+                  />
                 </StyledTableCell>
               );
             })}
@@ -264,9 +269,13 @@ class GameContent extends PureComponent {
               }
 
               return (
-                <StyledTableCell key={attempt.id} index={index}>
-                  {getAttemptText(attempt)}
-                </StyledTableCell>
+                <StyledTableCell
+                  key={attempt.id}
+                  index={index}
+                  dangerouslySetInnerHTML={{
+                    __html: twemoji.parse(getAttemptText(attempt))
+                  }}
+                />
               );
             })}
           </TableRow>
