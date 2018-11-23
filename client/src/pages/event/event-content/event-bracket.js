@@ -2,6 +2,7 @@ import Divider from '@material-ui/core/Divider';
 import Paper from '@material-ui/core/Paper';
 import PropTypes from 'prop-types';
 import React, {Component, Fragment} from 'react';
+import Twemoji from 'react-twemoji';
 import Typography from '@material-ui/core/Typography';
 import countriesClient from '../../../util/countries-client';
 import gql from 'graphql-tag';
@@ -11,7 +12,6 @@ import map from 'lodash/map';
 import reject from 'lodash/reject';
 import styled from 'react-emotion';
 import theme from '@trevorblades/mui-theme';
-import twemoji from 'twemoji';
 import {Link} from 'react-router-dom';
 import {Query} from 'react-apollo';
 import {StyledDialogContent} from '../../../components';
@@ -162,11 +162,9 @@ class EventBracket extends Component {
                       >
                         {({loading, data}) =>
                           !loading && (
-                            <span
-                              dangerouslySetInnerHTML={{
-                                __html: twemoji.parse(data.country.emoji) + ' '
-                              }}
-                            />
+                            <Twemoji noWrapper>
+                              <span>{data.country.emoji} </span>
+                            </Twemoji>
                           )
                         }
                       </Query>

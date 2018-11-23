@@ -6,11 +6,11 @@ import List from '@material-ui/core/List';
 import MenuButton from './menu-button';
 import NavItem from './nav-item';
 import React from 'react';
+import Twemoji from 'react-twemoji';
 import TwitterLogo from 'react-icons/lib/fa/twitter';
 import Typography from '@material-ui/core/Typography';
 import styled from 'react-emotion';
 import theme, {getLinearGradient} from '@trevorblades/mui-theme';
-import twemoji from 'twemoji';
 import withProps from 'recompose/withProps';
 
 const Container = styled.div({
@@ -21,10 +21,6 @@ const Container = styled.div({
   color: theme.palette.common.white,
   backgroundImage: getLinearGradient('to bottom right'),
   overflow: 'auto'
-});
-
-const Logo = styled(Typography)({
-  color: theme.palette.common.black
 });
 
 const StyledDialogActions = styled(DialogActions)({
@@ -41,11 +37,9 @@ const LinkIconButton = withProps({
 const Sidebar = () => (
   <Container>
     <DialogTitle disableTypography>
-      <Logo
-        variant="h4"
-        title="BATB Stats"
-        dangerouslySetInnerHTML={{__html: twemoji.parse(FAVICON)}}
-      />
+      <Typography variant="h4" title="BATB Stats">
+        <Twemoji>{FAVICON}</Twemoji>
+      </Typography>
     </DialogTitle>
     <nav>
       <List>

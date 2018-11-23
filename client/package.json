@@ -53,9 +53,9 @@
     "react-icons": "^2.2.7",
     "react-jss": "^8.4.0",
     "react-router-dom": "^4.2.2",
+    "react-twemoji": "^0.1.0",
     "recompose": "^0.27.1",
     "sentence-case": "^2.1.1",
-    "store": "^2.0.12",
-    "twemoji": "^11.2.0"
+    "store": "^2.0.12"
   }
 }

@@ -14,6 +14,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import Twemoji from 'react-twemoji';
 import Typography from '@material-ui/core/Typography';
 import filter from 'lodash/filter';
 import groupBy from 'lodash/groupBy';
@@ -30,7 +31,6 @@ import sum from 'lodash/sum';
 import sumBy from 'lodash/sumBy';
 import theme from '@trevorblades/mui-theme';
 import toPairs from 'lodash/toPairs';
-import twemoji from 'twemoji';
 import upperFirst from 'lodash/upperFirst';
 import withProps from 'recompose/withProps';
 import {Link} from 'react-router-dom';
@@ -210,13 +210,9 @@ class GameContent extends PureComponent {
               const {move} = roshambos[key][skater.id];
               return (
                 <StyledTableCell key={skater.id} index={index}>
-                  <Typography
-                    variant="subtitle1"
-                    title={move}
-                    dangerouslySetInnerHTML={{
-                      __html: twemoji.parse(getRoshamboEmoji(move))
-                    }}
-                  />
+                  <Typography variant="subtitle1" title={move}>
+                    <Twemoji>{getRoshamboEmoji(move)}</Twemoji>
+                  </Typography>
                 </StyledTableCell>
               );
             })}
@@ -269,13 +265,9 @@ class GameContent extends PureComponent {
               }
 
               return (
-                <StyledTableCell
-                  key={attempt.id}
-                  index={index}
-                  dangerouslySetInnerHTML={{
-                    __html: twemoji.parse(getAttemptText(attempt))
-                  }}
-                />
+                <StyledTableCell key={attempt.id} index={index}>
+                  <Twemoji>{getAttemptText(attempt)}</Twemoji>
+                </StyledTableCell>
               );
             })}
           </TableRow>
