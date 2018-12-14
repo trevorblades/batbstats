@@ -1,6 +1,6 @@
 # BATB Stats
 
-[![Build Status](https://travis-ci.com/trevorblades/batbstats.svg?branch=master)](https://travis-ci.com/trevorblades/batbstats)
+[![Build Status](https://travis-ci.com/batbstats/client.svg?branch=master)](https://travis-ci.com/batbstats/client)
 
 > No doing tricks that slide on the ground if your opponent popped their trick.
 
