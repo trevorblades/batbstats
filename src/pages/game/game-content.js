@@ -156,9 +156,8 @@ class GameContent extends PureComponent {
 
     const skaterIds = map(skaters, 'id');
     return rounds.map(round =>
-      sortBy(
-        round,
-        attempt => (attempt ? skaterIds.indexOf(attempt.skater_id) : 0)
+      sortBy(round, attempt =>
+        attempt ? skaterIds.indexOf(attempt.skater_id) : 0
       )
     );
   }
@@ -197,8 +196,8 @@ class GameContent extends PureComponent {
 
     const keys = Object.keys(roshambos);
     const lastRound = roshambos[keys[keys.length - 1]];
-    const pairs = toPairs(mapValues(lastRound, 'move')).sort(
-      (a, b) => (ROSHAMBO_COUNTERS[a[1]] === b[1] ? 1 : -1)
+    const pairs = toPairs(mapValues(lastRound, 'move')).sort((a, b) =>
+      ROSHAMBO_COUNTERS[a[1]] === b[1] ? 1 : -1
     );
 
     const winner = skaters[Number(pairs[0][0])];

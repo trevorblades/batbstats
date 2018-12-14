@@ -70,7 +70,8 @@ const Skaters = () => (
               ...skater,
               wins,
               losses: gamesPlayed - wins,
-              win_percentage: gamesPlayed && round(wins / gamesPlayed * 100, 2),
+              win_percentage:
+                gamesPlayed && round((wins / gamesPlayed) * 100, 2),
               attempts,
               makes,
               misses: attempts.length - makes,

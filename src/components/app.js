@@ -66,4 +66,7 @@ class App extends Component {
   }
 }
 
-export default compose(hot(module), withRouter)(App);
+export default compose(
+  hot(module),
+  withRouter
+)(App);

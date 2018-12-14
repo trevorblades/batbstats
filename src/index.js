@@ -1,9 +1,8 @@
 import App from './components/app';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import DateFnsUtils from 'material-ui-pickers/utils/date-fns-utils';
+import DateFnsUtils from '@date-io/date-fns';
 import Helmet from 'react-helmet';
 import JssProvider from 'react-jss/lib/JssProvider';
-import MuiPickersUtilsProvider from 'material-ui-pickers/utils/MuiPickersUtilsProvider';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactGA from 'react-ga';
@@ -14,6 +13,7 @@ import {ApolloClient} from 'apollo-client';
 import {ApolloProvider} from 'react-apollo';
 import {BrowserRouter} from 'react-router-dom';
 import {InMemoryCache} from 'apollo-cache-inmemory';
+import {MuiPickersUtilsProvider} from 'material-ui-pickers';
 import {
   MuiThemeProvider,
   createGenerateClassName,
