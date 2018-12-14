@@ -1,6 +1,6 @@
 {
   "engines": {
-    "node": "8"
+    "node": "10"
   },
   "scripts": {
     "pretest": "eslint ./",
@@ -25,7 +25,7 @@
     "sequelize": "^4.37.10"
   },
   "devDependencies": {
-    "@trevorblades/eslint-config": "^6.17.0",
+    "@trevorblades/eslint-config": "^6.20.0",
     "dotenv": "^6.0.0",
     "eslint": "^5.2.0",
     "nodemon": "^1.17.5"
