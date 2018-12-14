@@ -34,7 +34,7 @@ import toPairs from 'lodash/toPairs';
 import upperFirst from 'lodash/upperFirst';
 import withProps from 'recompose/withProps';
 import {Link} from 'react-router-dom';
-import {ROSHAMBO_COUNTERS} from '../../../../api/common';
+import {ROSHAMBO_COUNTERS} from '@batbstats/common';
 import {StyledDialogContent} from '../../components';
 import {
   getInitialLetters,

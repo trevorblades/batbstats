@@ -17,7 +17,7 @@ import theme from '@trevorblades/mui-theme';
 import upperFirst from 'lodash/upperFirst';
 import {FormField, FormFieldControl} from '../../components';
 import {Mutation} from 'react-apollo';
-import {VARIATIONS} from '../../../../api/common';
+import {VARIATIONS} from '@batbstats/common';
 
 const NumberField = defaultProps({type: 'number'})(FormField);
 const mutation = gql`

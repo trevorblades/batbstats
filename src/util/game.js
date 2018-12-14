@@ -4,7 +4,7 @@ import {
   ROSHAMBO_MOVE_PAPER,
   ROSHAMBO_MOVE_ROCK,
   ROSHAMBO_MOVE_SCISSORS
-} from '../../../api/common';
+} from '@batbstats/common';
 
 export function getRoundName(round) {
   switch (round) {

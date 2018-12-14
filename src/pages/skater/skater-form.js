@@ -14,7 +14,7 @@ import upperFirst from 'lodash/upperFirst';
 import {DatePicker} from 'material-ui-pickers';
 import {FormField, FormFieldControl, formFieldProps} from '../../components';
 import {Mutation, Query} from 'react-apollo';
-import {STANCES, STANCE_REGULAR} from '../../../../api/common';
+import {STANCES, STANCE_REGULAR} from '@batbstats/common';
 
 const mutation = gql`
   mutation UpdateSkater(

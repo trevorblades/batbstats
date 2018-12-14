@@ -50,7 +50,7 @@ const Sidebar = () => (
       </List>
     </nav>
     <StyledDialogActions>
-      <LinkIconButton href="https://github.com/trevorblades/batbstats">
+      <LinkIconButton href="https://github.com/trevorblades/batbstats/client">
         <GitHubLogo />
       </LinkIconButton>
       <LinkIconButton href="https://twitter.com/trevorblades">
