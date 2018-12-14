@@ -1,4 +1,4 @@
-import {STANCES} from '../common';
+import {STANCES} from '@batbstats/common';
 
 export default (sequelize, DataTypes) => {
   const Skater = sequelize.define('skater', {

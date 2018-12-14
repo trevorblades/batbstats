@@ -1,4 +1,4 @@
-import {VARIATIONS} from '../common';
+import {VARIATIONS} from '@batbstats/common';
 
 export default (sequelize, DataTypes) => {
   const Trick = sequelize.define('trick', {
