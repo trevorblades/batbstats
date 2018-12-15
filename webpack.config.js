@@ -33,7 +33,7 @@ module.exports = (env, argv) => {
         FAVICON: JSON.stringify(favicon),
         API_URL: JSON.stringify(
           isProduction
-            ? 'https://api.batbstats.trevorblades.com'
+            ? 'https://batbstats.herokuapp.com'
             : 'http://localhost:3000'
         ),
         COUNTRIES_API_URL: JSON.stringify(
