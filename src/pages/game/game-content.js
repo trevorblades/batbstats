@@ -122,7 +122,7 @@ function getAttemptText(attempt) {
   const {successful} = attempt;
   if (attempt.offense) {
     const text = attempt.trick.name + redos;
-    return successful ? text : `<s>${text}</s>`;
+    return successful ? text : <s>{text}</s>;
   }
 
   const result = successful ? '✅' : '❌';
