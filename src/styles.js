@@ -11,9 +11,9 @@ export default () =>
       fontFamily: theme.typography.fontFamily,
       color: theme.palette.text.primary
     },
-    'img.emoji': css(size('1.25em'), {
+    'img.emoji': css(size('1em'), {
       marginLeft: '0.1em',
       marginRight: '0.05em',
-      verticalAlign: '-0.25em'
+      verticalAlign: '-0.125em'
     })
   });
