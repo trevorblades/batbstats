@@ -22,7 +22,7 @@
     "passport-http": "^0.3.0",
     "passport-jwt": "^4.0.0",
     "pg": "^7.4.3",
-    "sequelize": "^4.37.10"
+    "sequelize": "^5.15.1"
   },
   "devDependencies": {
     "@trevorblades/eslint-config": "^6.20.0",
