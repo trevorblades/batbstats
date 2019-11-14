@@ -1,3 +1,4 @@
+import {MOVES} from '../utils';
 import {gql} from 'apollo-server';
 
 export const typeDef = gql`
@@ -5,10 +6,14 @@ export const typeDef = gql`
     roshambos: [Roshambo]
   }
 
+  enum Move {
+    ${MOVES.join(' ')}
+  }
+
   type Roshambo {
     id: ID
     round: Int
-    move: String
+    move: Move
     skaterId: String
   }
 `;

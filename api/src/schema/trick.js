@@ -1,5 +1,6 @@
 import {AuthenticationError, UserInputError, gql} from 'apollo-server';
 import {Trick} from '../db';
+import {VARIATIONS} from '../utils';
 
 export const typeDef = gql`
   extend type Query {
@@ -14,7 +15,7 @@ export const typeDef = gql`
       flip: Int
       shuv: Int
       spin: Int
-      variation: String # TODO: use enums
+      variation: Variation
       other: Boolean
     ): Trick
   }
@@ -23,10 +24,14 @@ export const typeDef = gql`
     trick: Trick
   }
 
+  enum Variation {
+    ${VARIATIONS.join(' ')}
+  }
+
   type Trick {
     id: ID
     name: String
-    variation: String
+    variation: Variation
     spin: Int
     flip: Int
     shuv: Int

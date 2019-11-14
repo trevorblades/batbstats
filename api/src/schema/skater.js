@@ -1,5 +1,6 @@
 import {AuthenticationError, UserInputError, gql} from 'apollo-server';
 import {GraphQLDate} from 'graphql-iso-date';
+import {STANCES} from '../utils';
 import {Skater} from '../db';
 
 export const typeDef = gql`
@@ -15,7 +16,7 @@ export const typeDef = gql`
       id: ID!
       firstName: String
       lastName: String
-      stance: String
+      stance: Stance
       country: String
       birthDate: String
     ): Skater
@@ -25,12 +26,16 @@ export const typeDef = gql`
     skaters: [Skater]
   }
 
+  enum Stance {
+    ${STANCES.join(' ')}
+  }
+
   type Skater {
     id: ID
     firstName: String
     lastName: String
     fullName: String
-    stance: String
+    stance: Stance
     birthDate: Date
     country: String
   }

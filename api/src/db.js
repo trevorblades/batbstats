@@ -1,5 +1,5 @@
 import Sequelize from 'sequelize';
-import {ROSHAMBO_MOVES, STANCES, VARIATIONS} from './utils';
+import {MOVES, STANCES, VARIATIONS} from './utils';
 
 export const sequelize = new Sequelize(process.env.DATABASE_URL);
 
@@ -53,7 +53,7 @@ Game.belongsToMany(Skater, {through: 'skaterGames'});
 
 const Roshambo = sequelize.define('roshambo', {
   round: Sequelize.INTEGER,
-  move: Sequelize.ENUM(ROSHAMBO_MOVES)
+  move: Sequelize.ENUM(MOVES)
 });
 
 Roshambo.belongsTo(Game);
