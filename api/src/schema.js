@@ -118,7 +118,7 @@ function games(parent) {
 }
 
 function attempts(parent) {
-  return parent.getAttempts();
+  return parent.getAttempts({order: ['id']});
 }
 
 export const resolvers = {
