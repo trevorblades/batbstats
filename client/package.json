@@ -41,7 +41,7 @@
     "graphql-tag": "^2.9.2",
     "jss": "^9.8.1",
     "jwt-decode": "^2.2.0",
-    "lodash": "^4.17.10",
+    "lodash": "^4.17.13",
     "material-ui-pickers": "^2.0.4",
     "polished": "^1.9.2",
     "prop-types": "^15.6.1",
