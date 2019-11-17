@@ -1,37 +1,46 @@
-import About from './about';
-import Event from './event';
-import Events from './events';
-import Game from './game';
-import NotFound from './not-found';
-import React from 'react';
-import Skater from './skater';
-import Skaters from './skaters';
-import Trick from './trick';
-import Tricks from './tricks';
-import styled from 'react-emotion';
-import {Route, Switch} from 'react-router-dom';
+import PropTypes from 'prop-types';
+import React, {Fragment} from 'react';
+import {Box} from '@material-ui/core';
+import {Helmet} from 'react-helmet';
+import {ReactComponent as Logo} from 'twemoji/2/svg/1f6f9.svg';
+import {LogoTitleProps} from '@trevorblades/mui-theme';
+import {graphql} from 'gatsby';
 
-const Container = styled.main({
-  display: 'flex',
-  flexDirection: 'column',
-  flexGrow: 1,
-  overflow: 'auto'
-});
+export default function Index(props) {
+  const {title} = props.data.site.siteMetadata;
+  return (
+    <Fragment>
+      <Helmet>
+        <title>{title}</title>
+      </Helmet>
+      <Box
+        height={64}
+        px={3}
+        display="flex"
+        alignItems="center"
+        bgcolor="white"
+        position="sticky"
+        top={0}
+      >
+        <Box {...LogoTitleProps.root}>
+          <Box {...LogoTitleProps.logo} component={Logo} />
+          <Box {...LogoTitleProps.title}>{title}</Box>
+        </Box>
+      </Box>
+    </Fragment>
+  );
+}
 
-const Pages = () => (
-  <Container square elevation={0}>
-    <Switch>
-      <Route exact path="/" render={About} />
-      <Route exact path="/events" render={Events} />
-      <Route exact path="/events/:id" render={Event} />
-      <Route exact path="/skaters" render={Skaters} />
-      <Route exact path="/skaters/:id" render={Skater} />
-      <Route exact path="/tricks" render={Tricks} />
-      <Route exact path="/tricks/:id" render={Trick} />
-      <Route exact path="/games/:id" render={Game} />
-      <Route render={NotFound} />
-    </Switch>
-  </Container>
-);
+Index.propTypes = {
+  data: PropTypes.object.isRequired
+};
 
-export default Pages;
+export const pageQuery = graphql`
+  {
+    site {
+      siteMetadata {
+        title
+      }
+    }
+  }
+`;
