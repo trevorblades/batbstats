@@ -9,7 +9,7 @@ import {
   ListItemText
 } from '@material-ui/core';
 import {Helmet} from 'react-helmet';
-import {graphql} from 'gatsby';
+import {Link, graphql} from 'gatsby';
 
 export default function Index(props) {
   return (
@@ -19,7 +19,12 @@ export default function Index(props) {
       </Helmet>
       <List>
         {props.data.batbstats.events.map(event => (
-          <ListItem key={event.id} button>
+          <ListItem
+            key={event.id}
+            button
+            component={Link}
+            to={`/events/${event.id}`}
+          >
             <ListItemAvatar>
               <Avatar src={event.image} />
             </ListItemAvatar>

@@ -2,9 +2,9 @@ import PropTypes from 'prop-types';
 import React, {Fragment} from 'react';
 import {Box} from '@material-ui/core';
 import {Helmet} from 'react-helmet';
+import {Link, graphql, useStaticQuery} from 'gatsby';
 import {ReactComponent as Logo} from 'twemoji/2/svg/1f6f9.svg';
 import {LogoTitleProps} from '@trevorblades/mui-theme';
-import {graphql, useStaticQuery} from 'gatsby';
 
 export default function Layout(props) {
   const data = useStaticQuery(
@@ -32,7 +32,13 @@ export default function Layout(props) {
         position="sticky"
         top={0}
       >
-        <Box {...LogoTitleProps.root}>
+        <Box
+          {...LogoTitleProps.root}
+          component={Link}
+          to="/"
+          color="inherit"
+          style={{textDecoration: 'none'}}
+        >
           <Box {...LogoTitleProps.logo} component={Logo} />
           <Box {...LogoTitleProps.title}>{title}</Box>
         </Box>
