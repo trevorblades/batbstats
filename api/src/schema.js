@@ -123,7 +123,7 @@ function attempts(parent) {
 
 export const resolvers = {
   Query: {
-    events: () => Event.findAll(),
+    events: () => Event.findAll({order: ['id']}),
     event: (parent, args) => Event.findByPk(args.id),
     games: () => Game.findAll(),
     game: (parent, args) => Game.findByPk(args.id),
