@@ -1,7 +1,6 @@
 import BracketSegment from './bracket-segment';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {groupBy, intersection} from 'lodash';
 
 function addGameChildren(game, rounds, index) {
   const children = rounds[index];
@@ -10,16 +9,15 @@ function addGameChildren(game, rounds, index) {
   }
 
   const replacements = game.replacements.map(replacement => replacement.outId);
-  const skaters = game.skaters.map(skater => skater.id).concat(replacements);
+  const skaterIds = game.skaters.map(skater => skater.id).concat(replacements);
   return {
     ...game,
     children: children
       .filter(
         child =>
-          intersection(
-            skaters,
-            child.skaters.map(skater => skater.id)
-          ).length
+          child.skaters
+            .map(skater => skater.id)
+            .filter(skaterId => skaterIds.includes(skaterId)).length
       )
       .map(child =>
         addGameChildren(
@@ -40,8 +38,23 @@ function addGameChildren(game, rounds, index) {
 }
 
 export default function Bracket(props) {
-  const games = props.games.filter(game => game.round !== 5);
-  const groups = groupBy(games, 'round');
+  const groups = props.games
+    .filter(game => game.round !== 5)
+    .reduce((acc, game) => {
+      const games = acc[game.round];
+      if (games) {
+        return {
+          ...acc,
+          [game.round]: [...games, game]
+        };
+      }
+
+      return {
+        ...acc,
+        [game.round]: [game]
+      };
+    }, {});
+
   const rounds = Object.values(groups).reverse();
   const game = addGameChildren(rounds[0][0], rounds, 1);
   return <BracketSegment game={game} />;

@@ -1,7 +1,11 @@
-import {fromPairs} from 'lodash';
-
 export function getInitialLetters(ids) {
-  return fromPairs(ids.map(id => [id, 0]));
+  return ids.reduce(
+    (acc, id) => ({
+      ...acc,
+      [id]: 0
+    }),
+    {}
+  );
 }
 
 export function getLetters(attempts) {
