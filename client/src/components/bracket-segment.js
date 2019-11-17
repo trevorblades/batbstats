@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, {Fragment} from 'react';
 import {Box, Divider, Typography} from '@material-ui/core';
 import {CardActionArea} from 'gatsby-theme-material-ui';
+import {getEmojiFlag} from 'countries-list';
 
 export default function BracketSegment(props) {
   const {bye, id, skaters, letters, round, children} = props.game;
@@ -12,7 +13,7 @@ export default function BracketSegment(props) {
       alignItems="center"
       justifyContent="flex-end"
     >
-      <Box my={2} borderRadius="borderRadius" color="">
+      <Box my={2} borderRadius="borderRadius">
         <CardActionArea
           disabled={Boolean(bye)}
           to={`/games/${id}`}
@@ -44,7 +45,6 @@ export default function BracketSegment(props) {
                         'Bye'
                       ) : (
                         <Fragment>
-                          {skater.country}
                           <span
                             style={{
                               textDecoration: skater.replaced
@@ -52,7 +52,7 @@ export default function BracketSegment(props) {
                                 : 'none'
                             }}
                           >
-                            {skater.fullName}
+                            {getEmojiFlag(skater.country)} {skater.fullName}
                           </span>
                         </Fragment>
                       )}

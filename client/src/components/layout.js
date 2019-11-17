@@ -31,6 +31,7 @@ export default function Layout(props) {
         bgcolor="white"
         position="sticky"
         top={0}
+        zIndex="appBar"
       >
         <Box
           {...LogoTitleProps.root}
