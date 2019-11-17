@@ -1,4 +1,7 @@
+const dotenv = require('dotenv');
 const {webFontsConfig} = require('@trevorblades/mui-theme');
+
+dotenv.config();
 
 module.exports = {
   siteMetadata: {
@@ -21,6 +24,14 @@ module.exports = {
       resolve: 'gatsby-plugin-emoji-favicon',
       options: {
         emoji: '🛹'
+      }
+    },
+    {
+      resolve: 'gatsby-source-graphql',
+      options: {
+        typeName: 'BATBStats',
+        fieldName: 'batbstats',
+        url: process.env.GATSBY_API_URL
       }
     }
   ]

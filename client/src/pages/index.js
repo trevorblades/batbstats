@@ -1,33 +1,33 @@
+import Layout from '../components/layout';
 import PropTypes from 'prop-types';
-import React, {Fragment} from 'react';
-import {Box} from '@material-ui/core';
+import React from 'react';
+import {
+  Avatar,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText
+} from '@material-ui/core';
 import {Helmet} from 'react-helmet';
-import {ReactComponent as Logo} from 'twemoji/2/svg/1f6f9.svg';
-import {LogoTitleProps} from '@trevorblades/mui-theme';
 import {graphql} from 'gatsby';
 
 export default function Index(props) {
-  const {title} = props.data.site.siteMetadata;
   return (
-    <Fragment>
+    <Layout>
       <Helmet>
-        <title>{title}</title>
+        <title>Events</title>
       </Helmet>
-      <Box
-        height={64}
-        px={3}
-        display="flex"
-        alignItems="center"
-        bgcolor="white"
-        position="sticky"
-        top={0}
-      >
-        <Box {...LogoTitleProps.root}>
-          <Box {...LogoTitleProps.logo} component={Logo} />
-          <Box {...LogoTitleProps.title}>{title}</Box>
-        </Box>
-      </Box>
-    </Fragment>
+      <List>
+        {props.data.batbstats.events.map(event => (
+          <ListItem key={event.id} button>
+            <ListItemAvatar>
+              <Avatar src={event.image} />
+            </ListItemAvatar>
+            <ListItemText>{event.name}</ListItemText>
+          </ListItem>
+        ))}
+      </List>
+    </Layout>
   );
 }
 
@@ -37,9 +37,11 @@ Index.propTypes = {
 
 export const pageQuery = graphql`
   {
-    site {
-      siteMetadata {
-        title
+    batbstats {
+      events {
+        id
+        name
+        image
       }
     }
   }
