@@ -88,9 +88,9 @@ function Roshambos(props) {
             const {emoji} = ROSHAMBOS[move];
             return (
               <TableCell key={skater.id} align={index ? 'left' : 'right'}>
-                <Typography title={move}>
+                <span title={move}>
                   <Box component={emoji} width={32} height={32} />
-                </Typography>
+                </span>
               </TableCell>
             );
           })}
