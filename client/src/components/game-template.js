@@ -1,9 +1,8 @@
 import Layout from './layout';
 import PropTypes from 'prop-types';
 import React, {Fragment} from 'react';
-import {Helmet} from 'react-helmet';
-import {Link} from 'gatsby-theme-material-ui';
 import {
+  Box,
   Table,
   TableBody,
   TableCell,
@@ -11,14 +10,27 @@ import {
   TableRow,
   Typography
 } from '@material-ui/core';
+import {Helmet} from 'react-helmet';
+import {Link} from 'gatsby-theme-material-ui';
+import {ReactComponent as Paper} from 'twemoji/2/svg/270b.svg';
+import {ReactComponent as Rock} from 'twemoji/2/svg/270a.svg';
+import {ReactComponent as Scissors} from 'twemoji/2/svg/270c.svg';
 import {formatRound} from '../utils';
 import {graphql} from 'gatsby';
 
-// TODO: clean this up/request from API
-const ROSHAMBO_COUNTERS = {
-  rock: 'paper',
-  paper: 'scissors',
-  scissors: 'rock'
+const ROSHAMBOS = {
+  rock: {
+    emoji: Rock,
+    counter: 'paper'
+  },
+  paper: {
+    emoji: Paper,
+    counter: 'scissors'
+  },
+  scissors: {
+    emoji: Scissors,
+    counter: 'rock'
+  }
 };
 
 function Commentary(props) {
@@ -37,64 +49,69 @@ Commentary.propTypes = {
   children: PropTypes.node.isRequired
 };
 
-export default function GameTemplate(props) {
-  const {event, round, skaters, roshambos} = props.data.batbstats.game;
-  const title = skaters.map(skater => skater.fullName).join(' vs. ');
-
-  function renderRoshambos(skaters) {
-    const roshamboMap = roshambos.reduce((acc, roshambo) => {
-      const moves = acc[roshambo.round];
-      if (moves) {
-        return {
-          ...acc,
-          [roshambo.round]: {
-            ...moves,
-            [roshambo.skaterId]: roshambo.move
-          }
-        };
-      }
-
+function Roshambos(props) {
+  const roshamboMap = props.roshambos.reduce((acc, roshambo) => {
+    const moves = acc[roshambo.round];
+    const move = {[roshambo.skaterId]: roshambo.move};
+    if (moves) {
       return {
         ...acc,
         [roshambo.round]: {
-          [roshambo.skaterId]: roshambo.move
+          ...moves,
+          ...move
         }
       };
-    }, {});
+    }
 
-    const keys = Object.keys(roshamboMap);
-    const lastRound = roshamboMap[keys[keys.length - 1]];
-    const pairs = Object.entries(lastRound).sort((a, b) =>
-      ROSHAMBO_COUNTERS[a[1]] === b[1] ? 1 : -1
-    );
+    return {
+      ...acc,
+      [roshambo.round]: move
+    };
+  }, {});
 
-    const winningMove = pairs[0][1];
-    const winnerId = pairs[0][0];
-    const winner = skaters.find(skater => skater.id === winnerId);
-    return (
-      <Fragment>
-        {keys.map(key => (
-          <TableRow key={key}>
-            {skaters.map((skater, index) => {
-              const move = roshamboMap[key][skater.id];
-              return (
-                <TableCell key={skater.id} index={index}>
-                  <Typography variant="subtitle1" title={move}>
-                    {move}
-                  </Typography>
-                </TableCell>
-              );
-            })}
-          </TableRow>
-        ))}
-        <Commentary>
-          {winningMove.charAt(0).toUpperCase() + winningMove.slice(1)} beats{' '}
-          {pairs[1][1]}, {winner.firstName} goes first
-        </Commentary>
-      </Fragment>
-    );
-  }
+  const roshamboKeys = Object.keys(roshamboMap);
+  const lastRound = roshamboMap[roshamboKeys[roshamboKeys.length - 1]];
+  const [[winnerId, winningMove], loser] = Object.entries(lastRound).sort(
+    (a, b) => {
+      const {counter} = ROSHAMBOS[a[1]];
+      return counter === b[1] ? 1 : -1;
+    }
+  );
 
+  const winner = props.skaters.find(skater => skater.id === winnerId);
+  return (
+    <Fragment>
+      {roshamboKeys.map(key => (
+        <TableRow key={key}>
+          {props.skaters.map((skater, index) => {
+            const move = roshamboMap[key][skater.id];
+            const {emoji} = ROSHAMBOS[move];
+            return (
+              <TableCell key={skater.id} align={index ? 'left' : 'right'}>
+                <Typography title={move}>
+                  <Box component={emoji} width={32} height={32} />
+                </Typography>
+              </TableCell>
+            );
+          })}
+        </TableRow>
+      ))}
+      <Commentary>
+        {winningMove.charAt(0).toUpperCase() + winningMove.slice(1)} beats{' '}
+        {loser[1]}, {winner.firstName} goes first
+      </Commentary>
+    </Fragment>
+  );
+}
+
+Roshambos.propTypes = {
+  roshambos: PropTypes.array.isRequired,
+  skaters: PropTypes.array.isRequired
+};
+
+export default function GameTemplate(props) {
+  const {event, round, skaters, roshambos} = props.data.batbstats.game;
+  const title = skaters.map(skater => skater.fullName).join(' vs. ');
   return (
     <Layout>
       <Helmet>
@@ -104,21 +121,22 @@ export default function GameTemplate(props) {
         <Link to={`/events/${event.id}`}>{event.name}</Link>{' '}
         {formatRound(round)}
       </Typography>
-      <Typography variant="h6">{title}</Typography>
-      <Table>
+      <Typography paragraph variant="h6">
+        {title}
+      </Typography>
+      <Table style={{tableLayout: 'fixed'}}>
         <TableHead>
           <TableRow>
             {skaters.map((skater, index) => (
-              <TableCell key={skater.id} index={index}>
+              <TableCell key={skater.id} align={index ? 'left' : 'right'}>
                 {skater.fullName}
               </TableCell>
             ))}
           </TableRow>
         </TableHead>
         <TableBody>
-          {renderRoshambos(skaters)}
-          {/* 
-          {this.renderRounds(skaters)} */}
+          <Roshambos roshambos={roshambos} skaters={skaters} />
+          {/* {this.renderRounds(skaters)} */}
         </TableBody>
       </Table>
     </Layout>
