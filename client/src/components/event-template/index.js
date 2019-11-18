@@ -1,10 +1,10 @@
 import Bracket from './bracket';
-import Layout from './layout';
+import Layout from '../layout';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {Helmet} from 'react-helmet';
 import {Typography} from '@material-ui/core';
-import {getBye, getLetters} from '../utils';
+import {getBye, getLetters} from '../../utils';
 import {graphql} from 'gatsby';
 
 export default function EventTemplate(props) {
