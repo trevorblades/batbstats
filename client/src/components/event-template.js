@@ -3,6 +3,7 @@ import Layout from './layout';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {Helmet} from 'react-helmet';
+import {Typography} from '@material-ui/core';
 import {getBye, getLetters} from '../utils';
 import {graphql} from 'gatsby';
 
@@ -13,7 +14,9 @@ export default function EventTemplate(props) {
       <Helmet>
         <title>{name}</title>
       </Helmet>
-      {name}
+      <Typography gutterBottom variant="h4">
+        {name}
+      </Typography>
       <Bracket
         games={games.map(game => ({
           ...game,

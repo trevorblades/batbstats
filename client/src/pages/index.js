@@ -20,6 +20,7 @@ export default function Index(props) {
       <List>
         {props.data.batbstats.events.map(event => (
           <ListItem
+            disableGutters
             key={event.id}
             button
             component={Link}
