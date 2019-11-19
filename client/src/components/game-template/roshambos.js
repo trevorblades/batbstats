@@ -22,29 +22,28 @@ const ROSHAMBOS = {
 };
 
 export default function Roshambos(props) {
-  const roshamboMap = props.roshambos.reduce((acc, roshambo) => {
-    const moves = acc[roshambo.round];
+  // organize the roshambos into an array of "rounds"
+  // [{p1: move, p2: move}, ...]
+  const rounds = props.roshambos.reduce((acc, roshambo) => {
+    const index = roshambo.round - 1;
+    const round = acc[index];
     const move = {[roshambo.skaterId]: roshambo.move};
-    if (moves) {
-      return {
-        ...acc,
-        [roshambo.round]: {
-          ...moves,
-          ...move
-        }
-      };
+    if (round) {
+      return [
+        ...acc.slice(0, index),
+        {...round, ...move},
+        ...acc.slice(index + 1)
+      ];
     }
 
-    return {
-      ...acc,
-      [roshambo.round]: move
-    };
-  }, {});
+    return [...acc, move];
+  }, []);
 
-  const roshamboKeys = Object.keys(roshamboMap);
-  const lastRound = roshamboMap[roshamboKeys[roshamboKeys.length - 1]];
+  const lastRound = rounds[rounds.length - 1];
   const [[winnerId, winningMove], loser] = Object.entries(lastRound).sort(
     (a, b) => {
+      // compare the two moves and sort the array so the winner is first
+      // the winner is the element who's move equals the other move's counter
       const {counter} = ROSHAMBOS[a[1]];
       return counter === b[1] ? 1 : -1;
     }
@@ -53,10 +52,10 @@ export default function Roshambos(props) {
   const winner = props.skaters.find(skater => skater.id === winnerId);
   return (
     <Fragment>
-      {roshamboKeys.map(key => (
-        <TableRow key={key}>
+      {rounds.map((round, index) => (
+        <TableRow key={index}>
           {props.skaters.map((skater, index) => {
-            const move = roshamboMap[key][skater.id];
+            const move = round[skater.id];
             const {emoji} = ROSHAMBOS[move];
             return (
               <TableCell key={skater.id} align={index ? 'left' : 'right'}>

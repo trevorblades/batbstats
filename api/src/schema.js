@@ -163,7 +163,7 @@ export const resolvers = {
     attempts,
     event: game => game.getEvent(),
     skaters: game => game.getSkaters(),
-    roshambos: game => game.getRoshambos(),
+    roshambos: game => game.getRoshambos({order: ['round']}),
     replacements: game => game.getReplacements()
   },
   Skater: {

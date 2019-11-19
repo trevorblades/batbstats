@@ -2,6 +2,7 @@ import Layout from '../layout';
 import PropTypes from 'prop-types';
 import React from 'react';
 import Roshambos from './roshambos';
+import Rounds from './rounds';
 import {Helmet} from 'react-helmet';
 import {Link} from 'gatsby-theme-material-ui';
 import {
@@ -16,7 +17,13 @@ import {formatRound} from '../../utils';
 import {graphql} from 'gatsby';
 
 export default function GameTemplate(props) {
-  const {event, round, skaters, roshambos} = props.data.batbstats.game;
+  const {
+    event,
+    round,
+    skaters,
+    attempts,
+    roshambos
+  } = props.data.batbstats.game;
   const title = skaters.map(skater => skater.fullName).join(' vs. ');
   return (
     <Layout>
@@ -42,7 +49,7 @@ export default function GameTemplate(props) {
         </TableHead>
         <TableBody>
           <Roshambos roshambos={roshambos} skaters={skaters} />
-          {/* {this.renderRounds(skaters)} */}
+          <Rounds attempts={attempts} skaters={skaters} />
         </TableBody>
       </Table>
     </Layout>
