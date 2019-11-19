@@ -4,31 +4,13 @@ import React, {Fragment} from 'react';
 import {TableCell, TableRow} from '@material-ui/core';
 import {getInitialLetters} from '../../utils';
 
-function getRounds(attempts) {
-  const rounds = [];
-  for (let i = 0; i < attempts.length; i++) {
-    let attempt = attempts[i];
-    const round = {[attempt.skaterId]: attempt};
-    if (attempt.successful) {
-      i++;
-      attempt = attempts[i];
-      round[attempt.skaterId] = attempt;
-    }
-
-    rounds.push(round);
-  }
-
-  return rounds;
-}
-
 const LETTERS = 'SKATE'.split('');
 
 export default function Rounds(props) {
-  const rounds = getRounds(props.attempts);
   const letters = getInitialLetters(props.skaters);
   return (
     <Fragment>
-      {rounds.map((round, index) => {
+      {props.rounds.map((round, index) => {
         let commentary;
         return (
           <Fragment key={index}>
@@ -76,6 +58,6 @@ export default function Rounds(props) {
 }
 
 Rounds.propTypes = {
-  attempts: PropTypes.array.isRequired,
+  rounds: PropTypes.array.isRequired,
   skaters: PropTypes.array.isRequired
 };
