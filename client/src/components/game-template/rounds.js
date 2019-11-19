@@ -2,21 +2,30 @@ import Commentary from './commentary';
 import PropTypes from 'prop-types';
 import React, {Fragment} from 'react';
 import {TableCell, TableRow} from '@material-ui/core';
+import {getInitialLetters} from '../../utils';
 
-export default function Rounds(props) {
+function getRounds(attempts) {
   const rounds = [];
-  for (let i = 0; i < props.attempts.length; i++) {
-    let attempt = props.attempts[i];
+  for (let i = 0; i < attempts.length; i++) {
+    let attempt = attempts[i];
     const round = {[attempt.skaterId]: attempt};
     if (attempt.successful) {
       i++;
-      attempt = props.attempts[i];
+      attempt = attempts[i];
       round[attempt.skaterId] = attempt;
     }
 
     rounds.push(round);
   }
 
+  return rounds;
+}
+
+const WORD = 'SKATE';
+
+export default function Rounds(props) {
+  const rounds = getRounds(props.attempts);
+  const letters = getInitialLetters(props.skaters);
   return (
     <Fragment>
       {rounds.map((round, index) => {
@@ -34,7 +43,11 @@ export default function Rounds(props) {
 
                 const {offense, successful, trick} = attempt;
                 if (!offense && !successful) {
-                  commentary = `${skater.firstName} gets a letter`;
+                  letters[skater.id]++;
+                  const word = WORD.slice(0, letters[skater.id]);
+                  commentary = `${skater.firstName} gets ${word
+                    .split('')
+                    .join('.')}.`;
                 }
 
                 return (
