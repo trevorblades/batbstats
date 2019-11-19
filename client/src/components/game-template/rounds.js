@@ -1,3 +1,4 @@
+import Commentary from './commentary';
 import PropTypes from 'prop-types';
 import React, {Fragment} from 'react';
 import {TableCell, TableRow} from '@material-ui/core';
@@ -18,33 +19,42 @@ export default function Rounds(props) {
 
   return (
     <Fragment>
-      {rounds.map((round, index) => (
-        <TableRow key={index}>
-          {props.skaters.map((skater, index) => {
-            const attempt = round[skater.id];
-            return (
-              <TableCell align={index ? 'left' : 'right'} key={skater.id}>
-                {attempt && (
-                  <span
-                    style={{
-                      textDecoration:
-                        attempt.offense && !attempt.successful
-                          ? 'line-through'
-                          : 'none'
-                    }}
-                  >
-                    {attempt.offense
-                      ? attempt.trick.name
-                      : attempt.successful
-                      ? '✅'
-                      : '❌'}
-                  </span>
-                )}
-              </TableCell>
-            );
-          })}
-        </TableRow>
-      ))}
+      {rounds.map((round, index) => {
+        let commentary;
+        return (
+          <Fragment key={index}>
+            <TableRow>
+              {props.skaters.map((skater, index, array) => {
+                const attempt = round[skater.id];
+                if (!attempt) {
+                  const opponent = array[index ? 0 : 1];
+                  commentary = `${skater.firstName} misses, ${opponent.firstName}'s turn to set`;
+                  return <TableCell key={skater.id} />;
+                }
+
+                const {offense, successful, trick} = attempt;
+                if (!offense && !successful) {
+                  commentary = `${skater.firstName} gets a letter`;
+                }
+
+                return (
+                  <TableCell align={index ? 'left' : 'right'} key={skater.id}>
+                    <span
+                      style={{
+                        textDecoration:
+                          offense && !successful ? 'line-through' : 'none'
+                      }}
+                    >
+                      {offense ? trick.name : successful ? '✅' : '❌'}
+                    </span>
+                  </TableCell>
+                );
+              })}
+            </TableRow>
+            {commentary && <Commentary>{commentary}</Commentary>}
+          </Fragment>
+        );
+      })}
     </Fragment>
   );
 }
