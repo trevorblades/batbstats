@@ -21,7 +21,7 @@ function getRounds(attempts) {
   return rounds;
 }
 
-const WORD = 'SKATE';
+const LETTERS = 'SKATE'.split('');
 
 export default function Rounds(props) {
   const rounds = getRounds(props.attempts);
@@ -35,19 +35,20 @@ export default function Rounds(props) {
             <TableRow>
               {props.skaters.map((skater, index, array) => {
                 const attempt = round[skater.id];
+                const opponent = array[index ? 0 : 1];
                 if (!attempt) {
-                  const opponent = array[index ? 0 : 1];
                   commentary = `${skater.firstName} misses, ${opponent.firstName}'s turn to set`;
                   return <TableCell key={skater.id} />;
                 }
 
-                const {offense, successful, trick} = attempt;
+                const {offense, successful, trick, redos} = attempt;
                 if (!offense && !successful) {
                   letters[skater.id]++;
-                  const word = WORD.slice(0, letters[skater.id]);
-                  commentary = `${skater.firstName} gets ${word
-                    .split('')
-                    .join('.')}.`;
+                  const word = LETTERS.slice(0, letters[skater.id]);
+                  commentary = `${skater.firstName} gets ${word.join('.')}.`;
+                  if (word.length === 5) {
+                    commentary += `; ${opponent.firstName} wins!`;
+                  }
                 }
 
                 return (
@@ -59,6 +60,8 @@ export default function Rounds(props) {
                       }}
                     >
                       {offense ? trick.name : successful ? '✅' : '❌'}
+                      {redos > 0 && ' 🔄'}
+                      {redos > 1 && `x${redos}`}
                     </span>
                   </TableCell>
                 );
