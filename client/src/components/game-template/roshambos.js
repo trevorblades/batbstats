@@ -24,20 +24,20 @@ const ROSHAMBOS = {
 export default function Roshambos(props) {
   // organize the roshambos into an array of "rounds"
   // [{p1: move, p2: move}, ...]
-  const rounds = props.roshambos.reduce((acc, roshambo) => {
-    const index = roshambo.round - 1;
-    const round = acc[index];
-    const move = {[roshambo.skaterId]: roshambo.move};
-    if (round) {
-      return [
-        ...acc.slice(0, index),
-        {...round, ...move},
-        ...acc.slice(index + 1)
-      ];
-    }
+  const rounds = Object.values(
+    props.roshambos.reduce((acc, roshambo) => {
+      const round = acc[roshambo.round];
+      const move = {[roshambo.skaterId]: roshambo.move};
+      if (round) {
+        return {
+          ...acc,
+          [roshambo.round]: {...round, ...move}
+        };
+      }
 
-    return [...acc, move];
-  }, []);
+      return {...acc, [roshambo.round]: move};
+    }, {})
+  );
 
   const lastRound = rounds[rounds.length - 1];
   const [[winnerId, winningMove], loser] = Object.entries(lastRound).sort(
