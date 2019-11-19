@@ -31,7 +31,7 @@ export default function GameTemplate(props) {
         <title>{title}</title>
       </Helmet>
       <Typography gutterBottom variant="h4">
-        <Link to={`/events/${event.id}`}>{event.name}</Link>{' '}
+        <Link to={`/events/${event.id}`}>BATB {event.id}</Link>{' '}
         {formatRound(round)}
       </Typography>
       <Typography paragraph variant="h6">
@@ -67,7 +67,6 @@ export const pageQuery = graphql`
         round
         event {
           id
-          name
         }
         skaters {
           id
