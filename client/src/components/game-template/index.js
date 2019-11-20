@@ -1,11 +1,10 @@
 import Layout from '../layout';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, {Fragment} from 'react';
 import Roshambos from './roshambos';
 import Rounds from './rounds';
 import {
-  Card,
-  CardContent,
+  Box,
   Grid,
   ListItemText,
   Table,
@@ -13,6 +12,7 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  Tooltip,
   Typography
 } from '@material-ui/core';
 import {Helmet} from 'react-helmet';
@@ -39,14 +39,14 @@ function getRounds(attempts) {
 
 function StatListItem(props) {
   return (
-    <Grid item xs={12} sm={6} md={12}>
+    <Grid item xs={12} sm={6} md={4} lg={3}>
       <ListItemText secondary={props.label}>{props.children}</ListItemText>
     </Grid>
   );
 }
 
 StatListItem.propTypes = {
-  label: PropTypes.string.isRequired,
+  label: PropTypes.node.isRequired,
   children: PropTypes.node.isRequired
 };
 
@@ -66,10 +66,15 @@ export default function GameTemplate(props) {
   const successfulAttempts = attempts.filter(attempt => attempt.successful);
   const accuracy = successfulAttempts.length / attempts.length;
 
-  const tricks = successfulAttempts
-    .filter(attempt => attempt.offense)
-    .map(attempt => attempt.trick);
-  const flips = tricks.reduce((acc, trick) => acc + Math.abs(trick.flip), 0);
+  const combinedFlips = successfulAttempts.reduce(
+    (acc, attempt) => acc + Math.abs(attempt.trick.flip),
+    0
+  );
+
+  const combinedRotation = successfulAttempts.reduce(
+    (acc, attempt) => acc + Math.abs(attempt.trick.spin),
+    0
+  );
 
   const runs = attempts
     .reduce(
@@ -93,57 +98,70 @@ export default function GameTemplate(props) {
       <Helmet>
         <title>{title}</title>
       </Helmet>
-      <Typography gutterBottom variant="h4">
+      <Typography variant="h6">
         <Link to={`/events/${event.id}`}>BATB {event.id}</Link>{' '}
         {formatRound(round)}
       </Typography>
-      <Typography paragraph variant="h6">
+      <Typography paragraph variant="h4">
         {title}
       </Typography>
-      <Grid container spacing={3} direction="row-reverse">
-        <Grid item xs={12} md={4}>
-          <Card>
-            <CardContent>
-              <Typography gutterBottom variant="h6">
-                Battle summary
-              </Typography>
-              <Grid container spacing={1}>
-                <StatListItem label="Total rounds">
-                  {rounds.length}
-                </StatListItem>
-                <StatListItem label="Overall accuracy">
-                  {Math.round(accuracy * 1000) / 10} %
-                </StatListItem>
-                <StatListItem label="Total runs">{runs.length}</StatListItem>
-                <StatListItem label="Longest run">
-                  {Math.max(...runs)} tricks
-                </StatListItem>
-                <StatListItem label="Redos given">{redos}</StatListItem>
-                <StatListItem label="Avg. flips per trick">
-                  {flips / tricks.length}
-                </StatListItem>
-              </Grid>
-            </CardContent>
-          </Card>
+      <Box
+        my={3}
+        p={2}
+        border={1}
+        borderColor="divider"
+        borderRadius="borderRadius"
+        bgcolor="background.paper"
+      >
+        <Typography gutterBottom variant="h6">
+          Battle summary
+        </Typography>
+        <Grid container spacing={1}>
+          <StatListItem label="Total rounds">{rounds.length}</StatListItem>
+          <StatListItem label="Tricks landed">
+            {successfulAttempts.length}
+          </StatListItem>
+          <StatListItem label="Overall accuracy">
+            {Math.round(accuracy * 1000) / 10} %
+          </StatListItem>
+          <StatListItem
+            label={
+              <Fragment>
+                Total runs (
+                <Tooltip title="2 or more consecutive offensive lands">
+                  <Box component="span">?</Box>
+                </Tooltip>
+                )
+              </Fragment>
+            }
+          >
+            {runs.length}
+          </StatListItem>
+          <StatListItem label="Longest run">
+            {Math.max(...runs)} tricks
+          </StatListItem>
+          <StatListItem label="Redos given">{redos}</StatListItem>
+          <StatListItem label="Combined flips">{combinedFlips}</StatListItem>
+          <StatListItem label="Combined rotation">
+            {combinedRotation * 180}&deg;
+          </StatListItem>
         </Grid>
-        <Grid item xs={12} md={8}>
-          <Table style={{tableLayout: 'fixed'}}>
-            <TableHead>
-              <TableRow>
-                {skaters.map((skater, index) => (
-                  <TableCell key={skater.id} align={index ? 'left' : 'right'}>
-                    {skater.fullName}
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              <Roshambos roshambos={roshambos} skaters={skaters} />
-              <Rounds rounds={rounds} skaters={skaters} />
-            </TableBody>
-          </Table>
-        </Grid>
-      </Grid>
+      </Box>
+      <Table style={{tableLayout: 'fixed'}}>
+        <TableHead>
+          <TableRow>
+            {skaters.map((skater, index) => (
+              <TableCell key={skater.id} align={index ? 'left' : 'right'}>
+                {skater.fullName}
+              </TableCell>
+            ))}
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          <Roshambos roshambos={roshambos} skaters={skaters} />
+          <Rounds rounds={rounds} skaters={skaters} />
+        </TableBody>
+      </Table>
     </Layout>
   );
 }
@@ -171,15 +189,15 @@ export const pageQuery = graphql`
           skaterId
         }
         attempts {
-          id
           successful
           offense
           redos
           skaterId
           trick {
-            id
             name
             flip
+            shuv
+            spin
           }
         }
       }
