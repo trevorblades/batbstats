@@ -50,6 +50,14 @@ StatListItem.propTypes = {
   children: PropTypes.node.isRequired
 };
 
+function Degrees(props) {
+  return <Fragment>{props.value * 180}&deg;</Fragment>;
+}
+
+Degrees.propTypes = {
+  value: PropTypes.number
+};
+
 export default function GameTemplate(props) {
   const {
     event,
@@ -66,14 +74,16 @@ export default function GameTemplate(props) {
   const successfulAttempts = attempts.filter(attempt => attempt.successful);
   const accuracy = successfulAttempts.length / attempts.length;
 
-  const combinedFlips = successfulAttempts.reduce(
-    (acc, attempt) => acc + Math.abs(attempt.trick.flip),
-    0
-  );
-
-  const combinedRotation = successfulAttempts.reduce(
-    (acc, attempt) => acc + Math.abs(attempt.trick.spin),
-    0
+  const combined = successfulAttempts.reduce(
+    (acc, attempt) =>
+      Object.entries(acc).reduce(
+        (acc2, [key, value]) => ({
+          ...acc2,
+          [key]: value + Math.abs(attempt.trick[key])
+        }),
+        acc
+      ),
+    {flip: 0, spin: 0, shuv: 0}
   );
 
   const runs = attempts
@@ -142,9 +152,12 @@ export default function GameTemplate(props) {
               {Math.max(...runs)} tricks
             </StatListItem>
             <StatListItem label="Redos given">{redos}</StatListItem>
-            <StatListItem label="Combined flips">{combinedFlips}</StatListItem>
+            <StatListItem label="Combined flips">{combined.flip}</StatListItem>
+            <StatListItem label="Combined shuvs">
+              <Degrees value={combined.shuv} />
+            </StatListItem>
             <StatListItem label="Combined rotation">
-              {combinedRotation * 180}&deg;
+              <Degrees value={combined.spin} />
             </StatListItem>
           </Grid>
         </Box>
