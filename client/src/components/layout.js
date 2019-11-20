@@ -44,7 +44,7 @@ export default function Layout(props) {
           <Box {...LogoTitleProps.title}>{title}</Box>
         </Box>
       </Box>
-      <Box p={4}>{props.children}</Box>
+      {props.children}
     </Fragment>
   );
 }

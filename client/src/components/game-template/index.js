@@ -98,70 +98,72 @@ export default function GameTemplate(props) {
       <Helmet>
         <title>{title}</title>
       </Helmet>
-      <Typography variant="h6">
-        <Link to={`/events/${event.id}`}>BATB {event.id}</Link>{' '}
-        {formatRound(round)}
-      </Typography>
-      <Typography paragraph variant="h4">
-        {title}
-      </Typography>
-      <Box
-        my={3}
-        p={2}
-        border={1}
-        borderColor="divider"
-        borderRadius="borderRadius"
-        bgcolor="background.paper"
-      >
-        <Typography gutterBottom variant="h6">
-          Battle summary
+      <Box p={4}>
+        <Typography variant="h6">
+          <Link to={`/events/${event.id}`}>BATB {event.id}</Link>{' '}
+          {formatRound(round)}
         </Typography>
-        <Grid container spacing={1}>
-          <StatListItem label="Total rounds">{rounds.length}</StatListItem>
-          <StatListItem label="Tricks landed">
-            {successfulAttempts.length}
-          </StatListItem>
-          <StatListItem label="Overall accuracy">
-            {Math.round(accuracy * 1000) / 10} %
-          </StatListItem>
-          <StatListItem
-            label={
-              <Fragment>
-                Total runs (
-                <Tooltip title="2 or more consecutive offensive lands">
-                  <Box component="span">?</Box>
-                </Tooltip>
-                )
-              </Fragment>
-            }
-          >
-            {runs.length}
-          </StatListItem>
-          <StatListItem label="Longest run">
-            {Math.max(...runs)} tricks
-          </StatListItem>
-          <StatListItem label="Redos given">{redos}</StatListItem>
-          <StatListItem label="Combined flips">{combinedFlips}</StatListItem>
-          <StatListItem label="Combined rotation">
-            {combinedRotation * 180}&deg;
-          </StatListItem>
-        </Grid>
+        <Typography paragraph variant="h4">
+          {title}
+        </Typography>
+        <Box
+          my={3}
+          p={2}
+          border={1}
+          borderColor="divider"
+          borderRadius="borderRadius"
+          bgcolor="background.paper"
+        >
+          <Typography gutterBottom variant="h6">
+            Battle summary
+          </Typography>
+          <Grid container spacing={1}>
+            <StatListItem label="Total rounds">{rounds.length}</StatListItem>
+            <StatListItem label="Tricks landed">
+              {successfulAttempts.length}
+            </StatListItem>
+            <StatListItem label="Overall accuracy">
+              {Math.round(accuracy * 1000) / 10} %
+            </StatListItem>
+            <StatListItem
+              label={
+                <Fragment>
+                  Total runs (
+                  <Tooltip title="2 or more consecutive offensive lands">
+                    <Box component="span">?</Box>
+                  </Tooltip>
+                  )
+                </Fragment>
+              }
+            >
+              {runs.length}
+            </StatListItem>
+            <StatListItem label="Longest run">
+              {Math.max(...runs)} tricks
+            </StatListItem>
+            <StatListItem label="Redos given">{redos}</StatListItem>
+            <StatListItem label="Combined flips">{combinedFlips}</StatListItem>
+            <StatListItem label="Combined rotation">
+              {combinedRotation * 180}&deg;
+            </StatListItem>
+          </Grid>
+        </Box>
+        <Table style={{tableLayout: 'fixed'}}>
+          <TableHead>
+            <TableRow>
+              {skaters.map((skater, index) => (
+                <TableCell key={skater.id} align={index ? 'left' : 'right'}>
+                  {skater.fullName}
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            <Roshambos roshambos={roshambos} skaters={skaters} />
+            <Rounds rounds={rounds} skaters={skaters} />
+          </TableBody>
+        </Table>
       </Box>
-      <Table style={{tableLayout: 'fixed'}}>
-        <TableHead>
-          <TableRow>
-            {skaters.map((skater, index) => (
-              <TableCell key={skater.id} align={index ? 'left' : 'right'}>
-                {skater.fullName}
-              </TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          <Roshambos roshambos={roshambos} skaters={skaters} />
-          <Rounds rounds={rounds} skaters={skaters} />
-        </TableBody>
-      </Table>
     </Layout>
   );
 }

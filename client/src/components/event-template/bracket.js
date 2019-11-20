@@ -1,6 +1,7 @@
 import BracketSegment from './bracket-segment';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, {useMemo, useRef, useState} from 'react';
+import {Box} from '@material-ui/core';
 
 function addGameChildren(game, rounds, index) {
   const children = rounds[index];
@@ -38,26 +39,61 @@ function addGameChildren(game, rounds, index) {
 }
 
 export default function Bracket(props) {
-  const groups = props.games
-    .filter(game => game.round !== 5)
-    .reduce((acc, game) => {
-      const games = acc[game.round];
-      if (games) {
+  const wrapperRef = useRef();
+  const [dragging, setDragging] = useState(false);
+
+  const game = useMemo(() => {
+    const groups = props.games
+      .filter(game => game.round !== 5)
+      .reduce((acc, game) => {
+        const games = acc[game.round];
+        if (games) {
+          return {
+            ...acc,
+            [game.round]: [...games, game]
+          };
+        }
+
         return {
           ...acc,
-          [game.round]: [...games, game]
+          [game.round]: [game]
         };
-      }
+      }, {});
 
-      return {
-        ...acc,
-        [game.round]: [game]
-      };
-    }, {});
+    const rounds = Object.values(groups).reverse();
+    return addGameChildren(rounds[0][0], rounds, 1);
+  }, [props.games]);
 
-  const rounds = Object.values(groups).reverse();
-  const game = addGameChildren(rounds[0][0], rounds, 1);
-  return <BracketSegment game={game} />;
+  function handleMouseDown() {
+    setDragging(true);
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+  }
+
+  function handleMouseMove(event) {
+    wrapperRef.current.scrollLeft -= event.movementX;
+  }
+
+  function handleMouseUp() {
+    setDragging(false);
+    window.removeEventListener('mousemove', handleMouseMove);
+    window.removeEventListener('mouseup', handleMouseUp);
+  }
+
+  return (
+    <Box
+      pt={1}
+      p={4}
+      style={{
+        overflowX: 'auto',
+        cursor: dragging ? 'grabbing' : 'grab'
+      }}
+      ref={wrapperRef}
+      onMouseDown={handleMouseDown}
+    >
+      <BracketSegment game={game} />
+    </Box>
+  );
 }
 
 Bracket.propTypes = {

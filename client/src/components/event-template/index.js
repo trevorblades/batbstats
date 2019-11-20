@@ -2,8 +2,8 @@ import Bracket from './bracket';
 import Layout from '../layout';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {Box, Typography} from '@material-ui/core';
 import {Helmet} from 'react-helmet';
-import {Typography} from '@material-ui/core';
 import {getInitialLetters} from '../../utils';
 import {graphql} from 'gatsby';
 
@@ -27,9 +27,9 @@ export default function EventTemplate(props) {
       <Helmet>
         <title>{name}</title>
       </Helmet>
-      <Typography gutterBottom variant="h4">
-        {name}
-      </Typography>
+      <Box p={4} pb={1}>
+        <Typography variant="h4">{name}</Typography>
+      </Box>
       <Bracket
         games={games.map(game => {
           const initialLetters = getInitialLetters(game.skaters);

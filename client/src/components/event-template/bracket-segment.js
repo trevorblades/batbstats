@@ -13,11 +13,14 @@ export default function BracketSegment(props) {
       alignItems="center"
       justifyContent="flex-end"
     >
-      <Box my={2} borderRadius="borderRadius">
+      <Box my={2} pr={round === 6 ? 4 : 0} borderRadius="borderRadius">
         <CardActionArea
           disabled={Boolean(bye)}
           to={`/games/${id}`}
-          style={{borderRadius: 'inherit'}}
+          style={{
+            borderRadius: 'inherit',
+            userSelect: 'none'
+          }}
         >
           <Box
             flexShrink={0}
