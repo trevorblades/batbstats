@@ -1,3 +1,4 @@
+import Degrees from '../degrees';
 import PropTypes from 'prop-types';
 import React, {Fragment} from 'react';
 import {Box, Grid, ListItemText, Tooltip, Typography} from '@material-ui/core';
@@ -13,14 +14,6 @@ function StatListItem(props) {
 StatListItem.propTypes = {
   label: PropTypes.node.isRequired,
   children: PropTypes.node.isRequired
-};
-
-function Degrees(props) {
-  return <Fragment>{props.value * 180}&deg;</Fragment>;
-}
-
-Degrees.propTypes = {
-  value: PropTypes.number
 };
 
 export default function Summary(props) {

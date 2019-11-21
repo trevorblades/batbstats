@@ -10,6 +10,7 @@ module.exports = {
   plugins: [
     'gatsby-plugin-react-helmet',
     'gatsby-plugin-svgr',
+    'gatsby-theme-apollo',
     {
       resolve: 'gatsby-theme-material-ui',
       options: {webFontsConfig}
