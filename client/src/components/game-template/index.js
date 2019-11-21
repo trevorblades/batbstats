@@ -1,62 +1,23 @@
+import Chart from './chart';
 import Layout from '../layout';
 import PropTypes from 'prop-types';
-import React, {Fragment} from 'react';
+import React, {useMemo} from 'react';
 import Roshambos from './roshambos';
 import Rounds from './rounds';
+import Summary from './summary';
 import {
   Box,
-  Grid,
-  ListItemText,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
-  Tooltip,
   Typography
 } from '@material-ui/core';
 import {Helmet} from 'react-helmet';
 import {Link} from 'gatsby-theme-material-ui';
 import {formatRound} from '../../utils';
 import {graphql} from 'gatsby';
-
-function getRounds(attempts) {
-  const rounds = [];
-  for (let i = 0; i < attempts.length; i++) {
-    let attempt = attempts[i];
-    const round = {[attempt.skaterId]: attempt};
-    if (attempt.successful) {
-      i++;
-      attempt = attempts[i];
-      round[attempt.skaterId] = attempt;
-    }
-
-    rounds.push(round);
-  }
-
-  return rounds;
-}
-
-function StatListItem(props) {
-  return (
-    <Grid item xs={12} sm={6} md={4} lg={3}>
-      <ListItemText secondary={props.label}>{props.children}</ListItemText>
-    </Grid>
-  );
-}
-
-StatListItem.propTypes = {
-  label: PropTypes.node.isRequired,
-  children: PropTypes.node.isRequired
-};
-
-function Degrees(props) {
-  return <Fragment>{props.value * 180}&deg;</Fragment>;
-}
-
-Degrees.propTypes = {
-  value: PropTypes.number
-};
 
 export default function GameTemplate(props) {
   const {
@@ -67,42 +28,24 @@ export default function GameTemplate(props) {
     roshambos
   } = props.data.batbstats.game;
 
-  const rounds = getRounds(attempts);
+  const rounds = useMemo(() => {
+    const arr = [];
+    for (let i = 0; i < attempts.length; i++) {
+      let attempt = attempts[i];
+      const round = {[attempt.skaterId]: attempt};
+      if (attempt.successful) {
+        i++;
+        attempt = attempts[i];
+        round[attempt.skaterId] = attempt;
+      }
+
+      arr.push(round);
+    }
+
+    return arr;
+  }, [attempts]);
+
   const title = skaters.map(skater => skater.fullName).join(' vs. ');
-  const redos = attempts.reduce((acc, attempt) => acc + attempt.redos, 0);
-
-  const successfulAttempts = attempts.filter(attempt => attempt.successful);
-  const accuracy = successfulAttempts.length / attempts.length;
-
-  const combined = successfulAttempts.reduce(
-    (acc, attempt) =>
-      Object.entries(acc).reduce(
-        (acc2, [key, value]) => ({
-          ...acc2,
-          [key]: value + Math.abs(attempt.trick[key])
-        }),
-        acc
-      ),
-    {flip: 0, spin: 0, shuv: 0}
-  );
-
-  const runs = attempts
-    .reduce(
-      (acc, attempt) => {
-        if (attempt.offense) {
-          return attempt.successful
-            ? [...acc.slice(0, -1), acc[acc.length - 1] + 1]
-            : [...acc, 0];
-        }
-
-        // return the existing run state if attempt was in defense
-        return acc;
-      },
-      [0]
-    )
-    // runs are more than one trick in a row
-    .filter(run => run > 1);
-
   return (
     <Layout>
       <Helmet>
@@ -116,51 +59,7 @@ export default function GameTemplate(props) {
         <Typography paragraph variant="h4">
           {title}
         </Typography>
-        <Box
-          my={3}
-          p={2}
-          border={1}
-          borderColor="divider"
-          borderRadius="borderRadius"
-          bgcolor="background.paper"
-        >
-          <Typography gutterBottom variant="h6">
-            Battle summary
-          </Typography>
-          <Grid container spacing={1}>
-            <StatListItem label="Total rounds">{rounds.length}</StatListItem>
-            <StatListItem label="Tricks landed">
-              {successfulAttempts.length}
-            </StatListItem>
-            <StatListItem label="Overall accuracy">
-              {Math.round(accuracy * 1000) / 10} %
-            </StatListItem>
-            <StatListItem
-              label={
-                <Fragment>
-                  Total runs (
-                  <Tooltip title="2 or more consecutive offensive lands">
-                    <Box component="span">?</Box>
-                  </Tooltip>
-                  )
-                </Fragment>
-              }
-            >
-              {runs.length}
-            </StatListItem>
-            <StatListItem label="Longest run">
-              {Math.max(...runs)} tricks
-            </StatListItem>
-            <StatListItem label="Redos given">{redos}</StatListItem>
-            <StatListItem label="Combined flips">{combined.flip}</StatListItem>
-            <StatListItem label="Combined shuvs">
-              <Degrees value={combined.shuv} />
-            </StatListItem>
-            <StatListItem label="Combined rotation">
-              <Degrees value={combined.spin} />
-            </StatListItem>
-          </Grid>
-        </Box>
+        <Summary rounds={rounds} attempts={attempts} />
         <Table style={{tableLayout: 'fixed'}}>
           <TableHead>
             <TableRow>
@@ -176,6 +75,7 @@ export default function GameTemplate(props) {
             <Rounds rounds={rounds} skaters={skaters} />
           </TableBody>
         </Table>
+        <Chart rounds={rounds} skaters={skaters} />
       </Box>
     </Layout>
   );
