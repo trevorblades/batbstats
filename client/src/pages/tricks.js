@@ -1,7 +1,7 @@
 import Layout from '../components/layout';
 import React from 'react';
 import TricksTable from '../components/tricks-table';
-import {Box, Typography} from '@material-ui/core';
+import {Box, NoSsr, Typography} from '@material-ui/core';
 import {Helmet} from 'react-helmet';
 
 export default function Tricks() {
@@ -14,7 +14,9 @@ export default function Tricks() {
         <Typography gutterBottom variant="h4">
           Tricks
         </Typography>
-        <TricksTable />
+        <NoSsr>
+          <TricksTable />
+        </NoSsr>
       </Box>
     </Layout>
   );

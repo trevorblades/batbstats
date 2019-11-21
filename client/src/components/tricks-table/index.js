@@ -1,5 +1,5 @@
 import React from 'react';
-import TrickRow from './trick-row';
+import TrickRow, {TRICK_FRAGMENT} from './trick-row';
 import {
   Table,
   TableBody,
@@ -13,13 +13,10 @@ import {gql, useQuery} from '@apollo/client';
 const LIST_TRICKS = gql`
   {
     tricks {
-      id
-      name
-      flip
-      shuv
-      spin
+      ...TrickFragment
     }
   }
+  ${TRICK_FRAGMENT}
 `;
 
 export default function TricksTable() {
