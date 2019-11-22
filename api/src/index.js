@@ -4,7 +4,8 @@ import {sequelize} from './db';
 
 const server = new ApolloServer({
   typeDefs,
-  resolvers
+  resolvers,
+  introspection: true
 });
 
 sequelize
