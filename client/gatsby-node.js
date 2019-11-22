@@ -1,3 +1,5 @@
+const {getBye} = require('./src/utils');
+
 exports.createPages = async ({graphql, actions}) => {
   const {data} = await graphql(
     `
@@ -7,6 +9,10 @@ exports.createPages = async ({graphql, actions}) => {
             id
             games {
               id
+              replacements {
+                inId
+                outId
+              }
             }
           }
         }
@@ -23,12 +29,16 @@ exports.createPages = async ({graphql, actions}) => {
       context: {id}
     });
 
-    games.forEach(({id}) => {
-      actions.createPage({
-        path: `/games/${id}`,
-        component: GameTemplate,
-        context: {id}
-      });
+    games.forEach(({id, replacements}) => {
+      const isBye = getBye(replacements);
+      // don't render game pages for bye rounds
+      if (!isBye) {
+        actions.createPage({
+          path: `/games/${id}`,
+          component: GameTemplate,
+          context: {id}
+        });
+      }
     });
   });
 };

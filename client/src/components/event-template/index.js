@@ -4,21 +4,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import {Box, Typography} from '@material-ui/core';
 import {Helmet} from 'react-helmet';
-import {getInitialLetters} from '../../utils';
+import {getBye, getInitialLetters} from '../../utils';
 import {graphql} from 'gatsby';
-
-function getBye(replacements) {
-  for (let i = 0; i < replacements.length; i++) {
-    // the heuristic for determining a bye is if the game has a replacement
-    // where the value of inId is NULL
-    const replacement = replacements[i];
-    if (replacement.inId === null) {
-      return replacement.outId;
-    }
-  }
-
-  return null;
-}
 
 export default function EventTemplate(props) {
   const {name, games} = props.data.batbstats.event;

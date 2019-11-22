@@ -1,4 +1,4 @@
-export function getInitialLetters(skaters) {
+function getInitialLetters(skaters) {
   return skaters.reduce(
     (acc, skater) => ({
       ...acc,
@@ -8,7 +8,7 @@ export function getInitialLetters(skaters) {
   );
 }
 
-export function formatRound(round) {
+function formatRound(round) {
   switch (round) {
     case 6:
       return 'Championship Battle';
@@ -22,3 +22,20 @@ export function formatRound(round) {
       return `Round ${round}`;
   }
 }
+
+function getBye(replacements) {
+  for (let i = 0; i < replacements.length; i++) {
+    // the heuristic for determining a bye is if the game has a replacement
+    // where the value of inId is NULL
+    const replacement = replacements[i];
+    if (replacement.inId === null) {
+      return replacement.outId;
+    }
+  }
+
+  return null;
+}
+
+exports.getInitialLetters = getInitialLetters;
+exports.formatRound = formatRound;
+exports.getBye = getBye;
