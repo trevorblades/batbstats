@@ -23,16 +23,19 @@ exports.createPages = async ({graphql, actions}) => {
   const EventTemplate = require.resolve('./src/components/event-template');
   const GameTemplate = require.resolve('./src/components/game-template');
   data.batbstats.events.forEach(({id, games}) => {
-    actions.createPage({
-      path: `/events/${id}`,
-      component: EventTemplate,
-      context: {id}
-    });
+    if (games.length) {
+      // only render pages for events that have games
+      actions.createPage({
+        path: `/events/${id}`,
+        component: EventTemplate,
+        context: {id}
+      });
+    }
 
     games.forEach(({id, replacements}) => {
       const isBye = getBye(replacements);
-      // don't render game pages for bye rounds
       if (!isBye) {
+        // don't render game pages for bye rounds
         actions.createPage({
           path: `/games/${id}`,
           component: GameTemplate,
