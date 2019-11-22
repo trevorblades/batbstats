@@ -4,7 +4,7 @@
   },
   "scripts": {
     "pretest": "eslint src",
-    "test": "exit",
+    "test": "echo \"Error: no test specified\" && exit",
     "start": "nodemon -r dotenv/config -r esm src/index.js"
   },
   "eslintConfig": {
