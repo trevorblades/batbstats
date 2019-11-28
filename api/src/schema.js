@@ -1,6 +1,9 @@
+import jwt from 'jsonwebtoken';
 import {AuthenticationError, UserInputError, gql} from 'apollo-server';
-import {Event, Game, Skater, Trick} from './db';
+import {Event, Game, Skater, Trick, User} from './db';
 import {MOVES, STANCES, VARIATIONS} from './utils';
+import {Op} from 'sequelize';
+import {compareSync} from 'bcryptjs';
 
 export const typeDefs = gql`
   scalar Date
@@ -17,6 +20,7 @@ export const typeDefs = gql`
   }
 
   type Mutation {
+    logIn(email: String!, password: String!): String
     updateSkater(
       id: ID!
       firstName: String
@@ -133,6 +137,28 @@ export const resolvers = {
     trick: (parent, args) => Trick.findByPk(args.id)
   },
   Mutation: {
+    async logIn(parent, args) {
+      const user = await User.findOne({
+        where: {
+          email: {
+            [Op.iLike]: args.email
+          }
+        }
+      });
+
+      if (!user) {
+        throw new AuthenticationError('Email not found');
+      }
+
+      const passwordsMatch = compareSync(args.password, user.password);
+      if (!passwordsMatch) {
+        throw new AuthenticationError('Passwords do not match');
+      }
+
+      return jwt.sign({email: user.email}, process.env.TOKEN_SECRET, {
+        subject: user.id.toString()
+      });
+    },
     async updateSkater(parent, {id, ...args}, {user}) {
       if (!user) {
         throw new AuthenticationError('Unauthorized');

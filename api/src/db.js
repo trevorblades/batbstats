@@ -69,3 +69,8 @@ Game.hasMany(Replacement);
 
 Replacement.belongsTo(Skater, {as: 'in'});
 Replacement.belongsTo(Skater, {as: 'out'});
+
+export const User = sequelize.define('user', {
+  email: Sequelize.STRING,
+  password: Sequelize.STRING
+});

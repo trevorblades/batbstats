@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, {Fragment} from 'react';
-import {Box} from '@material-ui/core';
+import UserStatus from './user-status';
+import {Box, NoSsr} from '@material-ui/core';
 import {Helmet} from 'react-helmet';
 import {Link, graphql, useStaticQuery} from 'gatsby';
 import {ReactComponent as Logo} from 'twemoji/2/svg/1f6f9.svg';
@@ -38,11 +39,15 @@ export default function Layout(props) {
           component={Link}
           to="/"
           color="inherit"
+          mr="auto"
           style={{textDecoration: 'none'}}
         >
           <Box {...LogoTitleProps.logo} component={Logo} />
           <Box {...LogoTitleProps.title}>{title}</Box>
         </Box>
+        <NoSsr>
+          <UserStatus />
+        </NoSsr>
       </Box>
       {props.children}
     </Fragment>

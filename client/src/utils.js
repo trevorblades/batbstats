@@ -1,3 +1,5 @@
+const decode = require('jwt-decode');
+
 function getInitialLetters(skaters) {
   return skaters.reduce(
     (acc, skater) => ({
@@ -36,6 +38,19 @@ function getBye(replacements) {
   return null;
 }
 
+function userFromToken(token) {
+  try {
+    const user = decode(token);
+    return {
+      ...user,
+      __typename: 'User'
+    };
+  } catch (error) {
+    return null;
+  }
+}
+
 exports.getInitialLetters = getInitialLetters;
 exports.formatRound = formatRound;
 exports.getBye = getBye;
+exports.userFromToken = userFromToken;
