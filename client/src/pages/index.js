@@ -1,3 +1,4 @@
+import Header from '../components/header';
 import Layout from '../components/layout';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -17,6 +18,7 @@ export default function Index(props) {
       <Helmet>
         <title>Events</title>
       </Helmet>
+      <Header />
       <List>
         {props.data.batbstats.events.map(event => (
           <ListItem

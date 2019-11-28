@@ -1,9 +1,9 @@
-import jwt from 'jsonwebtoken';
 import {AuthenticationError, UserInputError, gql} from 'apollo-server';
 import {Event, Game, Skater, Trick, User} from './db';
 import {MOVES, STANCES, VARIATIONS} from './utils';
 import {Op} from 'sequelize';
 import {compareSync} from 'bcryptjs';
+import {sign} from 'jsonwebtoken';
 
 export const typeDefs = gql`
   scalar Date
@@ -155,7 +155,7 @@ export const resolvers = {
         throw new AuthenticationError('Passwords do not match');
       }
 
-      return jwt.sign({email: user.email}, process.env.TOKEN_SECRET, {
+      return sign({email: user.email}, process.env.TOKEN_SECRET, {
         subject: user.id.toString()
       });
     },

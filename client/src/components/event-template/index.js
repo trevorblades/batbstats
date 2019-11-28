@@ -1,10 +1,12 @@
 import Bracket from './bracket';
+import Header from '../header';
 import Layout from '../layout';
 import PropTypes from 'prop-types';
 import React from 'react';
+import getBye from '../../utils/get-bye';
 import {Box, Typography} from '@material-ui/core';
 import {Helmet} from 'react-helmet';
-import {getBye, getInitialLetters} from '../../utils';
+import {getInitialLetters} from '../../utils';
 import {graphql} from 'gatsby';
 
 export default function EventTemplate(props) {
@@ -14,6 +16,7 @@ export default function EventTemplate(props) {
       <Helmet>
         <title>{name}</title>
       </Helmet>
+      <Header />
       <Box p={4} pb={1}>
         <Typography variant="h4">{name}</Typography>
       </Box>

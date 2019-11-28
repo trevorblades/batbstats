@@ -1,3 +1,5 @@
+import AuthRequired from '../components/auth-required';
+import Header from '../components/header';
 import Layout from '../components/layout';
 import React from 'react';
 import TricksTable from '../components/tricks-table';
@@ -10,14 +12,17 @@ export default function Tricks() {
       <Helmet>
         <title>Tricks</title>
       </Helmet>
-      <Box p={4}>
-        <Typography gutterBottom variant="h4">
-          Tricks
-        </Typography>
-        <NoSsr>
-          <TricksTable />
-        </NoSsr>
-      </Box>
+      <NoSsr>
+        <AuthRequired>
+          <Header />
+          <Box p={4}>
+            <Typography gutterBottom variant="h4">
+              Tricks
+            </Typography>
+            <TricksTable />
+          </Box>
+        </AuthRequired>
+      </NoSsr>
     </Layout>
   );
 }

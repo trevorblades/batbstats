@@ -64,7 +64,7 @@ export default function LoginForm(props) {
         <FormField label="Password" type="password" name="password" />
       </DialogContent>
       <DialogActions>
-        <Button onClick={props.onCancel}>Cancel</Button>
+        {props.onCancel && <Button onClick={props.onCancel}>Cancel</Button>}
         <Button disabled={loading} color="primary" type="submit">
           Submit
         </Button>
@@ -74,5 +74,5 @@ export default function LoginForm(props) {
 }
 
 LoginForm.propTypes = {
-  onCancel: PropTypes.func.isRequired
+  onCancel: PropTypes.func
 };

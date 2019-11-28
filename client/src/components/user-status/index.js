@@ -1,25 +1,12 @@
 import LoginButton from './login-button';
 import React from 'react';
 import {Button} from '@material-ui/core';
-import {gql, useQuery} from '@apollo/client';
-
-const GET_USER = gql`
-  {
-    user @client(always: true) {
-      email
-    }
-  }
-`;
+import {useUser} from '../../utils';
 
 export default function UserStatus() {
-  const {data, client} = useQuery(GET_USER);
+  const {user, logOut} = useUser();
 
-  function logOut() {
-    localStorage.removeItem('token');
-    client.resetStore();
-  }
-
-  if (data && data.user) {
+  if (user) {
     return (
       <Button variant="outlined" onClick={logOut}>
         Log out

@@ -1,4 +1,5 @@
 import Chart from './chart';
+import Header from '../header';
 import Layout from '../layout';
 import PropTypes from 'prop-types';
 import React, {useMemo} from 'react';
@@ -51,6 +52,7 @@ export default function GameTemplate(props) {
       <Helmet>
         <title>{title}</title>
       </Helmet>
+      <Header />
       <Box p={4}>
         <Typography variant="h6">
           <Link to={`/events/${event.id}`}>BATB {event.id}</Link>{' '}

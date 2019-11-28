@@ -1,4 +1,4 @@
-const {getBye} = require('./src/utils');
+const getBye = require('./src/utils/get-bye');
 
 exports.createPages = async ({graphql, actions}) => {
   const {data} = await graphql(

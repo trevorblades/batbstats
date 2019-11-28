@@ -1,5 +1,6 @@
 import React from 'react';
-import TrickRow, {TRICK_FRAGMENT} from './trick-row';
+import TrickRow from './trick-row';
+import {TRICK_FRAGMENT} from './trick-form';
 import {
   Table,
   TableBody,
