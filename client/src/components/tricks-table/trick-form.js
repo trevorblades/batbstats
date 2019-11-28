@@ -1,12 +1,15 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import VariationsSelect from './variations-select';
 import {
   Box,
   Button,
+  Checkbox,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
+  FormControlLabel,
   Grid,
   TextField,
   Typography
@@ -20,6 +23,8 @@ export const TRICK_FRAGMENT = gql`
     flip
     shuv
     spin
+    variation
+    other
   }
 `;
 
@@ -30,8 +35,18 @@ const UPDATE_TRICK = gql`
     $flip: Int
     $shuv: Int
     $spin: Int
+    $variation: Variation
+    $other: Boolean
   ) {
-    updateTrick(id: $id, name: $name, flip: $flip, shuv: $shuv, spin: $spin) {
+    updateTrick(
+      id: $id
+      name: $name
+      flip: $flip
+      shuv: $shuv
+      spin: $spin
+      variation: $variation
+      other: $other
+    ) {
       ...TrickFragment
     }
   }
@@ -53,13 +68,15 @@ export default function TrickForm(props) {
   function handleSubmit(event) {
     event.preventDefault();
 
-    const {name, flip, spin, shuv} = event.target;
+    const {name, flip, spin, shuv, variation, other} = event.target;
     updateTrick({
       variables: {
         name: name.value,
         flip: Number(flip.value),
         spin: Number(spin.value),
-        shuv: Number(shuv.value)
+        shuv: Number(shuv.value),
+        variation: variation.value || null,
+        other: other.checked
       }
     });
   }
@@ -102,6 +119,11 @@ export default function TrickForm(props) {
             />
           </Grid>
         </Grid>
+        <VariationsSelect defaultValue={props.trick.variation} />
+        <FormControlLabel
+          control={<Checkbox name="other" defaultChecked={props.trick.other} />}
+          label="Trick is unconventional"
+        />
         <Box mt={2}>
           <Typography color="textSecondary" variant="body2">
             Note: One unit of spin/shuv is equal to 180&deg;. Frontside
