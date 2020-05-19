@@ -1,9 +1,6 @@
 {
   "scripts": {
-    "start": "gatsby develop",
-    "build": "gatsby build",
-    "pretest": "eslint src gatsby-*.js",
-    "test": "echo \"Error: no test specified\" && exit"
+    "start": "gatsby develop"
   },
   "eslintConfig": {
     "extends": "@trevorblades/eslint-config/react"
@@ -32,8 +29,6 @@
     "twemoji": "^11.3.0"
   },
   "devDependencies": {
-    "@trevorblades/eslint-config": "^7.0.2",
-    "dotenv": "^8.2.0",
-    "eslint": "^6.6.0"
+    "dotenv": "^8.2.0"
   }
 }

@@ -1,7 +1,5 @@
-const dotenv = require('dotenv');
 const {webFontsConfig} = require('@trevorblades/mui-theme');
-
-dotenv.config();
+require('dotenv').config();
 
 module.exports = {
   siteMetadata: {

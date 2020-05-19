@@ -27,7 +27,7 @@ export default function Roshambos(props) {
   const rounds = Object.values(
     props.roshambos.reduce((acc, roshambo) => {
       const round = acc[roshambo.round];
-      const move = {[roshambo.skaterId]: roshambo.move};
+      const move = {[roshambo.skater.id]: roshambo.move};
       if (round) {
         return {
           ...acc,

@@ -33,11 +33,11 @@ export default function GameTemplate(props) {
     const arr = [];
     for (let i = 0; i < attempts.length; i++) {
       let attempt = attempts[i];
-      const round = {[attempt.skaterId]: attempt};
+      const round = {[attempt.skater.id]: attempt};
       if (attempt.successful) {
         i++;
         attempt = attempts[i];
-        round[attempt.skaterId] = attempt;
+        round[attempt.skater.id] = attempt;
       }
 
       arr.push(round);
@@ -103,13 +103,17 @@ export const pageQuery = graphql`
         roshambos {
           round
           move
-          skaterId
+          skater {
+            id
+          }
         }
         attempts {
           successful
           offense
           redos
-          skaterId
+          skater {
+            id
+          }
           trick {
             name
             flip

@@ -28,7 +28,7 @@ export default function EventTemplate(props) {
             if (!attempt.offense && !attempt.successful) {
               return {
                 ...acc,
-                [attempt.skaterId]: acc[attempt.skaterId] + 1
+                [attempt.skater.id]: acc[attempt.skater.id] + 1
               };
             }
 
@@ -66,13 +66,19 @@ export const pageQuery = graphql`
             stance
           }
           replacements {
-            inId
-            outId
+            in {
+              id
+            }
+            out {
+              id
+            }
           }
           attempts {
             offense
             successful
-            skaterId # TODO: use skater.id
+            skater {
+              id
+            }
             trick {
               id
               variation

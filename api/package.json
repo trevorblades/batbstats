@@ -3,8 +3,6 @@
     "node": "10"
   },
   "scripts": {
-    "pretest": "eslint src",
-    "test": "echo \"Error: no test specified\" && exit",
     "start": "nodemon -r dotenv/config index.js"
   },
   "dependencies": {

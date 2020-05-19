@@ -62,7 +62,7 @@ exports.typeDefs = gql`
     firstName: String!
     lastName: String!
     fullName: String!
-    stance: Stance!
+    stance: Stance
     birthDate: Date
     country: String
     games: [Game!]!
@@ -70,8 +70,8 @@ exports.typeDefs = gql`
   }
 
   enum Stance {
-    GOOFY
-    REGULAR
+    goofy
+    regular
   }
 
   type Trick {
@@ -86,9 +86,9 @@ exports.typeDefs = gql`
   }
 
   enum Variation {
-    SWITCH
-    NOLLIE
-    FAKIE
+    switch
+    nollie
+    fakie
   }
 
   type Attempt {
@@ -108,9 +108,9 @@ exports.typeDefs = gql`
   }
 
   enum Move {
-    ROCK
-    PAPER
-    SCISSORS
+    rock
+    paper
+    scissors
   }
 
   type Replacement {
@@ -122,7 +122,7 @@ exports.typeDefs = gql`
 
 exports.resolvers = {
   Query: {
-    events: (parent, args, {db}) => db('events'),
+    events: (parent, args, {db}) => db('events').orderBy('id'),
     event: (parent, {id}, {db}) =>
       db('events')
         .where({id})
@@ -189,7 +189,10 @@ exports.resolvers = {
     games: (event, args, {db}) => db('games').where('eventId', event.id)
   },
   Game: {
-    attempts: (game, args, {db}) => db('attempts').where('gameId', game.id),
+    attempts: (game, args, {db}) =>
+      db('attempts')
+        .where('gameId', game.id)
+        .orderBy('id'),
     event: (game, args, {db}) =>
       db('events')
         .where('id', game.eventId)
@@ -211,12 +214,17 @@ exports.resolvers = {
         .join('skaterGames', 'games.id', '=', 'skaterGames.gameId')
         .where('skaterGames.skaterId', skater.id),
     attempts: (skater, args, {db}) =>
-      db('attempts').where('skaterId', skater.id),
+      db('attempts')
+        .where('skaterId', skater.id)
+        .orderBy('id'),
     fullName: ({firstName, lastName}) =>
       [firstName, lastName].filter(Boolean).join(' ')
   },
   Trick: {
-    attempts: (trick, args, {db}) => db('attempts').where('trickId', trick.id)
+    attempts: (trick, args, {db}) =>
+      db('attempts')
+        .where('trickId', trick.id)
+        .orderBy('id')
   },
   Attempt: {
     skater: (attempt, args, {db}) =>

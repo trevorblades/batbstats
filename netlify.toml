@@ -1,5 +1,0 @@
-# MOVE THIS TO A _REDIRECTS FILE AFTER GATSBY MIRGRATION
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
