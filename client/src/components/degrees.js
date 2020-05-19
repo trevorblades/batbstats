@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
-import React, {Fragment} from 'react';
+import React from 'react';
 
 export default function Degrees(props) {
-  return <Fragment>{props.value * 180}&deg;</Fragment>;
+  return <>{props.value * 180}&deg;</>;
 }
 
 Degrees.propTypes = {

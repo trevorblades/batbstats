@@ -9,7 +9,7 @@ const LETTERS = 'SKATE'.split('');
 export default function Rounds(props) {
   const letters = getInitialLetters(props.skaters);
   return (
-    <Fragment>
+    <>
       {props.rounds.map((round, index) => {
         let commentary;
         return (
@@ -53,7 +53,7 @@ export default function Rounds(props) {
           </Fragment>
         );
       })}
-    </Fragment>
+    </>
   );
 }
 

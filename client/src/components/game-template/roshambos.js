@@ -1,6 +1,6 @@
 import Commentary from './commentary';
 import PropTypes from 'prop-types';
-import React, {Fragment} from 'react';
+import React from 'react';
 import {Box, TableCell, TableRow} from '@material-ui/core';
 import {ReactComponent as Paper} from 'twemoji/2/svg/270b.svg';
 import {ReactComponent as Rock} from 'twemoji/2/svg/270a.svg';
@@ -51,7 +51,7 @@ export default function Roshambos(props) {
 
   const winner = props.skaters.find(skater => skater.id === winnerId);
   return (
-    <Fragment>
+    <>
       {rounds.map((round, index) => (
         <TableRow key={index}>
           {props.skaters.map((skater, index) => {
@@ -71,7 +71,7 @@ export default function Roshambos(props) {
         {winningMove.charAt(0).toUpperCase() + winningMove.slice(1)} beats{' '}
         {loser[1]}, {winner.firstName} goes first
       </Commentary>
-    </Fragment>
+    </>
   );
 }
 

@@ -1,6 +1,6 @@
 import Degrees from '../degrees';
 import PropTypes from 'prop-types';
-import React, {Fragment} from 'react';
+import React from 'react';
 import {Box, Grid, ListItemText, Tooltip, Typography} from '@material-ui/core';
 
 function StatListItem(props) {
@@ -74,13 +74,13 @@ export default function Summary(props) {
         </StatListItem>
         <StatListItem
           label={
-            <Fragment>
+            <>
               Total runs (
               <Tooltip title="2 or more consecutive offensive lands">
                 <Box component="span">?</Box>
               </Tooltip>
               )
-            </Fragment>
+            </>
           }
         >
           {runs.length}
