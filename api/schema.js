@@ -51,6 +51,7 @@ exports.typeDefs = gql`
     date: Date
     video: String!
     event: Event!
+    winner: Skater!
     skaters: [Skater!]!
     attempts: [Attempt!]!
     roshambos: [Roshambo!]!
@@ -206,7 +207,16 @@ exports.resolvers = {
         .where('gameId', game.id)
         .orderBy('round'),
     replacements: (game, args, {db}) =>
-      db('replacements').where('gameId', game.id)
+      db('replacements').where('gameId', game.id),
+    winner: (game, args, {db}) =>
+      db('skaters')
+        .join('attempts', 'skaters.id', '=', 'attempts.skaterId')
+        .where({
+          'attempts.successful': true,
+          'attempts.gameId': game.id
+        })
+        .orderBy('attempts.id', 'desc')
+        .first()
   },
   Skater: {
     games: (skater, args, {db}) =>
