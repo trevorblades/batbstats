@@ -10,8 +10,12 @@ exports.createPages = async ({graphql, actions}) => {
             games {
               id
               replacements {
-                inId
-                outId
+                in {
+                  id
+                }
+                out {
+                  id
+                }
               }
             }
           }

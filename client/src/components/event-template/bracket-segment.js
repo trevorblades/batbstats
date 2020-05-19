@@ -47,7 +47,7 @@ export default function BracketSegment(props) {
                       {isBye ? (
                         'Bye'
                       ) : (
-                        <Fragment>
+                        <>
                           <span
                             style={{
                               textDecoration: skater.replaced
@@ -57,7 +57,7 @@ export default function BracketSegment(props) {
                           >
                             {getEmojiFlag(skater.country)} {skater.fullName}
                           </span>
-                        </Fragment>
+                        </>
                       )}
                     </Typography>
                   </Box>
@@ -72,7 +72,7 @@ export default function BracketSegment(props) {
         <Box display="flex" alignSelf="stretch" alignItems="center">
           <Box
             width={16}
-            height={1 / 2}
+            height="calc(50% + 1px)"
             border={1}
             borderColor="divider"
             borderLeft={0}
