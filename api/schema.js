@@ -225,7 +225,7 @@ exports.resolvers = {
         })
         .orderBy('count');
 
-      if (results[1].count < 5) {
+      if (!results[1] || results[1].count < 5) {
         return null;
       }
 
