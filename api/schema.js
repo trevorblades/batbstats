@@ -51,12 +51,16 @@ exports.typeDefs = gql`
     date: Date
     video: String!
     event: Event!
-    winner: Skater
-    loserLetters: Int
+    result: Result
     skaters: [Skater!]!
     attempts: [Attempt!]!
     roshambos: [Roshambo!]!
     replacements: [Replacement!]!
+  }
+
+  type Result {
+    lettersAgainst: Int!
+    winner: Skater!
   }
 
   type Skater {
@@ -209,21 +213,9 @@ exports.resolvers = {
         .orderBy('round'),
     replacements: (game, args, {db}) =>
       db('replacements').where('gameId', game.id),
-    async loserLetters(game, args, {db}) {
-      const failures = await db('attempts')
+    async result(game, args, {db}) {
+      const results = await db('attempts')
         .count('id')
-        .groupBy('skaterId')
-        .where({
-          offense: false,
-          successful: false,
-          gameId: game.id
-        });
-
-      const counts = failures.map(failure => failure.count);
-      return Math.max(...counts) === 5 ? Math.min(...counts) : null;
-    },
-    async winner(game, args, {db}) {
-      const loser = await db('attempts')
         .select('skaterId')
         .groupBy('skaterId')
         .where({
@@ -231,17 +223,21 @@ exports.resolvers = {
           successful: false,
           gameId: game.id
         })
-        .having(db.raw('count(id) = 5'))
+        .orderBy('count');
+
+      if (results[1].count < 5) {
+        return null;
+      }
+
+      const {skaterId, count} = results[0];
+      const winner = await db('skaters')
+        .where('id', skaterId)
         .first();
 
-      return (
-        loser &&
-        db('skaters')
-          .join('skaterGames', 'skaters.id', '=', 'skaterGames.skaterId')
-          .where('skaterGames.gameId', game.id)
-          .whereNot('skaterGames.skaterId', loser.skaterId)
-          .first()
-      );
+      return {
+        winner,
+        lettersAgainst: count
+      };
     }
   },
   Skater: {
