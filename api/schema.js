@@ -52,6 +52,7 @@ exports.typeDefs = gql`
     video: String!
     event: Event!
     winner: Skater
+    loserLetters: Int
     skaters: [Skater!]!
     attempts: [Attempt!]!
     roshambos: [Roshambo!]!
@@ -208,6 +209,19 @@ exports.resolvers = {
         .orderBy('round'),
     replacements: (game, args, {db}) =>
       db('replacements').where('gameId', game.id),
+    async loserLetters(game, args, {db}) {
+      const failures = await db('attempts')
+        .count('id')
+        .groupBy('skaterId')
+        .where({
+          offense: false,
+          successful: false,
+          gameId: game.id
+        });
+
+      const counts = failures.map(failure => failure.count);
+      return Math.max(...counts) === 5 ? Math.min(...counts) : null;
+    },
     async winner(game, args, {db}) {
       const loser = await db('attempts')
         .select('skaterId')
