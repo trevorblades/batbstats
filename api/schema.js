@@ -216,29 +216,29 @@ exports.resolvers = {
     async result(game, args, {db}) {
       const results = await db('attempts')
         .count('id')
-        .select('skaterId')
-        .groupBy('skaterId')
+        .select('skaterId', 'gameId')
+        .groupBy('skaterId', 'gameId')
         .where({
           offense: false,
           successful: false,
           gameId: game.id
         })
-        .orderBy('count');
-
-      if (!results[1] || results[1].count < 5) {
-        return null;
-      }
-
-      const {skaterId, count} = results[0];
-      const winner = await db('skaters')
-        .where('id', skaterId)
-        .first();
-
-      return {
-        winner,
-        lettersAgainst: count
-      };
+        .orderBy('count', 'desc');
+      return results.length ? results : null;
     }
+  },
+  Result: {
+    winner: ([loser, winner], args, {db}) =>
+      winner
+        ? db('skaters')
+            .where('id', winner.skaterId)
+            .first()
+        : db('skaters')
+            .join('skaterGames', 'skaters.id', '=', 'skaterGames.skaterId')
+            .where('skaterGames.gameId', loser.gameId)
+            .whereNot('id', loser.skaterId)
+            .first(),
+    lettersAgainst: result => (result.length === 2 ? result[1].count : 0)
   },
   Skater: {
     games: (skater, args, {db}) =>
