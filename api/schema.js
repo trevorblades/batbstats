@@ -165,8 +165,8 @@ exports.resolvers = {
       if (user) {
         const isValid = await bcrypt.compare(input.password, user.password);
         if (isValid) {
-          return jwt.sign({name: user.name}, process.env.JWT_SECRET, {
-            subject: user.id
+          return jwt.sign({email: user.email}, process.env.JWT_SECRET, {
+            subject: user.id.toString()
           });
         }
       }
