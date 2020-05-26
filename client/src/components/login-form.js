@@ -11,9 +11,9 @@ import {
 import {gql, useMutation} from '@apollo/client';
 import {userFromToken} from '../utils';
 
-const LOG_IN = gql`
-  mutation LogIn($email: String!, $password: String!) {
-    logIn(email: $email, password: $password)
+const LOGIN = gql`
+  mutation Login($input: LoginInput!) {
+    login(input: $input)
   }
 `;
 
@@ -30,12 +30,12 @@ function FormField(props) {
 }
 
 export default function LoginForm(props) {
-  const [logIn, {loading, error}] = useMutation(LOG_IN, {
+  const [login, {loading, error}] = useMutation(LOGIN, {
     update(cache, {data}) {
-      localStorage.setItem('token', data.logIn);
+      localStorage.setItem('token', data.login);
       cache.writeData({
         data: {
-          user: userFromToken(data.logIn)
+          user: userFromToken(data.login)
         }
       });
     }
@@ -45,10 +45,12 @@ export default function LoginForm(props) {
     event.preventDefault();
 
     const {email, password} = event.target;
-    logIn({
+    login({
       variables: {
-        email: email.value,
-        password: password.value
+        input: {
+          email: email.value,
+          password: password.value
+        }
       }
     });
   }

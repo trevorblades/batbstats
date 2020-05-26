@@ -1,3 +1,5 @@
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const {AuthenticationError, UserInputError, gql} = require('apollo-server');
 
 exports.typeDefs = gql`
@@ -15,8 +17,14 @@ exports.typeDefs = gql`
   }
 
   type Mutation {
+    login(input: LoginInput!): String
     updateSkater(input: UpdateSkaterInput!): Skater
     updateTrick(input: UpdateTrickInput!): Trick
+  }
+
+  input LoginInput {
+    email: String!
+    password: String!
   }
 
   input UpdateSkaterInput {
@@ -150,6 +158,21 @@ exports.resolvers = {
         .first()
   },
   Mutation: {
+    async login(parent, {input}, {db}) {
+      const user = await db('users')
+        .where('email', 'ilike', input.email)
+        .first();
+      if (user) {
+        const isValid = await bcrypt.compare(input.password, user.password);
+        if (isValid) {
+          return jwt.sign({name: user.name}, process.env.JWT_SECRET, {
+            subject: user.id
+          });
+        }
+      }
+
+      throw new AuthenticationError('Invalid email/password combination');
+    },
     async updateSkater(parent, args, {user, db}) {
       if (!user) {
         throw new AuthenticationError('Unauthorized');
