@@ -18,6 +18,7 @@ exports.typeDefs = gql`
 
   type Mutation {
     login(input: LoginInput!): String
+    updateGame(input: UpdateGameInput!): Game
     updateSkater(input: UpdateSkaterInput!): Skater
     updateTrick(input: UpdateTrickInput!): Trick
   }
@@ -25,6 +26,11 @@ exports.typeDefs = gql`
   input LoginInput {
     email: String!
     password: String!
+  }
+
+  input UpdateGameInput {
+    id: ID!
+    date: Date
   }
 
   input UpdateSkaterInput {
@@ -172,6 +178,22 @@ exports.resolvers = {
       }
 
       throw new AuthenticationError('Invalid email/password combination');
+    },
+    async updateGame(parent, args, {user, db}) {
+      if (!user) {
+        throw new AuthenticationError('Unauthorized');
+      }
+
+      const {id, ...input} = args.input;
+      const query = db('games').where({id});
+      const game = await query.first();
+
+      if (!game) {
+        throw new UserInputError('Game does not exist');
+      }
+
+      const updated = await query.update(input).returning('*');
+      return updated[0];
     },
     async updateSkater(parent, args, {user, db}) {
       if (!user) {

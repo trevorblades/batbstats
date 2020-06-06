@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import UserStatus from './user-status';
 import {Box, NoSsr} from '@material-ui/core';
@@ -6,7 +7,7 @@ import {ReactComponent as Logo} from 'twemoji/2/svg/1f6f9.svg';
 import {LogoTitleProps} from '@trevorblades/mui-theme';
 import {useTitle} from '../utils';
 
-export default function Header() {
+export default function Header(props) {
   const title = useTitle();
   return (
     <Box
@@ -31,8 +32,13 @@ export default function Header() {
         <Box {...LogoTitleProps.title}>{title}</Box>
       </Box>
       <NoSsr>
+        {props.children}
         <UserStatus />
       </NoSsr>
     </Box>
   );
 }
+
+Header.propTypes = {
+  children: PropTypes.node
+};

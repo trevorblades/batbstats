@@ -1,4 +1,5 @@
 import Chart from './chart';
+import EditGameButton from './edit-game-button';
 import Header from '../header';
 import Layout from '../layout';
 import PropTypes from 'prop-types';
@@ -52,7 +53,9 @@ export default function GameTemplate(props) {
       <Helmet>
         <title>{title}</title>
       </Helmet>
-      <Header />
+      <Header>
+        <EditGameButton title={title} game={props.data.batbstats.game} />
+      </Header>
       <Box p={4}>
         <Typography variant="h6">
           <Link to={`/events/${event.id}`}>BATB {event.id}</Link>{' '}
@@ -91,6 +94,8 @@ export const pageQuery = graphql`
   query GameQuery($id: ID!) {
     batbstats {
       game(id: $id) {
+        id
+        date
         round
         event {
           id
