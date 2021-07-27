@@ -1,6 +1,7 @@
+import Sequelize from 'sequelize';
 import {ApolloServer, gql} from 'apollo-server';
+import {Attempt, Event, Game, Skater, Trick, sequelize} from './db.js';
 import {DateResolver, DateTypeDefinition} from 'graphql-scalars';
-import {Event, Skater, Trick, sequelize} from './db.js';
 import {makeExecutableSchema} from '@graphql-tools/schema';
 
 const typeDefs = gql`
@@ -11,6 +12,8 @@ const typeDefs = gql`
     skaters: [Skater!]!
     trick(id: ID!): Trick
     tricks: [Trick!]!
+    game(id: ID!): Game
+    games: [Game!]!
   }
 
   type Event {
@@ -25,11 +28,18 @@ const typeDefs = gql`
     skaters: [Skater!]!
     attempts: [Attempt!]!
     roshambos: [Roshambo!]!
+    result: Result
+  }
+
+  type Result {
+    lettersAgainst: Int!
+    winner: Skater!
   }
 
   type Skater {
     firstName: String
     lastName: String
+    fullName: String!
     stance: Stance
     birthDate: Date
     country: String
@@ -88,7 +98,9 @@ const server = new ApolloServer({
         skater: (_, {id}) => Skater.findByPk(id),
         skaters: () => Skater.findAll(),
         trick: (_, {id}) => Trick.findByPk(id),
-        tricks: () => Trick.findAll()
+        tricks: () => Trick.findAll(),
+        game: (_, {id}) => Game.findByPk(id),
+        games: () => Game.findAll()
       },
       Event: {
         games: event => event.getGames()
@@ -96,9 +108,50 @@ const server = new ApolloServer({
       Game: {
         skaters: game => game.getSkaters(),
         attempts: game => game.getAttempts(),
-        roshambos: game => game.getRoshambos()
+        roshambos: game => game.getRoshambos(),
+        async result(game) {
+          const [loser, winner] = await Attempt.findAll({
+            attributes: [
+              'skaterId',
+              [sequelize.fn('count', sequelize.col('id')), 'count']
+            ],
+            where: {
+              offense: false,
+              successful: false,
+              gameId: game.id
+            },
+            group: ['skaterId', 'gameId'],
+            orderBy: [['count', 'desc']]
+          });
+
+          if (!loser) {
+            return null;
+          }
+
+          if (winner) {
+            return {
+              winner: await winner.getSkater(),
+              lettersAgainst: loser.count
+            };
+          }
+
+          const [skater] = await game.getSkaters({
+            where: {
+              id: {
+                [Sequelize.Op.not]: loser.skaterId
+              }
+            }
+          });
+
+          return {
+            winner: skater,
+            lettersAgainst: 0
+          };
+        }
       },
       Skater: {
+        fullName: ({firstName, lastName}) =>
+          [firstName, lastName].filter(Boolean).join(' '),
         replacement: skater => skater.participant?.getReplacement()
       },
       Attempt: {

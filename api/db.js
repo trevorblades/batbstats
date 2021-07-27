@@ -102,7 +102,7 @@ Skater.hasMany(Participant, {as: 'replacement'});
 Game.belongsToMany(Skater, {through: Participant});
 Skater.belongsToMany(Game, {through: Participant});
 
-class Attempt extends Model {}
+export class Attempt extends Model {}
 Attempt.init(
   {
     successful: DataTypes.BOOLEAN,
@@ -117,6 +117,9 @@ Attempt.init(
 
 Attempt.belongsTo(Game);
 Game.hasMany(Attempt);
+
+Attempt.belongsTo(Skater);
+Skater.hasMany(Attempt);
 
 Attempt.belongsTo(Trick);
 Trick.hasMany(Attempt);
