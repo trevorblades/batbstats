@@ -16,6 +16,7 @@
     "@graphql-tools/schema": "^7.1.5",
     "apollo-server": "^3.0.2",
     "bcryptjs": "^2.4.3",
+    "dataloader-sequelize": "^2.3.3",
     "esm": "^3.2.25",
     "graphql": "^15.5.1",
     "graphql-iso-date": "^3.6.1",

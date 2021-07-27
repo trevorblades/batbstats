@@ -1,165 +1,18 @@
-import Sequelize from 'sequelize';
-import {ApolloServer, gql} from 'apollo-server';
-import {Attempt, Event, Game, Skater, Trick, sequelize} from './db.js';
-import {DateResolver, DateTypeDefinition} from 'graphql-scalars';
+import {ApolloServer} from 'apollo-server';
+import {DateTypeDefinition} from 'graphql-scalars';
+import {createContext} from 'dataloader-sequelize';
 import {makeExecutableSchema} from '@graphql-tools/schema';
-
-const typeDefs = gql`
-  type Query {
-    event(id: ID!): Event
-    events: [Event!]!
-    skater(id: ID!): Skater
-    skaters: [Skater!]!
-    trick(id: ID!): Trick
-    tricks: [Trick!]!
-    game(id: ID!): Game
-    games: [Game!]!
-  }
-
-  type Event {
-    name: String!
-    games: [Game!]!
-  }
-
-  type Game {
-    round: Int!
-    video: String
-    date: Date
-    skaters: [Skater!]!
-    attempts: [Attempt!]!
-    roshambos: [Roshambo!]!
-    result: Result
-  }
-
-  type Result {
-    lettersAgainst: Int!
-    winner: Skater!
-  }
-
-  type Skater {
-    firstName: String
-    lastName: String
-    fullName: String!
-    stance: Stance
-    birthDate: Date
-    country: String
-    replacement: Skater
-  }
-
-  enum Stance {
-    regular
-    goofy
-  }
-
-  type Trick {
-    name: String!
-    variation: Variation
-    spin: Int!
-    flip: Int!
-    shuv: Int!
-    other: Boolean!
-  }
-
-  enum Variation {
-    switch
-    nollie
-    fakie
-  }
-
-  type Attempt {
-    successful: Boolean!
-    offense: Boolean!
-    redos: Int!
-    trick: Trick!
-    skater: Skater!
-  }
-
-  type Roshambo {
-    round: Int!
-    move: Move!
-    skater: Skater!
-  }
-
-  enum Move {
-    rock
-    paper
-    scissors
-  }
-`;
+import {resolvers, typeDefs} from './schema.js';
+import {sequelize} from './db.js';
 
 const server = new ApolloServer({
   schema: makeExecutableSchema({
     typeDefs: [DateTypeDefinition, typeDefs],
-    resolvers: {
-      Date: DateResolver,
-      Query: {
-        event: (_, {id}) => Event.findByPk(id),
-        events: () => Event.findAll(),
-        skater: (_, {id}) => Skater.findByPk(id),
-        skaters: () => Skater.findAll(),
-        trick: (_, {id}) => Trick.findByPk(id),
-        tricks: () => Trick.findAll(),
-        game: (_, {id}) => Game.findByPk(id),
-        games: () => Game.findAll()
-      },
-      Event: {
-        games: event => event.getGames()
-      },
-      Game: {
-        skaters: game => game.getSkaters(),
-        attempts: game => game.getAttempts(),
-        roshambos: game => game.getRoshambos(),
-        async result(game) {
-          const [loser, winner] = await Attempt.findAll({
-            attributes: [
-              'skaterId',
-              [sequelize.fn('count', sequelize.col('id')), 'count']
-            ],
-            where: {
-              offense: false,
-              successful: false,
-              gameId: game.id
-            },
-            group: ['skaterId', 'gameId'],
-            orderBy: [['count', 'desc']]
-          });
-
-          if (!loser) {
-            return null;
-          }
-
-          if (winner) {
-            return {
-              winner: await winner.getSkater(),
-              lettersAgainst: loser.count
-            };
-          }
-
-          const [skater] = await game.getSkaters({
-            where: {
-              id: {
-                [Sequelize.Op.not]: loser.skaterId
-              }
-            }
-          });
-
-          return {
-            winner: skater,
-            lettersAgainst: 0
-          };
-        }
-      },
-      Skater: {
-        fullName: ({firstName, lastName}) =>
-          [firstName, lastName].filter(Boolean).join(' '),
-        replacement: skater => skater.participant?.getReplacement()
-      },
-      Attempt: {
-        trick: attempt => attempt.getTrick(),
-        skater: attempt => attempt.getSkater()
-      }
-    }
-  })
+    resolvers
+  }),
+  context() {
+    return {context: createContext(sequelize)};
+  }
 });
 
 sequelize.sync().then(async () => {

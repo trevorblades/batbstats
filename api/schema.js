@@ -1,75 +1,34 @@
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const {AuthenticationError, UserInputError, gql} = require('apollo-server');
+import Sequelize from 'sequelize';
+import {Attempt, Event, Game, Skater, Trick, sequelize} from './db.js';
+import {DateResolver} from 'graphql-scalars';
+import {EXPECTED_OPTIONS_KEY} from 'dataloader-sequelize';
+import {gql} from 'apollo-server';
 
-exports.typeDefs = gql`
-  scalar Date
-
+export const typeDefs = gql`
   type Query {
-    events: [Event!]!
     event(id: ID!): Event
-    games: [Game!]!
-    game(id: ID!): Game
-    skaters: [Skater!]!
+    events: [Event!]!
     skater(id: ID!): Skater
-    tricks: [Trick!]!
+    skaters: [Skater!]!
     trick(id: ID!): Trick
-  }
-
-  type Mutation {
-    login(input: LoginInput!): String
-    updateGame(input: UpdateGameInput!): Game
-    updateSkater(input: UpdateSkaterInput!): Skater
-    updateTrick(input: UpdateTrickInput!): Trick
-  }
-
-  input LoginInput {
-    email: String!
-    password: String!
-  }
-
-  input UpdateGameInput {
-    id: ID!
-    date: Date
-  }
-
-  input UpdateSkaterInput {
-    id: ID!
-    firstName: String!
-    lastName: String!
-    stance: Stance
-    country: String
-    birthDate: String
-  }
-
-  input UpdateTrickInput {
-    id: ID!
-    name: String!
-    flip: Int!
-    shuv: Int!
-    spin: Int!
-    variation: Variation
-    other: Boolean!
+    tricks: [Trick!]!
+    game(id: ID!): Game
+    games: [Game!]!
   }
 
   type Event {
-    id: ID!
     name: String!
-    image: String
     games: [Game!]!
   }
 
   type Game {
-    id: ID!
     round: Int!
+    video: String
     date: Date
-    video: String!
-    event: Event!
-    result: Result
     skaters: [Skater!]!
     attempts: [Attempt!]!
     roshambos: [Roshambo!]!
-    replacements: [Replacement!]!
+    result: Result
   }
 
   type Result {
@@ -78,31 +37,27 @@ exports.typeDefs = gql`
   }
 
   type Skater {
-    id: ID!
-    firstName: String!
-    lastName: String!
+    firstName: String
+    lastName: String
     fullName: String!
     stance: Stance
     birthDate: Date
     country: String
-    games: [Game!]!
-    attempts: [Attempt!]!
+    replacement: Skater
   }
 
   enum Stance {
-    goofy
     regular
+    goofy
   }
 
   type Trick {
-    id: ID!
     name: String!
     variation: Variation
     spin: Int!
     flip: Int!
     shuv: Int!
     other: Boolean!
-    attempts: [Attempt!]!
   }
 
   enum Variation {
@@ -112,16 +67,14 @@ exports.typeDefs = gql`
   }
 
   type Attempt {
-    id: ID!
     successful: Boolean!
     offense: Boolean!
     redos: Int!
-    skater: Skater!
     trick: Trick!
+    skater: Skater!
   }
 
   type Roshambo {
-    id: ID!
     round: Int!
     move: Move!
     skater: Skater!
@@ -132,201 +85,76 @@ exports.typeDefs = gql`
     paper
     scissors
   }
-
-  type Replacement {
-    id: ID!
-    in: Skater
-    out: Skater
-  }
 `;
 
-exports.resolvers = {
+export const resolvers = {
+  Date: DateResolver,
   Query: {
-    events: (parent, args, {db}) => db('events').orderBy('id'),
-    event: (parent, {id}, {db}) =>
-      db('events')
-        .where({id})
-        .first(),
-    games: (parent, args, {db}) => db('games'),
-    game: (parent, {id}, {db}) =>
-      db('games')
-        .where({id})
-        .first(),
-    skaters: (parent, args, {db}) => db('skaters'),
-    skater: (parent, {id}, {db}) =>
-      db('skaters')
-        .where({id})
-        .first(),
-    tricks: (parent, args, {db}) => db('tricks'),
-    trick: (parent, {id}, {db}) =>
-      db('tricks')
-        .where({id})
-        .first()
-  },
-  Mutation: {
-    async login(parent, {input}, {db}) {
-      const user = await db('users')
-        .where('email', 'ilike', input.email)
-        .first();
-      if (user) {
-        const isValid = await bcrypt.compare(input.password, user.password);
-        if (isValid) {
-          return jwt.sign({email: user.email}, process.env.JWT_SECRET, {
-            subject: user.id.toString()
-          });
-        }
-      }
-
-      throw new AuthenticationError('Invalid email/password combination');
-    },
-    async updateGame(parent, args, {user, db}) {
-      if (!user) {
-        throw new AuthenticationError('Unauthorized');
-      }
-
-      const {id, ...input} = args.input;
-      const query = db('games').where({id});
-      const game = await query.first();
-
-      if (!game) {
-        throw new UserInputError('Game does not exist');
-      }
-
-      const updated = await query.update(input).returning('*');
-      return updated[0];
-    },
-    async updateSkater(parent, args, {user, db}) {
-      if (!user) {
-        throw new AuthenticationError('Unauthorized');
-      }
-
-      const {id, ...input} = args.input;
-      const skater = await db('skaters')
-        .where({id})
-        .first();
-
-      if (!skater) {
-        throw new UserInputError('Skater does not exist');
-      }
-
-      const updated = await db('skaters')
-        .where('id', skater.id)
-        .update(input)
-        .returning('*');
-      return updated[0];
-    },
-    async updateTrick(parent, args, {user, db}) {
-      if (!user) {
-        throw new AuthenticationError('Unauthorized');
-      }
-
-      const {id, ...input} = args.input;
-      const trick = await db('tricks')
-        .where({id})
-        .first();
-
-      if (!trick) {
-        throw new UserInputError('Trick does not exist');
-      }
-
-      const updated = await db('tricks')
-        .where('id', trick.id)
-        .update(input)
-        .returning('*');
-      return updated[0];
-    }
+    event: (_, {id}) => Event.findByPk(id),
+    events: () => Event.findAll(),
+    skater: (_, {id}) => Skater.findByPk(id),
+    skaters: () => Skater.findAll(),
+    trick: (_, {id}) => Trick.findByPk(id),
+    tricks: () => Trick.findAll(),
+    game: (_, {id}) => Game.findByPk(id),
+    games: () => Game.findAll()
   },
   Event: {
-    games: (event, args, {db}) => db('games').where('eventId', event.id)
+    games: event => event.getGames()
   },
   Game: {
-    attempts: (game, args, {db}) =>
-      db('attempts')
-        .where('gameId', game.id)
-        .orderBy('id'),
-    event: (game, args, {db}) =>
-      db('events')
-        .where('id', game.eventId)
-        .first(),
-    skaters: (game, args, {db}) =>
-      db('skaters')
-        .join('skaterGames', 'skaters.id', '=', 'skaterGames.skaterId')
-        .where('skaterGames.gameId', game.id),
-    roshambos: (game, args, {db}) =>
-      db('roshambos')
-        .where('gameId', game.id)
-        .orderBy('round'),
-    replacements: (game, args, {db}) =>
-      db('replacements').where('gameId', game.id),
-    async result(game, args, {db}) {
-      const results = await db('attempts')
-        .count('id')
-        .select('skaterId', 'gameId')
-        .groupBy('skaterId', 'gameId')
-        .where({
+    skaters: (game, _, {context}) =>
+      game.getSkaters({[EXPECTED_OPTIONS_KEY]: context}),
+    attempts: game => game.getAttempts(),
+    roshambos: game => game.getRoshambos(),
+    async result(game, _, {context}) {
+      const [loser, winner] = await Attempt.findAll({
+        attributes: [
+          'skaterId',
+          [sequelize.fn('count', sequelize.col('id')), 'count']
+        ],
+        where: {
           offense: false,
           successful: false,
           gameId: game.id
-        })
-        .orderBy('count', 'desc');
-      return results.length ? results : null;
+        },
+        group: ['skaterId', 'gameId'],
+        orderBy: [['count', 'desc']]
+      });
+
+      if (!loser) {
+        return null;
+      }
+
+      if (winner) {
+        return {
+          winner: await winner.getSkater({[EXPECTED_OPTIONS_KEY]: context}),
+          lettersAgainst: loser.count
+        };
+      }
+
+      const [skater] = await game.getSkaters({
+        where: {
+          id: {
+            [Sequelize.Op.not]: loser.skaterId
+          }
+        }
+      });
+
+      return {
+        winner: skater,
+        lettersAgainst: 0
+      };
     }
   },
-  Result: {
-    winner: ([loser, winner], args, {db}) =>
-      winner
-        ? db('skaters')
-            .where('id', winner.skaterId)
-            .first()
-        : db('skaters')
-            .join('skaterGames', 'skaters.id', '=', 'skaterGames.skaterId')
-            .where('skaterGames.gameId', loser.gameId)
-            .whereNot('id', loser.skaterId)
-            .first(),
-    lettersAgainst: result => (result.length === 2 ? result[1].count : 0)
-  },
   Skater: {
-    games: (skater, args, {db}) =>
-      db('games')
-        .join('skaterGames', 'games.id', '=', 'skaterGames.gameId')
-        .where('skaterGames.skaterId', skater.id),
-    attempts: (skater, args, {db}) =>
-      db('attempts')
-        .where('skaterId', skater.id)
-        .orderBy('id'),
     fullName: ({firstName, lastName}) =>
-      [firstName, lastName].filter(Boolean).join(' ')
-  },
-  Trick: {
-    attempts: (trick, args, {db}) =>
-      db('attempts')
-        .where('trickId', trick.id)
-        .orderBy('id')
+      [firstName, lastName].filter(Boolean).join(' '),
+    replacement: skater => skater.participant?.getReplacement()
   },
   Attempt: {
-    skater: (attempt, args, {db}) =>
-      db('skaters')
-        .where('id', attempt.skaterId)
-        .first(),
-    trick: (attempt, args, {db}) =>
-      db('tricks')
-        .where('id', attempt.trickId)
-        .first()
-  },
-  Roshambo: {
-    skater: (roshambo, args, {db}) =>
-      db('skaters')
-        .where('id', roshambo.skaterId)
-        .first()
-  },
-  Replacement: {
-    in: (replacement, args, {db}) =>
-      db('skaters')
-        .where('id', replacement.inId)
-        .first(),
-    out: (replacement, args, {db}) =>
-      db('skaters')
-        .where('id', replacement.outId)
-        .first()
+    trick: attempt => attempt.getTrick(),
+    skater: (attempt, _, {context}) =>
+      attempt.getSkater({[EXPECTED_OPTIONS_KEY]: context})
   }
 };
