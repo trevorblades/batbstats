@@ -21,8 +21,11 @@ import {
   Select,
   SimpleGrid,
   Text,
-  useDisclosure
+  useDisclosure,
+  useToast
 } from '@chakra-ui/react';
+import {Helmet} from 'react-helmet';
+import {ReactComponent as Logo} from '../../assets/logo.svg';
 import {gql, useMutation, useQuery} from '@apollo/client';
 import {graphql, useStaticQuery} from 'gatsby';
 
@@ -49,13 +52,20 @@ const GET_GAME = gql`
   }
 `;
 
+const SKATER_FRAGMENT = gql`
+  fragment SkaterFragment on Skater {
+    id
+    fullName
+  }
+`;
+
 const LIST_SKATERS = gql`
   query ListSkaters {
     skaters {
-      id
-      fullName
+      ...SkaterFragment
     }
   }
+  ${SKATER_FRAGMENT}
 `;
 
 function SkaterSelect(props) {
@@ -84,13 +94,13 @@ function SkaterSelect(props) {
 const CREATE_SKATER = gql`
   mutation CreateSkater($input: SkaterInput!) {
     createSkater(input: $input) {
-      id
-      fullName
+      ...SkaterFragment
     }
   }
+  ${SKATER_FRAGMENT}
 `;
 
-function NewSkaterButton() {
+function CreateSkaterButton({setSkater}) {
   const {
     countries: {countries}
   } = useStaticQuery(
@@ -107,15 +117,44 @@ function NewSkaterButton() {
     `
   );
 
+  const toast = useToast();
   const {isOpen, onOpen, onClose} = useDisclosure();
 
-  const [createSkater, {loading, error}] = useMutation(CREATE_SKATER);
+  const [createSkater, {loading, error}] = useMutation(CREATE_SKATER, {
+    onCompleted(data) {
+      onClose();
+      setSkater(data.createSkater);
+      toast({
+        status: 'success',
+        title: 'New skater created',
+        description: `${data.createSkater.fullName} created successfully`
+      });
+    },
+    update(cache, {data}) {
+      const queryOptions = {query: LIST_SKATERS};
+      const {skaters} = cache.readQuery(queryOptions);
+      cache.writeQuery({
+        ...queryOptions,
+        data: {
+          skaters: [...skaters, data.createSkater]
+        }
+      });
+    }
+  });
 
   function handleSubmit(event) {
     event.preventDefault();
+
+    const {firstName, lastName, birthDate, country, stance} = event.target;
     createSkater({
       variables: {
-        input: Object.fromEntries(new FormData(event.target))
+        input: {
+          firstName: firstName.value,
+          lastName: lastName.value,
+          birthDate: birthDate.value || null,
+          country: country.value || null,
+          stance: stance.value
+        }
       }
     });
   }
@@ -185,6 +224,10 @@ function NewSkaterButton() {
   );
 }
 
+CreateSkaterButton.propTypes = {
+  setSkater: PropTypes.func.isRequired
+};
+
 function GameForm({defaultSkaters = [null, null]}) {
   const [skaters, setSkaters] = useState(defaultSkaters);
   return (
@@ -201,7 +244,15 @@ function GameForm({defaultSkaters = [null, null]}) {
               ])
             }
           />
-          <NewSkaterButton />
+          <CreateSkaterButton
+            setSkater={skater =>
+              setSkaters(prev => [
+                ...prev.slice(0, index),
+                skater.id,
+                ...prev.slice(index + 1)
+              ])
+            }
+          />
         </Flex>
       ))}
     </SimpleGrid>
@@ -230,12 +281,15 @@ export default function Game({params}) {
   }
 
   const {round, event, skaters} = data.game;
+  const title = `${event.name}: Round ${round}`;
 
   return (
     <>
-      <Box px={4} py={2}>
-        {event.name} Round {round}
-      </Box>
+      <Helmet title={title} />
+      <Flex align="center" px={4} py={2}>
+        <Box as={Logo} mr="3" boxSize={6} fill="current" />
+        {title}
+      </Flex>
       <GameForm defaultSkaters={skaters.map(skater => skater.id)} />
     </>
   );
