@@ -1,22 +1,31 @@
 import CreateSkaterButton from './CreateSkaterButton';
 import PropTypes from 'prop-types';
-import React, {useState} from 'react';
-import RoshamboButtons from './RoshamboButtons';
+import React, {useMemo, useState} from 'react';
+import RoshamboButtons, {ROSHAMBO} from './RoshamboButtons';
 import SkaterSelect from './SkaterSelect';
-import isEqual from 'lodash/isEqual';
 import {Flex, SimpleGrid} from '@chakra-ui/react';
 
 export default function GameForm({
   defaultSkaters = [null, null],
-  defaultRoshambos = []
+  defaultRoshambos = [],
+  defaultAttempts = []
 }) {
   const [skaters, setSkaters] = useState(defaultSkaters);
   const [roshambos, setRoshambos] = useState(defaultRoshambos);
+  const [attempts] = useState(defaultAttempts);
 
-  // show an additional round if it's tied or no rounds have been recorded
-  const isRoshamboTied =
-    roshambos.length === 0 ||
-    isEqual(...Object.values(roshambos[roshambos.length - 1]));
+  const roshamboWinner = useMemo(() => {
+    const lastRound = roshambos[roshambos.length - 1];
+    const [p1, p2] = skaters.map(skaterId => lastRound?.[skaterId]);
+
+    // if the round is incomplete or a tie return null
+    if (!p1 || !p2 || p1 === p2) {
+      return null;
+    }
+
+    // check to see if p2 is countering p1 and return the appropriate skater id
+    return skaters[Number(ROSHAMBO[p1].counter === p2)];
+  }, [roshambos, skaters]);
 
   function setSkater(skater, index) {
     // insert new skater into a specific index
@@ -28,6 +37,8 @@ export default function GameForm({
     // reset roshambos when either skater changes
     setRoshambos([]);
   }
+
+  console.log(skaters.indexOf(roshamboWinner), attempts);
 
   return (
     <SimpleGrid columns={2} spacing={6} p={6}>
@@ -44,11 +55,12 @@ export default function GameForm({
       ))}
       {skaters.length === 2 && (
         <>
-          {roshambos.map((roshambo, index) => (
+          {roshambos.map((roshambo, index, arr) => (
             <RoshamboButtons
               key={index}
               skaters={skaters}
               round={roshambo}
+              winner={index === arr.length - 1 ? roshamboWinner : null}
               onChange={play =>
                 setRoshambos(prev => [
                   ...prev.slice(0, index),
@@ -57,7 +69,10 @@ export default function GameForm({
               }
             />
           ))}
-          {isRoshamboTied && (
+          {/* show an additional round there is no winner */}
+          {roshamboWinner ? (
+            <>show attempts</>
+          ) : (
             <RoshamboButtons
               skaters={skaters}
               onChange={play => setRoshambos(prev => [...prev, play])}
@@ -71,5 +86,6 @@ export default function GameForm({
 
 GameForm.propTypes = {
   defaultSkaters: PropTypes.array,
-  defaultRoshambos: PropTypes.array
+  defaultRoshambos: PropTypes.array,
+  defaultAttempts: PropTypes.array
 };

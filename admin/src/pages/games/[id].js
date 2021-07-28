@@ -25,6 +25,17 @@ const GET_GAME = gql`
           id
         }
       }
+      attempts {
+        id
+        offense
+        successful
+        trick {
+          name
+        }
+        skater {
+          id
+        }
+      }
     }
   }
 `;
@@ -46,7 +57,7 @@ export default function Game({params}) {
     return <div>Game not found</div>;
   }
 
-  const {round, event, skaters, roshambos} = data.game;
+  const {round, event, skaters, roshambos, attempts} = data.game;
   const title = `${event.name}: Round ${round}`;
 
   return (
@@ -70,6 +81,7 @@ export default function Game({params}) {
             };
           }, {})
         )}
+        defaultAttempts={attempts}
       />
     </>
   );

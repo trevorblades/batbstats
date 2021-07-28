@@ -129,7 +129,7 @@ export const resolvers = {
       game.getEvent({[EXPECTED_OPTIONS_KEY]: context}),
     skaters: (game, _, {context}) =>
       game.getSkaters({[EXPECTED_OPTIONS_KEY]: context}),
-    attempts: game => game.getAttempts(),
+    attempts: game => game.getAttempts({orderBy: ['id']}),
     roshambos: game => game.getRoshambos(),
     async result(game, _, {context}) {
       const [loser, winner] = await Attempt.findAll({

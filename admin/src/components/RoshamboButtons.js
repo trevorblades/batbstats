@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
-import React, {useMemo} from 'react';
+import React from 'react';
 import {Button, ButtonGroup} from '@chakra-ui/react';
 
-const ROSHAMBO_DATA = {
+export const ROSHAMBO = {
   rock: {
     emoji: '🪨',
     counter: 'paper'
@@ -17,22 +17,10 @@ const ROSHAMBO_DATA = {
   }
 };
 
-export default function RoshamboButtons({round, skaters, onChange}) {
-  const winner = useMemo(() => {
-    const [p1, p2] = skaters.map(skaterId => round?.[skaterId]);
-
-    // if the round is incomplete or a tie return null
-    if (!p1 || !p2 || p1 === p2) {
-      return null;
-    }
-
-    // check to see if p2 is countering p1 and return the appropriate skater id
-    return skaters[Number(ROSHAMBO_DATA[p1].counter === p2)];
-  }, [round, skaters]);
-
+export default function RoshamboButtons({round, skaters, winner, onChange}) {
   return skaters.map(skaterId => (
     <ButtonGroup size="lg" isAttached key={skaterId}>
-      {Object.entries(ROSHAMBO_DATA).map(([move, {emoji}]) => (
+      {Object.entries(ROSHAMBO).map(([move, {emoji}]) => (
         <Button
           key={move}
           colorScheme={
@@ -53,6 +41,7 @@ export default function RoshamboButtons({round, skaters, onChange}) {
 
 RoshamboButtons.propTypes = {
   round: PropTypes.object,
+  winner: PropTypes.string,
   skaters: PropTypes.array.isRequired,
   onChange: PropTypes.func.isRequired
 };
