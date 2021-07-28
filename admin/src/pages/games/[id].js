@@ -1,9 +1,11 @@
 import PropTypes from 'prop-types';
 import React, {useMemo, useState} from 'react';
+import isEqual from 'lodash/isEqual';
 import sortBy from 'lodash/sortBy';
 import {
   Box,
   Button,
+  ButtonGroup,
   Flex,
   FormControl,
   FormLabel,
@@ -228,30 +230,77 @@ CreateSkaterButton.propTypes = {
   setSkater: PropTypes.func.isRequired
 };
 
-const ROSHAMBO_EMOJI = {
-  rock: '🪨',
-  paper: '📄',
-  scissors: '✂️'
+const ROSHAMBO_DATA = {
+  rock: {
+    emoji: '🪨',
+    counter: 'paper'
+  },
+  paper: {
+    emoji: '📄',
+    counter: 'scissors'
+  },
+  scissors: {
+    emoji: '✂️',
+    counter: 'rock'
+  }
+};
+
+function RoshamboButtons({round, skaters, onChange}) {
+  const winner = useMemo(() => {
+    const [p1, p2] = skaters.map(skaterId => round?.[skaterId]);
+
+    // if the round is incomplete or a tie return null
+    if (!p1 || !p2 || p1 === p2) {
+      return null;
+    }
+
+    // check to see if p2 is countering p1 and return the appropriate skater id
+    return skaters[Number(ROSHAMBO_DATA[p1].counter === p2)];
+  }, [round, skaters]);
+
+  return skaters.map(skaterId => (
+    <ButtonGroup size="lg" isAttached key={skaterId}>
+      {Object.entries(ROSHAMBO_DATA).map(([move, {emoji}]) => (
+        <Button
+          key={move}
+          colorScheme={
+            move === round?.[skaterId]
+              ? winner === skaterId
+                ? 'green'
+                : 'blue'
+              : null
+          }
+          onClick={() => onChange({[skaterId]: move})}
+        >
+          {emoji}
+        </Button>
+      ))}
+    </ButtonGroup>
+  ));
+}
+
+RoshamboButtons.propTypes = {
+  round: PropTypes.object,
+  skaters: PropTypes.array.isRequired,
+  onChange: PropTypes.func.isRequired
 };
 
 function GameForm({defaultSkaters = [null, null], defaultRoshambos = []}) {
   const [skaters, setSkaters] = useState(defaultSkaters);
-  const [roshambos] = useState(defaultRoshambos);
+  const [roshambos, setRoshambos] = useState(defaultRoshambos);
 
-  const rounds = useMemo(
-    () =>
-      Object.values(
-        roshambos.reduce((acc, roshambo) => {
-          const existing = acc[roshambo.round];
-          const next = {[roshambo.skater.id]: roshambo.move};
-          return {
-            ...acc,
-            [roshambo.round]: existing ? {...existing, ...next} : next
-          };
-        }, {})
-      ),
-    [roshambos]
-  );
+  const isRoshamboTied =
+    roshambos.length === 0 ||
+    isEqual(...Object.values(roshambos[roshambos.length - 1]));
+
+  function setSkater(skater, index) {
+    setSkaters(prev => [
+      ...prev.slice(0, index),
+      skater,
+      ...prev.slice(index + 1)
+    ]);
+    setRoshambos([]);
+  }
 
   return (
     <SimpleGrid columns={2} spacing={6} p={6}>
@@ -259,29 +308,35 @@ function GameForm({defaultSkaters = [null, null], defaultRoshambos = []}) {
         <Flex key={index}>
           <SkaterSelect
             value={skater}
-            onChange={event =>
-              setSkaters(prev => [
-                ...prev.slice(0, index),
-                event.target.value,
-                ...prev.slice(index + 1)
-              ])
-            }
+            onChange={event => setSkater(event.target.value, index)}
           />
           <CreateSkaterButton
-            setSkater={skater =>
-              setSkaters(prev => [
-                ...prev.slice(0, index),
-                skater.id,
-                ...prev.slice(index + 1)
-              ])
-            }
+            setSkater={skater => setSkater(skater.id, index)}
           />
         </Flex>
       ))}
-      {rounds.map(round =>
-        skaters.map(skaterId => (
-          <div key={skaterId}>{ROSHAMBO_EMOJI[round[skaterId]]}</div>
-        ))
+      {skaters.length === 2 && (
+        <>
+          {roshambos.map((roshambo, index) => (
+            <RoshamboButtons
+              key={index}
+              skaters={skaters}
+              round={roshambo}
+              onChange={play =>
+                setRoshambos(prev => [
+                  ...prev.slice(0, index),
+                  {...roshambo, ...play}
+                ])
+              }
+            />
+          ))}
+          {isRoshamboTied && (
+            <RoshamboButtons
+              skaters={skaters}
+              onChange={play => setRoshambos(prev => [...prev, play])}
+            />
+          )}
+        </>
       )}
     </SimpleGrid>
   );
@@ -321,7 +376,16 @@ export default function Game({params}) {
       </Flex>
       <GameForm
         defaultSkaters={skaters.map(skater => skater.id)}
-        defaultRoshambos={roshambos}
+        defaultRoshambos={Object.values(
+          roshambos.reduce((acc, roshambo) => {
+            const existing = acc[roshambo.round];
+            const next = {[roshambo.skater.id]: roshambo.move};
+            return {
+              ...acc,
+              [roshambo.round]: existing ? {...existing, ...next} : next
+            };
+          }, {})
+        )}
       />
     </>
   );
