@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, {useState} from 'react';
+import React, {useMemo, useState} from 'react';
 import sortBy from 'lodash/sortBy';
 import {
   Box,
@@ -228,8 +228,31 @@ CreateSkaterButton.propTypes = {
   setSkater: PropTypes.func.isRequired
 };
 
-function GameForm({defaultSkaters = [null, null]}) {
+const ROSHAMBO_EMOJI = {
+  rock: '🪨',
+  paper: '📄',
+  scissors: '✂️'
+};
+
+function GameForm({defaultSkaters = [null, null], defaultRoshambos = []}) {
   const [skaters, setSkaters] = useState(defaultSkaters);
+  const [roshambos] = useState(defaultRoshambos);
+
+  const rounds = useMemo(
+    () =>
+      Object.values(
+        roshambos.reduce((acc, roshambo) => {
+          const existing = acc[roshambo.round];
+          const next = {[roshambo.skater.id]: roshambo.move};
+          return {
+            ...acc,
+            [roshambo.round]: existing ? {...existing, ...next} : next
+          };
+        }, {})
+      ),
+    [roshambos]
+  );
+
   return (
     <SimpleGrid columns={2} spacing={6} p={6}>
       {skaters.map((skater, index) => (
@@ -255,12 +278,18 @@ function GameForm({defaultSkaters = [null, null]}) {
           />
         </Flex>
       ))}
+      {rounds.map(round =>
+        skaters.map(skaterId => (
+          <div key={skaterId}>{ROSHAMBO_EMOJI[round[skaterId]]}</div>
+        ))
+      )}
     </SimpleGrid>
   );
 }
 
 GameForm.propTypes = {
-  defaultSkaters: PropTypes.array
+  defaultSkaters: PropTypes.array,
+  defaultRoshambos: PropTypes.array
 };
 
 export default function Game({params}) {
@@ -280,7 +309,7 @@ export default function Game({params}) {
     return <div>Game not found</div>;
   }
 
-  const {round, event, skaters} = data.game;
+  const {round, event, skaters, roshambos} = data.game;
   const title = `${event.name}: Round ${round}`;
 
   return (
@@ -290,7 +319,10 @@ export default function Game({params}) {
         <Box as={Logo} mr="3" boxSize={6} fill="current" />
         {title}
       </Flex>
-      <GameForm defaultSkaters={skaters.map(skater => skater.id)} />
+      <GameForm
+        defaultSkaters={skaters.map(skater => skater.id)}
+        defaultRoshambos={roshambos}
+      />
     </>
   );
 }
