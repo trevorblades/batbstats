@@ -17,18 +17,21 @@ export const typeDefs = gql`
   }
 
   type Event {
+    id: ID!
     name: String!
     games: [Game!]!
   }
 
   type Game {
+    id: ID!
     round: Int!
     video: String
     date: Date
+    result: Result
+    event: Event!
     skaters: [Skater!]!
     attempts: [Attempt!]!
     roshambos: [Roshambo!]!
-    result: Result
   }
 
   type Result {
@@ -37,6 +40,7 @@ export const typeDefs = gql`
   }
 
   type Skater {
+    id: ID!
     firstName: String
     lastName: String
     fullName: String!
@@ -52,6 +56,7 @@ export const typeDefs = gql`
   }
 
   type Trick {
+    id: ID!
     name: String!
     variation: Variation
     spin: Int!
@@ -67,6 +72,7 @@ export const typeDefs = gql`
   }
 
   type Attempt {
+    id: ID!
     successful: Boolean!
     offense: Boolean!
     redos: Int!
@@ -75,6 +81,7 @@ export const typeDefs = gql`
   }
 
   type Roshambo {
+    id: ID!
     round: Int!
     move: Move!
     skater: Skater!
@@ -103,6 +110,8 @@ export const resolvers = {
     games: event => event.getGames()
   },
   Game: {
+    event: (game, _, {context}) =>
+      game.getEvent({[EXPECTED_OPTIONS_KEY]: context}),
     skaters: (game, _, {context}) =>
       game.getSkaters({[EXPECTED_OPTIONS_KEY]: context}),
     attempts: game => game.getAttempts(),
@@ -156,5 +165,9 @@ export const resolvers = {
     trick: attempt => attempt.getTrick(),
     skater: (attempt, _, {context}) =>
       attempt.getSkater({[EXPECTED_OPTIONS_KEY]: context})
+  },
+  Roshambo: {
+    skater: (roshambo, _, {context}) =>
+      roshambo.getSkater({[EXPECTED_OPTIONS_KEY]: context})
   }
 };
