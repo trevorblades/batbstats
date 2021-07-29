@@ -14,8 +14,7 @@ import {
   chakra
 } from '@chakra-ui/react';
 import {CloseIcon} from '@chakra-ui/icons';
-
-const SKATE = 'SKATE';
+import {SKATE} from '../utils';
 
 function insert(array, index, item) {
   return [...array.slice(0, index), item, ...array.slice(index + 1)];
@@ -207,19 +206,19 @@ export default function GameForm({
                           >
                             Was it set?
                           </Checkbox>
+                          <NumberOfRedos
+                            value={attempt.redos}
+                            onChange={(_, redos) =>
+                              setAttempts(prev =>
+                                insert(prev, index, {
+                                  ...prev[index],
+                                  redos
+                                })
+                              )
+                            }
+                          />
                           {defense && (
                             <>
-                              <NumberOfRedos
-                                value={attempt.redos}
-                                onChange={(_, redos) =>
-                                  setAttempts(prev =>
-                                    insert(prev, index, {
-                                      ...prev[index],
-                                      redos
-                                    })
-                                  )
-                                }
-                              />
                               <Checkbox
                                 isChecked={defense.successful}
                                 onChange={event =>
@@ -228,41 +227,36 @@ export default function GameForm({
                                       defense: prevDefense,
                                       ...prevAttempt
                                     } = prev[index];
-                                    return [
-                                      ...prev.slice(0, index),
-                                      {
-                                        ...prevAttempt,
-                                        defense: {
-                                          ...prevDefense,
-                                          successful: event.target.checked
-                                        }
+                                    return insert(prev, index, {
+                                      ...prevAttempt,
+                                      defense: {
+                                        ...prevDefense,
+                                        successful: event.target.checked
                                       }
-                                    ];
+                                    });
                                   })
                                 }
                               >
                                 Was it defended?
                               </Checkbox>
-                              {defense.successful && (
-                                <NumberOfRedos
-                                  value={defense.redos}
-                                  onChange={(_, redos) =>
-                                    setAttempts(prev => {
-                                      const {
-                                        defense: prevDefense,
-                                        ...prevAttempt
-                                      } = prev[index];
-                                      return insert(prev, index, {
-                                        ...prevAttempt,
-                                        defense: {
-                                          ...prevDefense,
-                                          redos
-                                        }
-                                      });
-                                    })
-                                  }
-                                />
-                              )}
+                              <NumberOfRedos
+                                value={defense.redos}
+                                onChange={(_, redos) =>
+                                  setAttempts(prev => {
+                                    const {
+                                      defense: prevDefense,
+                                      ...prevAttempt
+                                    } = prev[index];
+                                    return insert(prev, index, {
+                                      ...prevAttempt,
+                                      defense: {
+                                        ...prevDefense,
+                                        redos
+                                      }
+                                    });
+                                  })
+                                }
+                              />
                             </>
                           )}
                         </Stack>

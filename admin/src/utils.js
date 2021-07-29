@@ -1,5 +1,7 @@
 import {gql} from '@apollo/client';
 
+export const SKATE = 'SKATE';
+
 export const SKATER_FRAGMENT = gql`
   fragment SkaterFragment on Skater {
     id
