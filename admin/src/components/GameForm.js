@@ -6,7 +6,6 @@ import RoshamboButtons, {ROSHAMBO} from './RoshamboButtons';
 import SkaterSelect from './SkaterSelect';
 import TrickSelect from './TrickSelect';
 import {
-  Alert,
   Checkbox,
   Flex,
   HStack,
@@ -96,7 +95,10 @@ export default function GameForm({
       sx={{
         td: {
           px: 2,
-          py: 5
+          py: 5,
+          ':not(:last-child)': {
+            textAlign: 'right'
+          }
         }
       }}
     >
@@ -139,9 +141,12 @@ export default function GameForm({
               <>
                 {attempts.map(({defense, ...attempt}, index) => {
                   const skaterIndex = skaters.indexOf(attempt.skater.id);
+                  const letter = (
+                    <td>{attempt.successful && !defense.successful && 'S'}</td>
+                  );
                   return (
                     <tr key={index}>
-                      {skaterIndex > 0 && <td />}
+                      {skaterIndex > 0 && letter}
                       <td>
                         <Stack align={!skaterIndex ? 'flex-end' : null}>
                           <HStack>
@@ -240,17 +245,14 @@ export default function GameForm({
                           )}
                         </Stack>
                       </td>
-                      {!skaterIndex && <td />}
+                      {!skaterIndex && letter}
                     </tr>
                   );
                 })}
-                <tr>
-                  {offensiveSkaterIndex > 0 && <td />}
-                  {winner ? (
-                    <td>
-                      <Alert status="success">Winner</Alert>
-                    </td>
-                  ) : (
+                {/* only render next trick selection if the game is still on */}
+                {!winner && (
+                  <tr>
+                    {offensiveSkaterIndex > 0 && <td />}
                     <td>
                       <TrickSelect
                         abd={abd}
@@ -270,9 +272,9 @@ export default function GameForm({
                         }
                       />
                     </td>
-                  )}
-                  {!offensiveSkaterIndex && <td />}
-                </tr>
+                    {!offensiveSkaterIndex && <td />}
+                  </tr>
+                )}
               </>
             ) : (
               isRoshamboTied && (
