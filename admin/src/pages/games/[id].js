@@ -29,6 +29,7 @@ const GET_GAME = gql`
         id
         offense
         successful
+        redos
         trick {
           name
         }
@@ -90,7 +91,7 @@ export default function Game({params}) {
             ...acc.slice(0, -1),
             {
               ...acc[acc.length - 1],
-              landed: attempt.successful
+              defense: attempt
             }
           ];
         }, [])}

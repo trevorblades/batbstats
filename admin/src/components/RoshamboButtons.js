@@ -18,25 +18,31 @@ export const ROSHAMBO = {
 };
 
 export default function RoshamboButtons({round, skaters, winner, onChange}) {
-  return skaters.map(skaterId => (
-    <ButtonGroup size="lg" isAttached key={skaterId}>
-      {Object.entries(ROSHAMBO).map(([move, {emoji}]) => (
-        <Button
-          key={move}
-          colorScheme={
-            move === round?.[skaterId]
-              ? winner === skaterId
-                ? 'green'
-                : 'blue'
-              : null
-          }
-          onClick={() => onChange({[skaterId]: move})}
-        >
-          {emoji}
-        </Button>
+  return (
+    <tr>
+      {skaters.map(skaterId => (
+        <td key={skaterId}>
+          <ButtonGroup size="lg" isAttached>
+            {Object.entries(ROSHAMBO).map(([move, {emoji}]) => (
+              <Button
+                key={move}
+                colorScheme={
+                  move === round?.[skaterId]
+                    ? winner === skaterId
+                      ? 'green'
+                      : 'blue'
+                    : null
+                }
+                onClick={() => onChange({[skaterId]: move})}
+              >
+                {emoji}
+              </Button>
+            ))}
+          </ButtonGroup>
+        </td>
       ))}
-    </ButtonGroup>
-  ));
+    </tr>
+  );
 }
 
 RoshamboButtons.propTypes = {
