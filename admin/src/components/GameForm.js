@@ -6,6 +6,7 @@ import RoshamboButtons, {ROSHAMBO} from './RoshamboButtons';
 import SkaterSelect from './SkaterSelect';
 import TrickSelect from './TrickSelect';
 import {
+  Alert,
   Checkbox,
   Flex,
   HStack,
@@ -38,12 +39,33 @@ export default function GameForm({
     return [skaters[Number(ROSHAMBO[p1].counter === p2)], false];
   }, [roshambos, skaters]);
 
+  const winner = useMemo(() => {
+    const score = {};
+    for (const {defense, ...attempt} of attempts) {
+      // when someone scores a letter
+      if (attempt.successful && !defense.successful) {
+        // if the defender is at T
+        if (score[defense.skater.id] === 4) {
+          // then we return the offensive skater's id
+          return attempt.skater.id;
+        }
+
+        // otherwise we increment the letter count for the defender
+        score[defense.skater.id] =
+          defense.skater.id in score ? score[defense.skater.id] + 1 : 1;
+      }
+    }
+
+    return null;
+  }, [attempts]);
+
   const [offensiveSkater, offensiveSkaterIndex] = useMemo(() => {
     const lastAttempt = attempts[attempts.length - 1];
     const offensiveSkater = lastAttempt
       ? lastAttempt.successful
         ? lastAttempt.skater.id
-        : skaters.find(skaterId => skaterId !== lastAttempt.skater.id)
+        : // get the other skater by inversing the index of the current one
+          skaters[1 - skaters.indexOf(lastAttempt.skater.id)]
       : roshamboWinner;
     return [offensiveSkater, skaters.indexOf(offensiveSkater)];
   }, [attempts, skaters, roshamboWinner]);
@@ -71,10 +93,10 @@ export default function GameForm({
   return (
     <chakra.table
       w="full"
-      p={4}
       sx={{
         td: {
-          py: 3
+          px: 2,
+          py: 5
         }
       }}
     >
@@ -145,7 +167,10 @@ export default function GameForm({
                                     defense: checked
                                       ? {
                                           successful: false,
-                                          redos: 0
+                                          redos: 0,
+                                          skater: {
+                                            id: skaters[1 - skaterIndex]
+                                          }
                                         }
                                       : null
                                   }
@@ -174,13 +199,16 @@ export default function GameForm({
                                 isChecked={defense.successful}
                                 onChange={event =>
                                   setAttempts(prev => {
-                                    const {defense, ...attempt} = prev[index];
+                                    const {
+                                      defense: prevDefense,
+                                      ...prevAttempt
+                                    } = prev[index];
                                     return [
                                       ...prev.slice(0, index),
                                       {
-                                        ...attempt,
+                                        ...prevAttempt,
                                         defense: {
-                                          ...defense,
+                                          ...prevDefense,
                                           successful: event.target.checked
                                         }
                                       }
@@ -195,13 +223,16 @@ export default function GameForm({
                                   value={defense.redos}
                                   onChange={(_, redos) =>
                                     setAttempts(prev => {
-                                      const {defense, ...attempt} = prev[index];
+                                      const {
+                                        defense: prevDefense,
+                                        ...prevAttempt
+                                      } = prev[index];
                                       return [
                                         ...prev.slice(0, index),
                                         {
-                                          ...attempt,
+                                          ...prevAttempt,
                                           defense: {
-                                            ...defense,
+                                            ...prevDefense,
                                             redos
                                           }
                                         },
@@ -221,25 +252,31 @@ export default function GameForm({
                 })}
                 <tr>
                   {offensiveSkaterIndex > 0 && <td />}
-                  <td>
-                    <TrickSelect
-                      abd={abd}
-                      key={attempts.length}
-                      onTrickChange={trick =>
-                        setAttempts(prev => [
-                          ...prev,
-                          {
-                            trick,
-                            successful: false,
-                            redos: 0,
-                            skater: {
-                              id: offensiveSkater
+                  {winner ? (
+                    <td>
+                      <Alert status="success">Winner</Alert>
+                    </td>
+                  ) : (
+                    <td>
+                      <TrickSelect
+                        abd={abd}
+                        key={attempts.length}
+                        onTrickChange={trick =>
+                          setAttempts(prev => [
+                            ...prev,
+                            {
+                              trick,
+                              successful: false,
+                              redos: 0,
+                              skater: {
+                                id: offensiveSkater
+                              }
                             }
-                          }
-                        ])
-                      }
-                    />
-                  </td>
+                          ])
+                        }
+                      />
+                    </td>
+                  )}
                   {!offensiveSkaterIndex && <td />}
                 </tr>
               </>

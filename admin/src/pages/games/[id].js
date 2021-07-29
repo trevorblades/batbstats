@@ -31,6 +31,7 @@ const GET_GAME = gql`
         successful
         redos
         trick {
+          id
           name
         }
         skater {
@@ -68,34 +69,36 @@ export default function Game({params}) {
         <Box as={Logo} mr="3" boxSize={6} fill="current" />
         {title}
       </Flex>
-      <GameForm
-        defaultSkaters={skaters.map(skater => skater.id)}
-        // reduce flat array of roshambo rounds into roshambo round format
-        // [{[id]: move}]
-        defaultRoshambos={Object.values(
-          roshambos.reduce((acc, roshambo) => {
-            const existing = acc[roshambo.round];
-            const next = {[roshambo.skater.id]: roshambo.move};
-            return {
-              ...acc,
-              [roshambo.round]: existing ? {...existing, ...next} : next
-            };
-          }, {})
-        )}
-        defaultAttempts={attempts.reduce((acc, attempt) => {
-          if (attempt.offense) {
-            return [...acc, attempt];
-          }
-
-          return [
-            ...acc.slice(0, -1),
-            {
-              ...acc[acc.length - 1],
-              defense: attempt
+      <Box px={1}>
+        <GameForm
+          defaultSkaters={skaters.map(skater => skater.id)}
+          // reduce flat array of roshambo rounds into roshambo round format
+          // [{[id]: move}]
+          defaultRoshambos={Object.values(
+            roshambos.reduce((acc, roshambo) => {
+              const existing = acc[roshambo.round];
+              const next = {[roshambo.skater.id]: roshambo.move};
+              return {
+                ...acc,
+                [roshambo.round]: existing ? {...existing, ...next} : next
+              };
+            }, {})
+          )}
+          defaultAttempts={attempts.reduce((acc, attempt) => {
+            if (attempt.offense) {
+              return [...acc, attempt];
             }
-          ];
-        }, [])}
-      />
+
+            return [
+              ...acc.slice(0, -1),
+              {
+                ...acc[acc.length - 1],
+                defense: attempt
+              }
+            ];
+          }, [])}
+        />
+      </Box>
     </>
   );
 }
