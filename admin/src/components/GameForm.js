@@ -15,8 +15,23 @@ import {
 } from '@chakra-ui/react';
 import {CloseIcon} from '@chakra-ui/icons';
 
+const SKATE = 'SKATE';
+
 function insert(array, index, item) {
   return [...array.slice(0, index), item, ...array.slice(index + 1)];
+}
+
+function getScore(attempts) {
+  return attempts.reduce((acc, {defense, ...attempt}) => {
+    if (attempt.successful && !defense.successful) {
+      const existing = acc[defense.skater.id];
+      return {
+        ...acc,
+        [defense.skater.id]: existing ? existing + 1 : 1
+      };
+    }
+    return acc;
+  }, {});
 }
 
 export default function GameForm({
@@ -139,10 +154,17 @@ export default function GameForm({
             {/* show an additional round there is no winner */}
             {roshamboWinner ? (
               <>
-                {attempts.map(({defense, ...attempt}, index) => {
+                {attempts.map(({defense, ...attempt}, index, arr) => {
                   const skaterIndex = skaters.indexOf(attempt.skater.id);
+                  const {[defense?.skater.id]: letters} = getScore(
+                    arr.slice(0, index + 1)
+                  );
                   const letter = (
-                    <td>{attempt.successful && !defense.successful && 'S'}</td>
+                    <chakra.td fontWeight="bold" fontSize="2xl">
+                      {attempt.successful &&
+                        !defense.successful &&
+                        SKATE[letters - 1]}
+                    </chakra.td>
                   );
                   return (
                     <tr key={index}>
