@@ -95,7 +95,7 @@ export default function CreateSkaterButton({setSkater}) {
 
   return (
     <>
-      <Button roundedLeft={0} onClick={onOpen}>
+      <Button flexShrink={0} roundedLeft={0} onClick={onOpen}>
         New skater
       </Button>
       <Modal isOpen={isOpen} onClose={onClose}>

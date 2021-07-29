@@ -71,7 +71,9 @@ export default function GameForm({
           ))}
           {/* show an additional round there is no winner */}
           {roshamboWinner ? (
-            <>show attempts</>
+            attempts.map(attempt => (
+              <div key={attempt.id}>{attempt.trick.name}</div>
+            ))
           ) : (
             <RoshamboButtons
               skaters={skaters}
