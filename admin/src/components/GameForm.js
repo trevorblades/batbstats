@@ -16,6 +16,10 @@ import {
 } from '@chakra-ui/react';
 import {CloseIcon} from '@chakra-ui/icons';
 
+function insert(array, index, item) {
+  return [...array.slice(0, index), item, ...array.slice(index + 1)];
+}
+
 export default function GameForm({
   defaultSkaters = [null, null],
   defaultRoshambos = [],
@@ -80,11 +84,7 @@ export default function GameForm({
 
   function setSkater(skater, index) {
     // insert new skater into a specific index
-    setSkaters(prev => [
-      ...prev.slice(0, index),
-      skater,
-      ...prev.slice(index + 1)
-    ]);
+    setSkaters(prev => insert(prev, index, skater));
     // reset everything when either skater changes
     setRoshambos([]);
     setAttempts([]);
@@ -185,14 +185,12 @@ export default function GameForm({
                               <NumberOfRedos
                                 value={attempt.redos}
                                 onChange={(_, redos) =>
-                                  setAttempts(prev => [
-                                    ...prev.slice(0, index),
-                                    {
+                                  setAttempts(prev =>
+                                    insert(prev, index, {
                                       ...prev[index],
                                       redos
-                                    },
-                                    ...prev.slice(index + 1)
-                                  ])
+                                    })
+                                  )
                                 }
                               />
                               <Checkbox
@@ -227,17 +225,13 @@ export default function GameForm({
                                         defense: prevDefense,
                                         ...prevAttempt
                                       } = prev[index];
-                                      return [
-                                        ...prev.slice(0, index),
-                                        {
-                                          ...prevAttempt,
-                                          defense: {
-                                            ...prevDefense,
-                                            redos
-                                          }
-                                        },
-                                        ...prev.slice(index + 1)
-                                      ];
+                                      return insert(prev, index, {
+                                        ...prevAttempt,
+                                        defense: {
+                                          ...prevDefense,
+                                          redos
+                                        }
+                                      });
                                     })
                                   }
                                 />
