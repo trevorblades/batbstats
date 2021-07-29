@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import React, {useMemo, useState} from 'react';
 import RoshamboButtons, {ROSHAMBO} from './RoshamboButtons';
 import SkaterSelect from './SkaterSelect';
+import TrickSelect from './TrickSelect';
 import {Checkbox, Flex, Stack, chakra} from '@chakra-ui/react';
 
 export default function GameForm({
@@ -15,18 +16,37 @@ export default function GameForm({
   const [roshambos, setRoshambos] = useState(defaultRoshambos);
   const [attempts, setAttempts] = useState(defaultAttempts);
 
-  const roshamboWinner = useMemo(() => {
+  const [roshamboWinner, isRoshamboTied] = useMemo(() => {
     const lastRound = roshambos[roshambos.length - 1];
     const [p1, p2] = skaters.map(skaterId => lastRound?.[skaterId]);
 
     // if the round is incomplete or a tie return null
-    if (!p1 || !p2 || p1 === p2) {
-      return null;
+    const isTied = p1 === p2;
+    if (!p1 || !p2 || isTied) {
+      return [null, isTied];
     }
 
     // check to see if p2 is countering p1 and return the appropriate skater id
-    return skaters[Number(ROSHAMBO[p1].counter === p2)];
+    return [skaters[Number(ROSHAMBO[p1].counter === p2)], false];
   }, [roshambos, skaters]);
+
+  const [offensiveSkater, offensiveSkaterIndex] = useMemo(() => {
+    const lastAttempt = attempts[attempts.length - 1];
+    const offensiveSkater = lastAttempt
+      ? lastAttempt.successful
+        ? lastAttempt.skater.id
+        : skaters.find(skaterId => skaterId !== lastAttempt.skater.id)
+      : roshamboWinner;
+    return [offensiveSkater, skaters.indexOf(offensiveSkater)];
+  }, [attempts, skaters, roshamboWinner]);
+
+  const abd = useMemo(
+    () =>
+      attempts
+        .filter(attempt => attempt.successful)
+        .map(attempt => attempt.trick.id),
+    [attempts]
+  );
 
   function setSkater(skater, index) {
     // insert new skater into a specific index
@@ -77,7 +97,7 @@ export default function GameForm({
                 onChange={play => {
                   setRoshambos(prev => [
                     ...prev.slice(0, index),
-                    {...roshambo, ...play}
+                    {...prev[index], ...play}
                   ]);
                   // reset attempts when roshambo changes
                   setAttempts([]);
@@ -86,76 +106,56 @@ export default function GameForm({
             ))}
             {/* show an additional round there is no winner */}
             {roshamboWinner ? (
-              attempts.map(({defense, ...attempt}, index) => {
-                const skaterIndex = skaters.indexOf(attempt.skater.id);
-                return (
-                  <tr key={attempt.id}>
-                    {skaterIndex > 0 && <td />}
-                    <td>
-                      <Stack align={!skaterIndex ? 'flex-end' : null}>
-                        <div>{attempt.trick.name}</div>
-                        <Checkbox
-                          isChecked={attempt.successful}
-                          onChange={event =>
-                            setAttempts(prev => {
-                              const {checked} = event.target;
-                              return [
-                                ...prev.slice(0, index),
-                                {
-                                  ...prev[index],
-                                  successful: checked,
-                                  defense: checked
-                                    ? {
-                                        successful: false,
-                                        redos: 0
-                                      }
-                                    : null
-                                }
-                              ];
-                            })
-                          }
-                        >
-                          Was it set?
-                        </Checkbox>
-                        {defense && (
-                          <>
-                            <NumberOfRedos
-                              value={attempt.redos}
-                              onChange={(_, redos) =>
-                                setAttempts(prev => [
+              <>
+                {attempts.map(({defense, ...attempt}, index) => {
+                  const skaterIndex = skaters.indexOf(attempt.skater.id);
+                  return (
+                    <tr key={index}>
+                      {skaterIndex > 0 && <td />}
+                      <td>
+                        <Stack align={!skaterIndex ? 'flex-end' : null}>
+                          <div>{attempt.trick.name}</div>
+                          <Checkbox
+                            isChecked={attempt.successful}
+                            onChange={event =>
+                              setAttempts(prev => {
+                                const {checked} = event.target;
+                                return [
                                   ...prev.slice(0, index),
                                   {
                                     ...prev[index],
-                                    redos
-                                  },
-                                  ...prev.slice(index + 1)
-                                ])
-                              }
-                            />
-                            <Checkbox
-                              isChecked={defense.successful}
-                              onChange={event =>
-                                setAttempts(prev => {
-                                  const {defense, ...attempt} = prev[index];
-                                  return [
+                                    successful: checked,
+                                    defense: checked
+                                      ? {
+                                          successful: false,
+                                          redos: 0
+                                        }
+                                      : null
+                                  }
+                                ];
+                              })
+                            }
+                          >
+                            Was it set?
+                          </Checkbox>
+                          {defense && (
+                            <>
+                              <NumberOfRedos
+                                value={attempt.redos}
+                                onChange={(_, redos) =>
+                                  setAttempts(prev => [
                                     ...prev.slice(0, index),
                                     {
-                                      ...attempt,
-                                      defense: {
-                                        ...defense,
-                                        successful: event.target.checked
-                                      }
-                                    }
-                                  ];
-                                })
-                              }
-                            >
-                              Was it defended?
-                            </Checkbox>
-                            {defense.successful && (
-                              <NumberOfRedos
-                                value={defense.redos}
-                                onChange={(_, redos) =>
+                                      ...prev[index],
+                                      redos
+                                    },
+                                    ...prev.slice(index + 1)
+                                  ])
+                                }
+                              />
+                              <Checkbox
+                                isChecked={defense.successful}
+                                onChange={event =>
                                   setAttempts(prev => {
                                     const {defense, ...attempt} = prev[index];
                                     return [
@@ -164,28 +164,75 @@ export default function GameForm({
                                         ...attempt,
                                         defense: {
                                           ...defense,
-                                          redos
+                                          successful: event.target.checked
                                         }
-                                      },
-                                      ...prev.slice(index + 1)
+                                      }
                                     ];
                                   })
                                 }
-                              />
-                            )}
-                          </>
-                        )}
-                      </Stack>
-                    </td>
-                    {!skaterIndex && <td />}
-                  </tr>
-                );
-              })
+                              >
+                                Was it defended?
+                              </Checkbox>
+                              {defense.successful && (
+                                <NumberOfRedos
+                                  value={defense.redos}
+                                  onChange={(_, redos) =>
+                                    setAttempts(prev => {
+                                      const {defense, ...attempt} = prev[index];
+                                      return [
+                                        ...prev.slice(0, index),
+                                        {
+                                          ...attempt,
+                                          defense: {
+                                            ...defense,
+                                            redos
+                                          }
+                                        },
+                                        ...prev.slice(index + 1)
+                                      ];
+                                    })
+                                  }
+                                />
+                              )}
+                            </>
+                          )}
+                        </Stack>
+                      </td>
+                      {!skaterIndex && <td />}
+                    </tr>
+                  );
+                })}
+                <tr>
+                  {offensiveSkaterIndex > 0 && <td />}
+                  <td>
+                    <TrickSelect
+                      abd={abd}
+                      key={attempts.length}
+                      onTrickChange={trick =>
+                        setAttempts(prev => [
+                          ...prev,
+                          {
+                            trick,
+                            successful: false,
+                            redos: 0,
+                            skater: {
+                              id: offensiveSkater
+                            }
+                          }
+                        ])
+                      }
+                    />
+                  </td>
+                  {!offensiveSkaterIndex && <td />}
+                </tr>
+              </>
             ) : (
-              <RoshamboButtons
-                skaters={skaters}
-                onChange={play => setRoshambos(prev => [...prev, play])}
-              />
+              isRoshamboTied && (
+                <RoshamboButtons
+                  skaters={skaters}
+                  onChange={play => setRoshambos(prev => [...prev, play])}
+                />
+              )
             )}
           </>
         )}

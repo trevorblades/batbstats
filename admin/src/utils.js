@@ -15,3 +15,19 @@ export const LIST_SKATERS = gql`
   }
   ${SKATER_FRAGMENT}
 `;
+
+export const TRICK_FRAGMENT = gql`
+  fragment TrickFragment on Trick {
+    id
+    name
+  }
+`;
+
+export const LIST_TRICKS = gql`
+  query ListTricks {
+    tricks {
+      ...TrickFragment
+    }
+  }
+  ${TRICK_FRAGMENT}
+`;

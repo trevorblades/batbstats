@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import {Button, ButtonGroup} from '@chakra-ui/react';
+import {Button, ButtonGroup, chakra} from '@chakra-ui/react';
 
 export const ROSHAMBO = {
   rock: {
@@ -20,26 +20,29 @@ export const ROSHAMBO = {
 export default function RoshamboButtons({round, skaters, winner, onChange}) {
   return (
     <tr>
-      {skaters.map(skaterId => (
-        <td key={skaterId}>
+      {skaters.map((skaterId, index) => (
+        <chakra.td textAlign={index ? 'left' : 'right'} key={skaterId}>
           <ButtonGroup size="lg" isAttached>
-            {Object.entries(ROSHAMBO).map(([move, {emoji}]) => (
-              <Button
-                key={move}
-                colorScheme={
-                  move === round?.[skaterId]
-                    ? winner === skaterId
-                      ? 'green'
-                      : 'blue'
-                    : null
-                }
-                onClick={() => onChange({[skaterId]: move})}
-              >
-                {emoji}
-              </Button>
-            ))}
+            {Object.entries(ROSHAMBO).map(([move, {emoji}]) => {
+              const isSelected = move === round?.[skaterId];
+              return (
+                <Button
+                  key={move}
+                  colorScheme={
+                    isSelected ? (winner === skaterId ? 'green' : 'blue') : null
+                  }
+                  onClick={() => {
+                    if (!isSelected) {
+                      onChange({[skaterId]: move});
+                    }
+                  }}
+                >
+                  {emoji}
+                </Button>
+              );
+            })}
           </ButtonGroup>
-        </td>
+        </chakra.td>
       ))}
     </tr>
   );
