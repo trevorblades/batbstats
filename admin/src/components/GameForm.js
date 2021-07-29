@@ -5,7 +5,15 @@ import React, {useMemo, useState} from 'react';
 import RoshamboButtons, {ROSHAMBO} from './RoshamboButtons';
 import SkaterSelect from './SkaterSelect';
 import TrickSelect from './TrickSelect';
-import {Checkbox, Flex, Stack, chakra} from '@chakra-ui/react';
+import {
+  Checkbox,
+  Flex,
+  HStack,
+  IconButton,
+  Stack,
+  chakra
+} from '@chakra-ui/react';
+import {CloseIcon} from '@chakra-ui/icons';
 
 export default function GameForm({
   defaultSkaters = [null, null],
@@ -114,7 +122,16 @@ export default function GameForm({
                       {skaterIndex > 0 && <td />}
                       <td>
                         <Stack align={!skaterIndex ? 'flex-end' : null}>
-                          <div>{attempt.trick.name}</div>
+                          <HStack>
+                            <span>{attempt.trick.name}</span>
+                            <IconButton
+                              size="xs"
+                              icon={<CloseIcon />}
+                              onClick={() =>
+                                setAttempts(prev => prev.slice(0, index))
+                              }
+                            />
+                          </HStack>
                           <Checkbox
                             isChecked={attempt.successful}
                             onChange={event =>

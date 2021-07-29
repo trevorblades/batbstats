@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Flex,
+  HStack,
   NumberDecrementStepper,
   NumberIncrementStepper,
   NumberInput,
@@ -10,8 +10,8 @@ import {
 
 export default function NumberOfRedos(props) {
   return (
-    <Flex as="label" align="center">
-      Number of redos
+    <HStack as="label" fontSize="sm">
+      <span>Number of redos</span>
       <NumberInput size="sm" max={10} min={0} {...props}>
         <NumberInputField />
         <NumberInputStepper>
@@ -19,6 +19,6 @@ export default function NumberOfRedos(props) {
           <NumberDecrementStepper />
         </NumberInputStepper>
       </NumberInput>
-    </Flex>
+    </HStack>
   );
 }
