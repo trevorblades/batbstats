@@ -81,7 +81,19 @@ export default function Game({params}) {
             };
           }, {})
         )}
-        defaultAttempts={attempts}
+        defaultAttempts={attempts.reduce((acc, attempt) => {
+          if (attempt.offense) {
+            return [...acc, attempt];
+          }
+
+          return [
+            ...acc.slice(0, -1),
+            {
+              ...acc[acc.length - 1],
+              landed: attempt.successful
+            }
+          ];
+        }, [])}
       />
     </>
   );

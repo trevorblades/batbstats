@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React, {useMemo, useState} from 'react';
 import RoshamboButtons, {ROSHAMBO} from './RoshamboButtons';
 import SkaterSelect from './SkaterSelect';
-import {Flex, SimpleGrid} from '@chakra-ui/react';
+import {Box, Flex, SimpleGrid} from '@chakra-ui/react';
 
 export default function GameForm({
   defaultSkaters = [null, null],
@@ -71,8 +71,13 @@ export default function GameForm({
           ))}
           {/* show an additional round there is no winner */}
           {roshamboWinner ? (
-            attempts.map(attempt => (
-              <div key={attempt.id}>{attempt.trick.name}</div>
+            attempts.map((attempt, index) => (
+              <Box
+                gridColumn={skaters.indexOf(attempt.skater.id) + 1}
+                key={attempt.id}
+              >
+                {attempt.trick.name}
+              </Box>
             ))
           ) : (
             <RoshamboButtons
