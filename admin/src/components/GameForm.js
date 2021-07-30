@@ -1,4 +1,5 @@
 import CreateSkaterButton from './CreateSkaterButton';
+import CreateTrickButton from './CreateTrickButton';
 import NumberOfRedos from './NumberOfRedos';
 import PropTypes from 'prop-types';
 import React, {forwardRef, useImperativeHandle, useMemo, useState} from 'react';
@@ -106,12 +107,28 @@ function GameForm(
     [attempts]
   );
 
+  console.log(abd);
+
   function setSkater(skater, index) {
     // insert new skater into a specific index
     setSkaters(prev => insert(prev, index, skater));
     // reset everything when either skater changes
     setRoshambos([]);
     setAttempts([]);
+  }
+
+  function setTrick(trick) {
+    setAttempts(prev => [
+      ...prev,
+      {
+        trick,
+        successful: false,
+        redos: 0,
+        skater: {
+          id: offensiveSkater
+        }
+      }
+    ]);
   }
 
   return (
@@ -142,6 +159,7 @@ function GameForm(
                   />
                 </Flex>
                 <Checkbox>Was this skater replaced?</Checkbox>
+                {/* TODO: replacements */}
               </Stack>
             </td>
           ))}
@@ -284,23 +302,14 @@ function GameForm(
                   <tr>
                     {offensiveSkaterIndex > 0 && <td />}
                     <td>
-                      <TrickSelect
-                        abd={abd}
-                        key={attempts.length}
-                        onTrickChange={trick =>
-                          setAttempts(prev => [
-                            ...prev,
-                            {
-                              trick,
-                              successful: false,
-                              redos: 0,
-                              skater: {
-                                id: offensiveSkater
-                              }
-                            }
-                          ])
-                        }
-                      />
+                      <Flex>
+                        <TrickSelect
+                          abd={abd}
+                          key={attempts.length}
+                          onTrickChange={setTrick}
+                        />
+                        <CreateTrickButton setTrick={setTrick} />
+                      </Flex>
                     </td>
                     {!offensiveSkaterIndex && <td />}
                   </tr>

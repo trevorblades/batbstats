@@ -17,7 +17,8 @@ export const typeDefs = gql`
   }
 
   type Mutation {
-    createSkater(input: SkaterInput!): Skater
+    createSkater(input: SkaterInput!): Skater!
+    createTrick(input: TrickInput!): Trick!
   }
 
   input SkaterInput {
@@ -26,6 +27,10 @@ export const typeDefs = gql`
     birthDate: Date
     country: String
     stance: Stance
+  }
+
+  input TrickInput {
+    name: String!
   }
 
   type Event {
@@ -119,7 +124,8 @@ export const resolvers = {
     games: () => Game.findAll()
   },
   Mutation: {
-    createSkater: (_, {input}) => Skater.create(input)
+    createSkater: (_, {input}) => Skater.create(input),
+    createTrick: (_, {input}) => Trick.create(input)
   },
   Event: {
     games: event => event.getGames()
