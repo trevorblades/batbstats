@@ -33,3 +33,38 @@ export const LIST_TRICKS = gql`
   }
   ${TRICK_FRAGMENT}
 `;
+
+export const GAME_FRAGMENT = gql`
+  fragment GameFragment on Game {
+    id
+    round
+    event {
+      name
+    }
+    skaters {
+      id
+      fullName
+    }
+    roshambos {
+      id
+      round
+      move
+      skater {
+        id
+      }
+    }
+    attempts {
+      id
+      offense
+      successful
+      redos
+      trick {
+        id
+        name
+      }
+      skater {
+        id
+      }
+    }
+  }
+`;

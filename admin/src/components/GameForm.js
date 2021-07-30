@@ -1,7 +1,7 @@
 import CreateSkaterButton from './CreateSkaterButton';
 import NumberOfRedos from './NumberOfRedos';
 import PropTypes from 'prop-types';
-import React, {useMemo, useState} from 'react';
+import React, {forwardRef, useImperativeHandle, useMemo, useState} from 'react';
 import RoshamboButtons, {ROSHAMBO} from './RoshamboButtons';
 import SkaterSelect from './SkaterSelect';
 import TrickSelect from './TrickSelect';
@@ -33,14 +33,25 @@ function getScore(attempts) {
   }, {});
 }
 
-export default function GameForm({
-  defaultSkaters = [null, null],
-  defaultRoshambos = [],
-  defaultAttempts = []
-}) {
+function GameForm(
+  {defaultSkaters = [null, null], defaultRoshambos = [], defaultAttempts = []},
+  ref
+) {
   const [skaters, setSkaters] = useState(defaultSkaters);
   const [roshambos, setRoshambos] = useState(defaultRoshambos);
   const [attempts, setAttempts] = useState(defaultAttempts);
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      value: () => ({
+        skaters,
+        roshambos,
+        attempts
+      })
+    }),
+    [skaters, roshambos, attempts]
+  );
 
   const [roshamboWinner, isRoshamboTied] = useMemo(() => {
     const lastRound = roshambos[roshambos.length - 1];
@@ -129,6 +140,7 @@ export default function GameForm({
                   setSkater={skater => setSkater(skater.id, index)}
                 />
               </Flex>
+              <Checkbox>Was this skater replaced?</Checkbox>
             </td>
           ))}
         </tr>
@@ -312,3 +324,5 @@ GameForm.propTypes = {
   defaultRoshambos: PropTypes.array,
   defaultAttempts: PropTypes.array
 };
+
+export default forwardRef(GameForm);
