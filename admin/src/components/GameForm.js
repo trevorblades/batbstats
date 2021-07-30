@@ -131,16 +131,18 @@ function GameForm(
         <tr>
           {skaters.map((skater, index) => (
             <td key={index}>
-              <Flex>
-                <SkaterSelect
-                  value={skater}
-                  onChange={event => setSkater(event.target.value, index)}
-                />
-                <CreateSkaterButton
-                  setSkater={skater => setSkater(skater.id, index)}
-                />
-              </Flex>
-              <Checkbox>Was this skater replaced?</Checkbox>
+              <Stack align={!index ? 'flex-end' : null}>
+                <Flex w="full">
+                  <SkaterSelect
+                    value={skater}
+                    onChange={event => setSkater(event.target.value, index)}
+                  />
+                  <CreateSkaterButton
+                    setSkater={skater => setSkater(skater.id, index)}
+                  />
+                </Flex>
+                <Checkbox>Was this skater replaced?</Checkbox>
+              </Stack>
             </td>
           ))}
         </tr>

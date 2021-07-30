@@ -1,6 +1,6 @@
 import GameForm from './GameForm';
 import PropTypes from 'prop-types';
-import React, {useRef} from 'react';
+import React, {useRef, useState} from 'react';
 import {
   Box,
   Button,
@@ -26,6 +26,7 @@ const UPDATE_GAME = gql`
 export default function UpdateGameForm({game}) {
   const gameForm = useRef();
   const toast = useToast();
+  const [key, setKey] = useState(1);
   const bg = useColorModeValue('gray.50', 'gray.700');
 
   const [updateGame, {loading}] = useMutation(UPDATE_GAME, {
@@ -67,7 +68,9 @@ export default function UpdateGameForm({game}) {
           <Box as={Logo} mr="3" boxSize={6} fill="current" />
           {title}
           <ButtonGroup ml="auto" size="sm">
-            <Button>Discard changes</Button>
+            <Button onClick={() => setKey(prev => prev + 1)}>
+              Discard changes
+            </Button>
             <Button isLoading={loading} colorScheme="green" type="submit">
               Save
             </Button>
@@ -75,6 +78,7 @@ export default function UpdateGameForm({game}) {
         </Flex>
         <Box px={1}>
           <GameForm
+            key={key}
             ref={gameForm}
             defaultSkaters={skaters.map(skater => skater.id)}
             // reduce flat array of roshambo rounds into roshambo round format
