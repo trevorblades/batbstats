@@ -16,7 +16,7 @@ export default function SkaterSelect(props) {
   }
 
   return (
-    <Select {...props} roundedRight={0}>
+    <Select {...props} roundedRight={0} isRequired>
       <option>Select a skater</option>
       {sortBy(data.skaters, 'fullName').map(skater => (
         <option key={skater.id} value={skater.id}>
