@@ -1,8 +1,9 @@
 import Header from '../../../components/Header';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {EVENT_FRAGMENT, getRoundName} from '../../../utils';
-import {Flex, Heading} from '@chakra-ui/layout';
+import {Box, Link} from '@chakra-ui/react';
+import {EVENT_FRAGMENT} from '../../../utils';
+import {Flex} from '@chakra-ui/layout';
 import {Link as GatsbyLink} from 'gatsby';
 import {Helmet} from 'react-helmet';
 import {gql, useQuery} from '@apollo/client';
@@ -16,21 +17,54 @@ const GET_EVENT = gql`
   ${EVENT_FRAGMENT}
 `;
 
-function findParent(game, rounds) {
-  const nextRound = rounds[game.round + 1];
-  const skaterIds = game.skaters.map(skater => skater.id);
-  if (nextRound) {
-    const parent = nextRound.find(game =>
-      game.skaters.some(skater => skaterIds.includes(skater.id))
-    );
-    if (parent) {
-      return findParent(parent, rounds);
-      // return findParent(parent, rounds);
-    }
-  }
-
-  return game;
+function createBracket(games, round, rounds) {
+  return games.map(game => {
+    const nextRound = round - 1;
+    const skaterIds = game.skaters.map(skater => skater.id);
+    return {
+      ...game,
+      round,
+      children: nextRound
+        ? createBracket(
+            rounds[nextRound].filter(game =>
+              game.skaters.some(skater => skaterIds.includes(skater.id))
+            ),
+            nextRound,
+            rounds
+          )
+        : null
+    };
+  });
 }
+
+function Bracket({game}) {
+  return (
+    <Flex align="center">
+      <Box flexShrink={0} w={200} py={4}>
+        {game.skaters ? (
+          <Link as={GatsbyLink} to={`/games/${game.id}/edit`}>
+            {game.skaters.map(skater => (
+              <Box isTruncated key={skater.id}>
+                {skater.fullName}
+              </Box>
+            ))}
+          </Link>
+        ) : (
+          '? vs. ?'
+        )}
+      </Box>
+      <div>
+        {game.children?.map((child, index) => (
+          <Bracket key={index} game={child} />
+        ))}
+      </div>
+    </Flex>
+  );
+}
+
+Bracket.propTypes = {
+  game: PropTypes.object.isRequired
+};
 
 export default function EditEvent({params}) {
   const {data, loading, error} = useQuery(GET_EVENT, {
@@ -50,38 +84,33 @@ export default function EditEvent({params}) {
   }
 
   // number of rounds increases by 1 for each set of two first round games
-  const {length: firstRound} = data.event.games.filter(
-    game => game.round === 1
-  );
+  const rounds = data.event.games.reduce((acc, game) => {
+    const existing = acc[game.round];
+    return {
+      ...acc,
+      [game.round]: existing ? [...existing, game] : [game]
+    };
+  }, {});
 
   // needed to learn how to solve for exponents
   // https://www.calculatorsoup.com/calculators/algebra/exponentsolve.php
+  const firstRound = rounds[1]?.length;
   const numRounds = !firstRound
     ? 1
     : firstRound === 1
     ? 2
-    : Math.ceil(Math.log2(firstRound)) + 1;
+    : // learned about log2
+      // same as doing log(x) / log(2)
+      // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/log2
+      Math.ceil(Math.log2(firstRound)) + 1;
 
-  console.log(firstRound, numRounds);
+  const [bracket] = createBracket(rounds[numRounds], numRounds, rounds);
 
   return (
     <div>
       <Helmet title={data.event.name} />
       <Header title={data.event.name} />
-      <Flex>
-        {/* {Object.entries(rounds).map(([round, games]) => (
-          <div key={round}>
-            <Heading>{getRoundName(round)}</Heading>
-            {games.map(game => (
-              <div key={game.id}>
-                <GatsbyLink to={`/games/${game.id}/edit`}>
-                  {game.skaters.map(skater => skater.fullName).join(' vs. ')}
-                </GatsbyLink>
-              </div>
-            ))}
-          </div>
-        ))} */}
-      </Flex>
+      <Bracket game={bracket} />
     </div>
   );
 }
