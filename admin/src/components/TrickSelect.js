@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import sortBy from 'lodash/sortBy';
 import {LIST_TRICKS} from '../utils';
 import {Select} from '@chakra-ui/react';
 import {useQuery} from '@apollo/client';
@@ -29,14 +28,13 @@ export default function TrickSelect({value, onTrickChange, abd}) {
       roundedRight={0}
     >
       <option>Select a trick</option>
-      {sortBy(
-        data.tricks.filter(trick => !abd.includes(trick.id)),
-        ['flip', 'spin', 'shuv']
-      ).map(trick => (
-        <option key={trick.id} value={trick.id}>
-          {trick.name}
-        </option>
-      ))}
+      {data.tricks
+        .filter(trick => !abd.includes(trick.id))
+        .map(trick => (
+          <option key={trick.id} value={trick.id}>
+            {trick.name}
+          </option>
+        ))}
     </Select>
   );
 }

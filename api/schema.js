@@ -117,9 +117,9 @@ export const resolvers = {
     event: (_, {id}) => Event.findByPk(id),
     events: () => Event.findAll(),
     skater: (_, {id}) => Skater.findByPk(id),
-    skaters: () => Skater.findAll(),
+    skaters: () => Skater.findAll({order: ['firstName']}),
     trick: (_, {id}) => Trick.findByPk(id),
-    tricks: () => Trick.findAll(),
+    tricks: () => Trick.findAll({order: ['flip', 'spin', 'shuv']}),
     game: (_, {id}) => Game.findByPk(id),
     games: () => Game.findAll()
   },
