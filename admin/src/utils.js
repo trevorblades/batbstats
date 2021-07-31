@@ -39,6 +39,7 @@ export const GAME_FRAGMENT = gql`
     id
     round
     event {
+      id
       name
     }
     skaters {
@@ -68,3 +69,39 @@ export const GAME_FRAGMENT = gql`
     }
   }
 `;
+
+export const EVENT_FRAGMENT = gql`
+  fragment EventFragment on Event {
+    id
+    name
+    games {
+      id
+      round
+      skaters {
+        id
+        fullName
+      }
+      result {
+        winner {
+          id
+        }
+        lettersAgainst
+      }
+    }
+  }
+`;
+
+export function getRoundName(round) {
+  switch (round) {
+    case 6:
+      return 'Championship Battle';
+    case 5:
+      return 'Third Place Battle';
+    case 4:
+      return 'Semifinal';
+    case 3:
+      return 'Quarterfinal';
+    default:
+      return `Round ${round}`;
+  }
+}

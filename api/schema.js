@@ -128,7 +128,7 @@ export const resolvers = {
     createTrick: (_, {input}) => Trick.create(input)
   },
   Event: {
-    games: event => event.getGames()
+    games: event => event.getGames({order: ['round']})
   },
   Game: {
     event: (game, _, {context}) =>
@@ -159,7 +159,7 @@ export const resolvers = {
       if (winner) {
         return {
           winner: await winner.getSkater({[EXPECTED_OPTIONS_KEY]: context}),
-          lettersAgainst: loser.count
+          lettersAgainst: winner.getDataValue('count')
         };
       }
 

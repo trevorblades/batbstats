@@ -1,7 +1,7 @@
-import GameForm from '../../components/GameForm';
+import GameForm from '../../../components/GameForm';
 import PropTypes from 'prop-types';
-import React, {useState} from 'react';
-import {GAME_FRAGMENT} from '../../utils';
+import React from 'react';
+import {GAME_FRAGMENT} from '../../../utils';
 import {gql, useQuery} from '@apollo/client';
 
 const GET_GAME = gql`
@@ -13,8 +13,7 @@ const GET_GAME = gql`
   ${GAME_FRAGMENT}
 `;
 
-export default function Game({params}) {
-  const [key, setKey] = useState(1);
+export default function EditGame({params}) {
   const {data, loading, error} = useQuery(GET_GAME, {
     variables: {id: params.id}
   });
@@ -31,15 +30,9 @@ export default function Game({params}) {
     return <div>Game not found</div>;
   }
 
-  return (
-    <GameForm
-      key={key}
-      game={data.game}
-      onDiscardChanges={() => setKey(prev => prev + 1)}
-    />
-  );
+  return <GameForm game={data.game} />;
 }
 
-Game.propTypes = {
+EditGame.propTypes = {
   params: PropTypes.object.isRequired
 };

@@ -1,5 +1,6 @@
 import CreateSkaterButton from './CreateSkaterButton';
 import CreateTrickButton from './CreateTrickButton';
+import Header from './Header';
 import NumberOfRedos from './NumberOfRedos';
 import PropTypes from 'prop-types';
 import React, {useMemo, useState} from 'react';
@@ -16,13 +17,12 @@ import {
   IconButton,
   Stack,
   chakra,
-  useColorModeValue,
   useToast
 } from '@chakra-ui/react';
 import {CloseIcon} from '@chakra-ui/icons';
 import {GAME_FRAGMENT, SKATE} from '../utils';
+import {Link as GatsbyLink} from 'gatsby';
 import {Helmet} from 'react-helmet';
-import {ReactComponent as Logo} from '../assets/logo.svg';
 import {gql, useMutation} from '@apollo/client';
 
 const UPDATE_GAME = gql`
@@ -51,7 +51,7 @@ function getScore(attempts) {
   }, {});
 }
 
-export default function GameForm({game, onDiscardChanges}) {
+export default function GameForm({game}) {
   const [skaters, setSkaters] = useState(game.skaters.map(skater => skater.id));
 
   const [roshambos, setRoshambos] = useState(
@@ -86,7 +86,6 @@ export default function GameForm({game, onDiscardChanges}) {
   );
 
   const toast = useToast();
-  const headerBg = useColorModeValue('gray.50', 'gray.700');
 
   const [updateGame, {loading}] = useMutation(UPDATE_GAME, {
     onError: error =>
@@ -181,20 +180,11 @@ export default function GameForm({game, onDiscardChanges}) {
   return (
     <>
       <Helmet title={title} />
-      <Flex
-        bg={headerBg}
-        as="header"
-        pos="sticky"
-        top="0"
-        align="center"
-        px={4}
-        py={2}
-        zIndex="1"
-      >
-        <Box as={Logo} mr="3" boxSize={6} fill="current" />
-        {title}
+      <Header title={title}>
         <ButtonGroup ml="auto" size="sm">
-          <Button onClick={onDiscardChanges}>Discard changes</Button>
+          <Button as={GatsbyLink} to={`/events/${game.event.id}/edit`}>
+            Discard changes
+          </Button>
           <Button
             isLoading={loading}
             colorScheme="green"
@@ -220,7 +210,7 @@ export default function GameForm({game, onDiscardChanges}) {
             Save
           </Button>
         </ButtonGroup>
-      </Flex>
+      </Header>
       <Box px={1}></Box>
       <chakra.table
         w="full"
@@ -422,6 +412,5 @@ export default function GameForm({game, onDiscardChanges}) {
 }
 
 GameForm.propTypes = {
-  game: PropTypes.object.isRequired,
-  onDiscardChanges: PropTypes.func.isRequired
+  game: PropTypes.object.isRequired
 };
