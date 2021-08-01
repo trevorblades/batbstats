@@ -92,16 +92,26 @@ export const EVENT_FRAGMENT = gql`
 `;
 
 export function getRoundName(round) {
-  switch (round) {
-    case 6:
+  switch (round.toString()) {
+    case '6':
       return 'Championship Battle';
-    case 5:
+    case '5':
       return 'Third Place Battle';
-    case 4:
+    case '4':
       return 'Semifinal';
-    case 3:
+    case '3':
       return 'Quarterfinal';
     default:
       return `Round ${round}`;
   }
+}
+
+export function groupByRound(games) {
+  return games.reduce((acc, game) => {
+    const existing = acc[game.round];
+    return {
+      ...acc,
+      [game.round]: existing ? [...existing, game] : [game]
+    };
+  }, {});
 }

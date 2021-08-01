@@ -3,8 +3,10 @@ import React from 'react';
 import {Box, Flex, useColorModeValue} from '@chakra-ui/react';
 import {ReactComponent as Logo} from '../assets/logo.svg';
 
-export default function Header({title = 'BATB Stats', children}) {
-  const bg = useColorModeValue('gray.50', 'gray.700');
+export const HEADER_HEIGHT = 12;
+
+export default function Header({children}) {
+  const bg = useColorModeValue('gray.300', 'gray.700');
   return (
     <Flex
       bg={bg}
@@ -14,16 +16,14 @@ export default function Header({title = 'BATB Stats', children}) {
       align="center"
       px={4}
       zIndex="1"
-      h={12}
+      h={HEADER_HEIGHT}
     >
       <Box as={Logo} mr="3" boxSize={6} fill="current" />
-      {title}
       {children}
     </Flex>
   );
 }
 
 Header.propTypes = {
-  title: PropTypes.string,
   children: PropTypes.node
 };

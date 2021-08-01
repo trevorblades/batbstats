@@ -115,7 +115,7 @@ export const resolvers = {
   Date: DateResolver,
   Query: {
     event: (_, {id}) => Event.findByPk(id),
-    events: () => Event.findAll(),
+    events: () => Event.findAll({order: ['id']}),
     skater: (_, {id}) => Skater.findByPk(id),
     skaters: () => Skater.findAll({order: ['firstName']}),
     trick: (_, {id}) => Trick.findByPk(id),

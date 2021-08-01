@@ -180,9 +180,14 @@ export default function GameForm({game}) {
   return (
     <>
       <Helmet title={title} />
-      <Header title={title}>
+      <Header>
+        {title}
         <ButtonGroup ml="auto" size="sm">
-          <Button as={GatsbyLink} to={`/events/${game.event.id}/edit`}>
+          <Button
+            variant="outline"
+            as={GatsbyLink}
+            to={`/events/${game.event.id}/edit`}
+          >
             Discard changes
           </Button>
           <Button
