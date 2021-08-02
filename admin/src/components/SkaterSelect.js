@@ -16,7 +16,6 @@ export default function SkaterSelect(props) {
 
   return (
     <Select {...props} roundedRight={0} isRequired>
-      <option>Select a skater</option>
       {data.skaters.map(skater => (
         <option key={skater.id} value={skater.id}>
           {skater.fullName}

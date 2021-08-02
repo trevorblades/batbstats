@@ -1,4 +1,5 @@
 import Bracket, {createBracket} from '../components/Bracket';
+import EventSelect from '../components/EventSelect';
 import Header from '../components/Header';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -7,7 +8,7 @@ import {graphql} from 'gatsby';
 import {groupByRound} from '../utils';
 
 export default function Event({data}) {
-  const {event} = data.batbstats;
+  const {event, events} = data.batbstats;
 
   const rounds = groupByRound(event.games);
 
@@ -25,7 +26,9 @@ export default function Event({data}) {
   return (
     <div>
       <Helmet title={event.name} />
-      <Header title={event.name} />
+      <Header title={event.name}>
+        <EventSelect event={event} events={events} />
+      </Header>
       <Bracket game={bracket} />
     </div>
   );
@@ -38,6 +41,10 @@ Event.propTypes = {
 export const query = graphql`
   query GetEvent($id: ID!) {
     batbstats {
+      events {
+        id
+        name
+      }
       event(id: $id) {
         id
         name
@@ -47,6 +54,16 @@ export const query = graphql`
           skaters {
             id
             fullName
+          }
+          replacements {
+            in {
+              id
+              fullName
+            }
+            out {
+              id
+              fullName
+            }
           }
           result {
             winner {

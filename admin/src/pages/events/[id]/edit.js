@@ -1,13 +1,13 @@
-import GamesList from '../../../components/GamesList';
+import EventSelect from '../../../components/EventSelect';
+import GameList from '../../../components/GameList';
 import Header from '../../../components/Header';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {AddIcon} from '@chakra-ui/icons';
-import {Button, Select} from '@chakra-ui/react';
+import {Button} from '@chakra-ui/react';
 import {EVENT_FRAGMENT} from '../../../utils';
 import {Helmet} from 'react-helmet';
 import {gql, useQuery} from '@apollo/client';
-import {navigate} from 'gatsby';
 
 const GET_EVENT = gql`
   query GetEvent($id: ID!) {
@@ -39,30 +39,17 @@ export default function EditEvent({params}) {
     return <div>Event not found</div>;
   }
 
-  const {id, name, games} = data.event;
+  const {event, events} = data;
   return (
     <div>
-      <Helmet title={name} />
+      <Helmet title={event.name} />
       <Header>
-        <Select
-          w="auto"
-          size="sm"
-          fontSize="md"
-          value={id}
-          rounded="md"
-          onChange={event => navigate(`/events/${event.target.value}/edit`)}
-        >
-          {data.events.map(event => (
-            <option key={event.id} value={event.id}>
-              {event.name}
-            </option>
-          ))}
-        </Select>
+        <EventSelect event={event} events={events} path="edit" />
         <Button leftIcon={<AddIcon />} colorScheme="green" size="sm" ml="auto">
           New game
         </Button>
       </Header>
-      <GamesList games={games} />
+      <GameList games={event.games} />
     </div>
   );
 }

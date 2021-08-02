@@ -18,7 +18,7 @@ export default function Header({children}) {
       zIndex="1"
       h={HEADER_HEIGHT}
     >
-      <Box as={Logo} mr="3" boxSize={6} fill="current" />
+      <Box as={Logo} flexShrink={0} mr="3" boxSize={6} fill="current" />
       {children}
     </Flex>
   );

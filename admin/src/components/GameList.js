@@ -5,7 +5,7 @@ import {Link as GatsbyLink} from 'gatsby';
 import {HEADER_HEIGHT} from './Header';
 import {getRoundName, groupByRound} from '../utils';
 
-export default function GamesList({games}) {
+export default function GameList({games}) {
   const listHeaderBg = useColorModeValue('white', 'gray.800');
   const rounds = groupByRound(games);
   return (
@@ -46,6 +46,6 @@ export default function GamesList({games}) {
   );
 }
 
-GamesList.propTypes = {
+GameList.propTypes = {
   games: PropTypes.array.isRequired
 };

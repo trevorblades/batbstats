@@ -19,6 +19,8 @@ exports.createPages = async ({graphql, actions}) => {
   data.batbstats.events.forEach(({id, games}) => {
     if (games.length) {
       // only render pages for events that have games
+      // TODO: only render pages for events that are completely data-entered
+      // calculate number of necessary games based on size of first round
       actions.createPage({
         path: `/events/${id}`,
         component: EventTemplate,

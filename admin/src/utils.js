@@ -46,6 +46,16 @@ export const GAME_FRAGMENT = gql`
       id
       fullName
     }
+    replacements {
+      in {
+        id
+        fullName
+      }
+      out {
+        id
+        fullName
+      }
+    }
     roshambos {
       id
       round

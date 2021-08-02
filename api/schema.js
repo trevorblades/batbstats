@@ -49,6 +49,7 @@ export const typeDefs = gql`
     skaters: [Skater!]!
     attempts: [Attempt!]!
     roshambos: [Roshambo!]!
+    replacements: [Replacement!]!
   }
 
   type Result {
@@ -64,7 +65,6 @@ export const typeDefs = gql`
     stance: Stance
     birthDate: Date
     country: String
-    replacement: Skater
   }
 
   enum Stance {
@@ -109,6 +109,12 @@ export const typeDefs = gql`
     paper
     scissors
   }
+
+  type Replacement {
+    id: ID!
+    in: Skater
+    out: Skater!
+  }
 `;
 
 export const resolvers = {
@@ -137,6 +143,7 @@ export const resolvers = {
       game.getSkaters({[EXPECTED_OPTIONS_KEY]: context}),
     attempts: game => game.getAttempts({order: ['id']}),
     roshambos: game => game.getRoshambos(),
+    replacements: game => game.getReplacements(),
     async result(game, _, {context}) {
       const [loser, winner] = await Attempt.findAll({
         attributes: [
@@ -179,8 +186,7 @@ export const resolvers = {
   },
   Skater: {
     fullName: ({firstName, lastName}) =>
-      [firstName, lastName].filter(Boolean).join(' '),
-    replacement: skater => skater.participant?.getReplacement()
+      [firstName, lastName].filter(Boolean).join(' ')
   },
   Attempt: {
     trick: attempt => attempt.getTrick(),
@@ -190,5 +196,9 @@ export const resolvers = {
   Roshambo: {
     skater: (roshambo, _, {context}) =>
       roshambo.getSkater({[EXPECTED_OPTIONS_KEY]: context})
+  },
+  Replacement: {
+    in: replacement => replacement.getIn(),
+    out: replacement => replacement.getOut()
   }
 };

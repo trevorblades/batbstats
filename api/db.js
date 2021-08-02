@@ -67,6 +67,24 @@ Game.init(
 Game.belongsTo(Event);
 Event.hasMany(Game);
 
+Game.belongsToMany(Skater, {through: 'participants'});
+Skater.belongsToMany(Game, {through: 'participants'});
+
+class Replacement extends Model {}
+Replacement.init(
+  {},
+  {
+    sequelize,
+    modelName: 'replacement'
+  }
+);
+
+Replacement.belongsTo(Game);
+Game.hasMany(Replacement);
+
+Replacement.belongsTo(Skater, {as: 'in'});
+Replacement.belongsTo(Skater, {as: 'out'});
+
 const MOVE_ENUM = DataTypes.ENUM('rock', 'paper', 'scissors');
 
 class Roshambo extends Model {}
@@ -86,21 +104,6 @@ Game.hasMany(Roshambo);
 
 Roshambo.belongsTo(Skater);
 Skater.hasMany(Roshambo);
-
-class Participant extends Model {}
-Participant.init(
-  {},
-  {
-    sequelize,
-    modelName: 'participant'
-  }
-);
-
-Participant.belongsTo(Skater, {as: 'replacement'});
-Skater.hasMany(Participant, {as: 'replacement'});
-
-Game.belongsToMany(Skater, {through: Participant});
-Skater.belongsToMany(Game, {through: Participant});
 
 export class Attempt extends Model {}
 Attempt.init(
