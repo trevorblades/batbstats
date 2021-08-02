@@ -91,6 +91,16 @@ export const EVENT_FRAGMENT = gql`
         id
         fullName
       }
+      replacements {
+        in {
+          id
+          fullName
+        }
+        out {
+          id
+          fullName
+        }
+      }
       result {
         winner {
           id
@@ -124,4 +134,8 @@ export function groupByRound(games) {
       [game.round]: existing ? [...existing, game] : [game]
     };
   }, {});
+}
+
+export function findReplacement(skater, replacements) {
+  return replacements.find(({out}) => out.id === skater.id);
 }

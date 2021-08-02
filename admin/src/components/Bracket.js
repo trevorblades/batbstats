@@ -3,16 +3,13 @@ import React from 'react';
 import {Box} from '@chakra-ui/react';
 import {Flex} from '@chakra-ui/layout';
 import {Link as GatsbyLink} from 'gatsby';
-
-function getReplacement(skater, replacements) {
-  return replacements.find(replacement => replacement.out.id === skater.id);
-}
+import {findReplacement} from '../utils';
 
 export function createBracket(games, round, rounds) {
   const nextRound = round - 1;
   return games.map(game => {
     const skaterIds = game.skaters.map(skater => {
-      const replacement = getReplacement(skater, game.replacements);
+      const replacement = findReplacement(skater, game.replacements);
       return (replacement?.out || skater).id;
     });
     return {
@@ -22,7 +19,7 @@ export function createBracket(games, round, rounds) {
         ? createBracket(
             rounds[nextRound].filter(game =>
               game.skaters.some(skater => {
-                const replacement = getReplacement(skater, game.replacements);
+                const replacement = findReplacement(skater, game.replacements);
                 // TODO: account for byes (in is null)
                 return skaterIds.includes((replacement?.in || skater).id);
               })
@@ -50,7 +47,7 @@ export default function Bracket({game}) {
     <Flex align="center">
       <Box {...gameProps} my={4} flexShrink={0} w={200} borderWidth="1px">
         {game.skaters.map((skater, index) => {
-          const replacement = getReplacement(skater, game.replacements);
+          const replacement = findReplacement(skater, game.replacements);
           return (
             <Box
               py={1}

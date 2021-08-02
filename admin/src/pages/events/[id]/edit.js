@@ -1,5 +1,5 @@
 import EventSelect from '../../../components/EventSelect';
-import GameList from '../../../components/GameList';
+import GamesList from '../../../components/GamesList';
 import Header from '../../../components/Header';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -49,7 +49,7 @@ export default function EditEvent({params}) {
           New game
         </Button>
       </Header>
-      <GameList games={event.games} />
+      <GamesList games={event.games} />
     </div>
   );
 }
