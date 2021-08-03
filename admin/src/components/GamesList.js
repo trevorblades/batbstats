@@ -3,7 +3,7 @@ import React from 'react';
 import {Box, Button, List, ListItem, useColorModeValue} from '@chakra-ui/react';
 import {Link as GatsbyLink} from 'gatsby';
 import {HEADER_HEIGHT} from './Header';
-import {getRoundName, groupByRound} from '../utils';
+import {getRoundName, getVersus, groupByRound} from '../utils';
 
 export default function GamesList({games}) {
   const listHeaderBg = useColorModeValue('white', 'gray.800');
@@ -36,7 +36,7 @@ export default function GamesList({games}) {
                 justifyContent="flex-start"
                 fontWeight="normal"
               >
-                {game.skaters.map(skater => skater.fullName).join(' vs. ')}
+                {getVersus(game.skaters)}
               </Button>
             </ListItem>
           ))}

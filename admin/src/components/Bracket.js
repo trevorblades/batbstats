@@ -83,7 +83,7 @@ export default function Bracket({game}) {
                 <s>{bye.out.fullName}</s>
               ) : (
                 <>
-                  {replacement && <s>{replacement.out.fullName}</s>}
+                  {replacement && <s>{replacement.out.fullName}</s>}{' '}
                   {skater.fullName} {bye && '(bye)'}
                 </>
               )}

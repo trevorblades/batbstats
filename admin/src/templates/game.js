@@ -1,9 +1,25 @@
+import Header from '../components/Header';
+import PropTypes from 'prop-types';
 import React from 'react';
+import {Helmet} from 'react-helmet';
+import {getGameTitle, getVersus} from '../utils';
 import {graphql} from 'gatsby';
 
-export default function Game() {
-  return <div>test</div>;
+export default function Game({data}) {
+  const {game} = data.batbstats;
+  const title = getGameTitle(game);
+  return (
+    <>
+      <Helmet title={title} />
+      <Header>{title}</Header>
+      {getVersus(game.skaters)}
+    </>
+  );
 }
+
+Game.propTypes = {
+  data: PropTypes.object.isRequired
+};
 
 export const query = graphql`
   query GetGame($id: ID!) {

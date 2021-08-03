@@ -146,6 +146,14 @@ export function getRoundName(round) {
   }
 }
 
+export function getGameTitle(game) {
+  return `${game.event.name}: ${getRoundName(game.round)}`;
+}
+
+export function getVersus(skaters) {
+  return skaters.map(skater => skater.fullName).join(' vs. ');
+}
+
 export function groupByRound(games) {
   return games.reduce((acc, game) => {
     const existing = acc[game.round];

@@ -7,6 +7,11 @@ exports.createPages = async ({graphql, actions}) => {
             id
             games {
               id
+              replacements {
+                in {
+                  id
+                }
+              }
             }
           }
         }
@@ -19,8 +24,6 @@ exports.createPages = async ({graphql, actions}) => {
   data.batbstats.events.forEach(({id, games}) => {
     if (games.length) {
       // only render pages for events that have games
-      // TODO: only render pages for events that are completely data-entered
-      // calculate number of necessary games based on size of first round
       actions.createPage({
         path: `/events/${id}`,
         component: EventTemplate,
@@ -28,13 +31,15 @@ exports.createPages = async ({graphql, actions}) => {
       });
     }
 
-    games.forEach(({id}) => {
-      // TODO: don't render game pages for bye rounds
-      actions.createPage({
-        path: `/games/${id}`,
-        component: GameTemplate,
-        context: {id}
-      });
+    games.forEach(({id, replacements}) => {
+      if (!replacements.some(replacement => !replacement.in)) {
+        // don't render game pages for bye rounds
+        actions.createPage({
+          path: `/games/${id}`,
+          component: GameTemplate,
+          context: {id}
+        });
+      }
     });
   });
 };

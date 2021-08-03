@@ -18,7 +18,7 @@ import {
   useToast
 } from '@chakra-ui/react';
 import {CloseIcon} from '@chakra-ui/icons';
-import {GAME_FRAGMENT, SKATE, insert} from '../utils';
+import {GAME_FRAGMENT, SKATE, getGameTitle, insert} from '../utils';
 import {Link as GatsbyLink} from 'gatsby';
 import {Helmet} from 'react-helmet';
 import {gql, useMutation} from '@apollo/client';
@@ -147,10 +147,7 @@ export default function GameForm({game}) {
     [attempts]
   );
 
-  const title = useMemo(
-    () => `${game.event.name}: Round ${game.round}`,
-    [game]
-  );
+  const title = useMemo(() => getGameTitle(game), [game]);
 
   function setTrick(trick) {
     setAttempts(prev => [
