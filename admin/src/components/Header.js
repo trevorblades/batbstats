@@ -12,13 +12,14 @@ export default function Header({children}) {
       bg={bg}
       as="header"
       pos="sticky"
-      top="0"
+      top={0}
       align="center"
+      flexShrink={0}
       px={4}
-      zIndex="1"
+      zIndex={1}
       h={HEADER_HEIGHT}
     >
-      <Box as={Logo} flexShrink={0} mr="3" boxSize={6} fill="current" />
+      <Box as={Logo} flexShrink={0} mr={3} boxSize={6} fill="current" />
       {children}
     </Flex>
   );

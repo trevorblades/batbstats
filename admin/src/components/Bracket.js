@@ -1,9 +1,12 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import {Box} from '@chakra-ui/react';
+import {Box, useColorModeValue} from '@chakra-ui/react';
 import {Flex} from '@chakra-ui/layout';
 import {Link as GatsbyLink} from 'gatsby';
-import {findReplacement} from '../utils';
+
+function findReplacement(skater, replacements) {
+  return replacements.find(replacement => replacement.in?.id === skater.id);
+}
 
 export function createBracket(games, round, rounds) {
   const nextRound = round - 1;
@@ -18,11 +21,7 @@ export function createBracket(games, round, rounds) {
       children: nextRound
         ? createBracket(
             rounds[nextRound].filter(game =>
-              game.skaters.some(skater => {
-                const replacement = findReplacement(skater, game.replacements);
-                // TODO: account for byes (in is null)
-                return skaterIds.includes((replacement?.in || skater).id);
-              })
+              game.skaters.some(skater => skaterIds.includes(skater.id))
             ),
             nextRound,
             rounds
@@ -33,19 +32,49 @@ export function createBracket(games, round, rounds) {
 }
 
 export default function Bracket({game}) {
-  const gameProps = game.id
-    ? {
-        as: GatsbyLink,
-        to: `/games/${game.id}`
-      }
+  const bg = useColorModeValue('gray.100', 'gray.700');
+  const hoverBg = useColorModeValue('gray.200', 'gray.600');
+  const bye = game.replacements.find(replacement => replacement.in === null);
+  const boxProps = bye
+    ? {color: 'gray.500'}
     : {
-        as: 'button',
-        onClick: () => console.log('create game'),
-        textAlign: 'left'
+        bg,
+        as: GatsbyLink,
+        to: `/games/${game.id}`,
+        transition: 'all 250ms',
+        sx: {
+          ':hover': {
+            bg: hoverBg
+          }
+        }
       };
   return (
     <Flex align="center">
-      <Box {...gameProps} my={4} flexShrink={0} w={200} borderWidth="1px">
+      {game.children && (
+        <Flex alignSelf="stretch" align="center">
+          <div>
+            {game.children.map((child, index) => (
+              <Bracket key={index} game={child} />
+            ))}
+          </div>
+          <Box
+            w={10}
+            h="calc(50% + 1px)"
+            flexShrink={0}
+            borderWidth="1px"
+            borderLeftWidth={0}
+          />
+          <Box w={10} h="px" borderBottomWidth="1px" />
+        </Flex>
+      )}
+      <Box
+        {...boxProps}
+        my={5}
+        flexShrink={0}
+        w={200}
+        rounded="md"
+        borderWidth="1px"
+      >
         {game.skaters.map((skater, index) => {
           const replacement = findReplacement(skater, game.replacements);
           return (
@@ -56,23 +85,18 @@ export default function Bracket({game}) {
               key={index}
               borderBottomWidth={1 - index}
             >
-              {replacement ? (
-                <>
-                  <s>{skater.fullName}</s>{' '}
-                  {replacement.in ? replacement.in.fullName : 'Bye'}
-                </>
+              {bye?.out.id === skater.id ? (
+                <s>{bye.out.fullName}</s>
               ) : (
-                skater.fullName
+                <>
+                  {replacement && <s>{replacement.out.fullName}</s>}
+                  {skater.fullName} {bye && '(bye)'}
+                </>
               )}
             </Box>
           );
         })}
       </Box>
-      <div>
-        {game.children?.map((child, index) => (
-          <Bracket key={index} game={child} />
-        ))}
-      </div>
     </Flex>
   );
 }

@@ -154,7 +154,3 @@ export function groupByRound(games) {
     };
   }, {});
 }
-
-export function findReplacement(skater, replacements) {
-  return replacements.find(({out}) => out.id === skater.id);
-}

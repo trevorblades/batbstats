@@ -3,6 +3,8 @@ import EventSelect from '../components/EventSelect';
 import Header from '../components/Header';
 import PropTypes from 'prop-types';
 import React from 'react';
+import ScrollContainer from 'react-indiana-drag-scroll';
+import {Box, Flex} from '@chakra-ui/react';
 import {Helmet} from 'react-helmet';
 import {graphql} from 'gatsby';
 import {groupByRound} from '../utils';
@@ -24,13 +26,17 @@ export default function Event({data}) {
   const [bracket] = createBracket(rounds[numRounds], numRounds, rounds);
 
   return (
-    <div>
+    <Flex direction="column" h="100vh">
       <Helmet title={event.name} />
       <Header title={event.name}>
         <EventSelect event={event} events={events} />
       </Header>
-      <Bracket game={bracket} />
-    </div>
+      <ScrollContainer hideScrollbars={false}>
+        <Box display="inline-block" mx={5}>
+          <Bracket game={bracket} />
+        </Box>
+      </ScrollContainer>
+    </Flex>
   );
 }
 
