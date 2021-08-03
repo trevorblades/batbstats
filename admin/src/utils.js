@@ -1,4 +1,5 @@
 import {gql} from '@apollo/client';
+import {useColorModeValue} from '@chakra-ui/react';
 
 export const SKATE = 'SKATE';
 
@@ -153,4 +154,18 @@ export function groupByRound(games) {
       [game.round]: existing ? [...existing, game] : [game]
     };
   }, {});
+}
+
+export function useCardProps() {
+  const bg = useColorModeValue('gray.100', 'gray.700');
+  const hoverBg = useColorModeValue('gray.200', 'gray.600');
+  return {
+    bg,
+    transition: 'all 250ms',
+    sx: {
+      ':hover': {
+        bg: hoverBg
+      }
+    }
+  };
 }

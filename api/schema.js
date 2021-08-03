@@ -1,8 +1,16 @@
 import Sequelize from 'sequelize';
-import {Attempt, Event, Game, Skater, Trick, sequelize} from './db.js';
+import {
+  Attempt,
+  Event,
+  Game,
+  Roshambo,
+  Skater,
+  Trick,
+  sequelize
+} from './db.js';
 import {DateResolver} from 'graphql-scalars';
 import {EXPECTED_OPTIONS_KEY} from 'dataloader-sequelize';
-import {gql} from 'apollo-server';
+import {UserInputError, gql} from 'apollo-server';
 
 export const typeDefs = gql`
   type Query {
@@ -19,7 +27,8 @@ export const typeDefs = gql`
   type Mutation {
     createSkater(input: SkaterInput!): Skater!
     createTrick(input: TrickInput!): Trick!
-    createGame(input: GameInput!): Game!
+    createGame(input: CreateGameInput!): Game!
+    updateGame(id: ID, input: UpdateGameInput!): Game!
   }
 
   input SkaterInput {
@@ -34,10 +43,29 @@ export const typeDefs = gql`
     name: String!
   }
 
-  input GameInput {
+  input CreateGameInput {
     round: Int!
     eventId: String!
     skaters: [String!]!
+  }
+
+  input UpdateGameInput {
+    roshambos: [RoshamboInput!]!
+    attempts: [AttemptInput!]!
+  }
+
+  input RoshamboInput {
+    round: Int!
+    move: Move!
+    skaterId: String!
+  }
+
+  input AttemptInput {
+    offense: Boolean!
+    successful: Boolean!
+    redos: Int!
+    skaterId: String!
+    trickId: String!
   }
 
   type Event {
@@ -132,7 +160,7 @@ export const resolvers = {
     skater: (_, {id}) => Skater.findByPk(id),
     skaters: () => Skater.findAll({order: ['firstName']}),
     trick: (_, {id}) => Trick.findByPk(id),
-    tricks: () => Trick.findAll({order: ['flip', 'spin', 'shuv']}),
+    tricks: () => Trick.findAll({order: ['name']}),
     game: (_, {id}) => Game.findByPk(id),
     games: () => Game.findAll()
   },
@@ -143,6 +171,21 @@ export const resolvers = {
       const {skaters, ...input} = args.input;
       const game = await Game.create(input);
       game.setSkaters(skaters);
+      return game;
+    },
+    async updateGame(_, {id, input}) {
+      const game = await Game.findByPk(id);
+
+      if (!game) {
+        throw new UserInputError('Game does not exist');
+      }
+
+      const roshambos = await Roshambo.bulkCreate(input.roshambos);
+      await game.setRoshambos(roshambos);
+
+      const attempts = await Attempt.bulkCreate(input.attempts);
+      await game.setAttempts(attempts);
+
       return game;
     }
   },

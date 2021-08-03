@@ -24,7 +24,7 @@ import {Helmet} from 'react-helmet';
 import {gql, useMutation} from '@apollo/client';
 
 const UPDATE_GAME = gql`
-  mutation UpdateGame($id: ID!, $input: GameInput!) {
+  mutation UpdateGame($id: ID!, $input: UpdateGameInput!) {
     updateGame(id: $id, input: $input) {
       ...GameFragment
     }
@@ -194,7 +194,18 @@ export default function GameForm({game}) {
                         skaterId
                       }))
                     ),
-                    attempts
+                    attempts: attempts.flatMap(
+                      ({defense, trick, ...offense}) => {
+                        return [offense, defense]
+                          .filter(Boolean)
+                          .map(({skater, ...attempt}, index) => ({
+                            ...attempt,
+                            offense: !index,
+                            skaterId: skater.id,
+                            trickId: trick.id
+                          }));
+                      }
+                    )
                   }
                 }
               })
@@ -208,6 +219,7 @@ export default function GameForm({game}) {
       <chakra.table
         w="full"
         sx={{
+          tableLayout: 'fixed',
           td: {
             px: 2,
             py: 5,

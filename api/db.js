@@ -87,7 +87,7 @@ Replacement.belongsTo(Skater, {as: 'out'});
 
 const MOVE_ENUM = DataTypes.ENUM('rock', 'paper', 'scissors');
 
-class Roshambo extends Model {}
+export class Roshambo extends Model {}
 Roshambo.init(
   {
     round: DataTypes.INTEGER,

@@ -4,9 +4,9 @@ import Header from '../components/Header';
 import PropTypes from 'prop-types';
 import React from 'react';
 import ScrollContainer from 'react-indiana-drag-scroll';
-import {Box, Flex} from '@chakra-ui/react';
+import {Box, Flex, Heading, Link, Text} from '@chakra-ui/react';
+import {Link as GatsbyLink, graphql} from 'gatsby';
 import {Helmet} from 'react-helmet';
-import {graphql} from 'gatsby';
 import {groupByRound} from '../utils';
 
 export default function Event({data}) {
@@ -23,19 +23,33 @@ export default function Event({data}) {
   // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/log2
   const numRounds = firstRound === 1 ? 2 : Math.ceil(Math.log2(firstRound)) + 1;
 
-  const [bracket] = createBracket(rounds[numRounds], numRounds, rounds);
+  // summing a geometric sequence
+  // https://www.mathsisfun.com/algebra/sequences-sums-geometric.html
+  const totalGames = (1 - Math.pow(2, numRounds)) / (1 - 2);
 
   return (
     <Flex direction="column" h="100vh">
       <Helmet title={event.name} />
       <Header title={event.name}>
         <EventSelect event={event} events={events} />
+        <Link ml="3" as={GatsbyLink} to="/events">
+          All events
+        </Link>
       </Header>
-      <ScrollContainer hideScrollbars={false}>
-        <Box display="inline-block" mx={5}>
-          <Bracket game={bracket} />
+      {event.games.length < totalGames ? (
+        <Box p={5}>
+          <Heading>Event not complete</Heading>
+          <Text>We&apos;re working on it...</Text>
         </Box>
-      </ScrollContainer>
+      ) : (
+        <ScrollContainer hideScrollbars={false}>
+          <Box display="inline-block" mx={5}>
+            <Bracket
+              game={createBracket(rounds[numRounds], numRounds, rounds)[0]}
+            />
+          </Box>
+        </ScrollContainer>
+      )}
     </Flex>
   );
 }

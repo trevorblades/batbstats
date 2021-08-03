@@ -1,8 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import {Box, useColorModeValue} from '@chakra-ui/react';
+import {Box} from '@chakra-ui/react';
 import {Flex} from '@chakra-ui/layout';
 import {Link as GatsbyLink} from 'gatsby';
+import {useCardProps} from '../utils';
 
 function findReplacement(skater, replacements) {
   return replacements.find(replacement => replacement.in?.id === skater.id);
@@ -32,21 +33,14 @@ export function createBracket(games, round, rounds) {
 }
 
 export default function Bracket({game}) {
-  const bg = useColorModeValue('gray.100', 'gray.700');
-  const hoverBg = useColorModeValue('gray.200', 'gray.600');
+  const cardProps = useCardProps();
   const bye = game.replacements.find(replacement => replacement.in === null);
   const boxProps = bye
     ? {color: 'gray.500'}
     : {
-        bg,
+        ...cardProps,
         as: GatsbyLink,
-        to: `/games/${game.id}`,
-        transition: 'all 250ms',
-        sx: {
-          ':hover': {
-            bg: hoverBg
-          }
-        }
+        to: `/games/${game.id}`
       };
   return (
     <Flex align="center">
