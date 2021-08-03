@@ -111,7 +111,26 @@ export const EVENT_FRAGMENT = gql`
   }
 `;
 
+export const GET_EVENT = gql`
+  query GetEvent($id: ID!) {
+    event(id: $id) {
+      ...EventFragment
+    }
+    events {
+      id
+      name
+    }
+  }
+  ${EVENT_FRAGMENT}
+`;
+
+export function insert(array, index, item) {
+  return [...array.slice(0, index), item, ...array.slice(index + 1)];
+}
+
 export function getRoundName(round) {
+  // TODO: rework to accept a number of rounds and calculate the round name
+  // based on that instead of a hardcoded number => string relationship
   switch (round.toString()) {
     case '6':
       return 'Championship Battle';

@@ -19,6 +19,7 @@ export const typeDefs = gql`
   type Mutation {
     createSkater(input: SkaterInput!): Skater!
     createTrick(input: TrickInput!): Trick!
+    createGame(input: GameInput!): Game!
   }
 
   input SkaterInput {
@@ -31,6 +32,12 @@ export const typeDefs = gql`
 
   input TrickInput {
     name: String!
+  }
+
+  input GameInput {
+    round: Int!
+    eventId: String!
+    skaters: [String!]!
   }
 
   type Event {
@@ -131,7 +138,13 @@ export const resolvers = {
   },
   Mutation: {
     createSkater: (_, {input}) => Skater.create(input),
-    createTrick: (_, {input}) => Trick.create(input)
+    createTrick: (_, {input}) => Trick.create(input),
+    async createGame(_, args) {
+      const {skaters, ...input} = args.input;
+      const game = await Game.create(input);
+      game.setSkaters(skaters);
+      return game;
+    }
   },
   Event: {
     games: event => event.getGames({order: ['round']})

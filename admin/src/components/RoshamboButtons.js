@@ -17,10 +17,10 @@ export const ROSHAMBO = {
   }
 };
 
-export default function RoshamboButtons({round, skaters, winner, onChange}) {
+export default function RoshamboButtons({round, skaterIds, winner, onChange}) {
   return (
     <tr>
-      {skaters.map((skaterId, index) => (
+      {skaterIds.map((skaterId, index) => (
         <chakra.td textAlign={index ? 'left' : 'right'} key={skaterId}>
           <ButtonGroup size="lg" isAttached>
             {Object.entries(ROSHAMBO).map(([move, {emoji}]) => {
@@ -51,6 +51,6 @@ export default function RoshamboButtons({round, skaters, winner, onChange}) {
 RoshamboButtons.propTypes = {
   round: PropTypes.object,
   winner: PropTypes.string,
-  skaters: PropTypes.array.isRequired,
+  skaterIds: PropTypes.array.isRequired,
   onChange: PropTypes.func.isRequired
 };

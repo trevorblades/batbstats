@@ -10,7 +10,6 @@ export default function EventSelect({event, events, path}) {
       size="sm"
       fontSize="md"
       value={event.id}
-      rounded="md"
       onChange={event =>
         navigate(
           ['/events', event.target.value, path].filter(Boolean).join('/')

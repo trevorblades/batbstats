@@ -1,11 +1,9 @@
-import CreateSkaterButton from './CreateSkaterButton';
 import CreateTrickButton from './CreateTrickButton';
 import Header from './Header';
 import NumberOfRedos from './NumberOfRedos';
 import PropTypes from 'prop-types';
 import React, {useMemo, useState} from 'react';
 import RoshamboButtons, {ROSHAMBO} from './RoshamboButtons';
-import SkaterSelect from './SkaterSelect';
 import TrickSelect from './TrickSelect';
 import {
   Box,
@@ -20,7 +18,7 @@ import {
   useToast
 } from '@chakra-ui/react';
 import {CloseIcon} from '@chakra-ui/icons';
-import {GAME_FRAGMENT, SKATE} from '../utils';
+import {GAME_FRAGMENT, SKATE, insert} from '../utils';
 import {Link as GatsbyLink} from 'gatsby';
 import {Helmet} from 'react-helmet';
 import {gql, useMutation} from '@apollo/client';
@@ -33,10 +31,6 @@ const UPDATE_GAME = gql`
   }
   ${GAME_FRAGMENT}
 `;
-
-function insert(array, index, item) {
-  return [...array.slice(0, index), item, ...array.slice(index + 1)];
-}
 
 function getScore(attempts) {
   return attempts.reduce((acc, {defense, ...attempt}) => {
@@ -52,7 +46,10 @@ function getScore(attempts) {
 }
 
 export default function GameForm({game}) {
-  const [skaters, setSkaters] = useState(game.skaters.map(skater => skater.id));
+  const skaterIds = useMemo(
+    () => game.skaters.map(skater => skater.id),
+    [game.skaters]
+  );
 
   const [roshambos, setRoshambos] = useState(
     // reduce flat array of roshambo rounds into roshambo round format
@@ -98,7 +95,7 @@ export default function GameForm({game}) {
 
   const [roshamboWinner, isRoshamboTied] = useMemo(() => {
     const lastRound = roshambos[roshambos.length - 1];
-    const [p1, p2] = skaters.map(skaterId => lastRound?.[skaterId]);
+    const [p1, p2] = skaterIds.map(skaterId => lastRound?.[skaterId]);
 
     // if the round is incomplete or a tie return null
     const isTied = p1 === p2;
@@ -107,8 +104,8 @@ export default function GameForm({game}) {
     }
 
     // check to see if p2 is countering p1 and return the appropriate skater id
-    return [skaters[Number(ROSHAMBO[p1].counter === p2)], false];
-  }, [roshambos, skaters]);
+    return [skaterIds[Number(ROSHAMBO[p1].counter === p2)], false];
+  }, [roshambos, skaterIds]);
 
   const winner = useMemo(() => {
     const score = {};
@@ -136,10 +133,10 @@ export default function GameForm({game}) {
       ? lastAttempt.successful
         ? lastAttempt.skater.id
         : // get the other skater by inversing the index of the current one
-          skaters[1 - skaters.indexOf(lastAttempt.skater.id)]
+          skaterIds[1 - skaterIds.indexOf(lastAttempt.skater.id)]
       : roshamboWinner;
-    return [offensiveSkater, skaters.indexOf(offensiveSkater)];
-  }, [attempts, skaters, roshamboWinner]);
+    return [offensiveSkater, skaterIds.indexOf(offensiveSkater)];
+  }, [attempts, skaterIds, roshamboWinner]);
 
   const abd = useMemo(
     () =>
@@ -154,14 +151,6 @@ export default function GameForm({game}) {
     () => `${game.event.name}: Round ${game.round}`,
     [game]
   );
-
-  function setSkater(skater, index) {
-    // insert new skater into a specific index
-    setSkaters(prev => insert(prev, index, skater));
-    // reset everything when either skater changes
-    setRoshambos([]);
-    setAttempts([]);
-  }
 
   function setTrick(trick) {
     setAttempts(prev => [
@@ -198,7 +187,6 @@ export default function GameForm({game}) {
                 variables: {
                   id: game.id,
                   input: {
-                    skaters,
                     roshambos: roshambos.flatMap((roshambo, index) =>
                       Object.entries(roshambo).map(([skaterId, move]) => ({
                         round: index + 1,
@@ -231,185 +219,169 @@ export default function GameForm({game}) {
       >
         <tbody>
           <tr>
-            {skaters.map((skater, index) => (
-              <td key={index}>
-                <Stack align={!index ? 'flex-end' : null}>
-                  <Flex w="full">
-                    <SkaterSelect
-                      value={skater}
-                      onChange={event => setSkater(event.target.value, index)}
-                    />
-                    <CreateSkaterButton
-                      setSkater={skater => setSkater(skater.id, index)}
-                    />
-                  </Flex>
-                  <Checkbox>Was this skater replaced?</Checkbox>
-                  {/* TODO: replacements */}
-                </Stack>
-              </td>
+            {game.skaters.map((skater, index) => (
+              <td key={index}>{skater.fullName}</td>
             ))}
           </tr>
-          {skaters.length === 2 && (
-            <>
-              {roshambos.map((roshambo, index, arr) => (
-                <RoshamboButtons
-                  key={index}
-                  skaters={skaters}
-                  round={roshambo}
-                  winner={index === arr.length - 1 ? roshamboWinner : null}
-                  onChange={play => {
-                    setRoshambos(prev => [
-                      ...prev.slice(0, index),
-                      {...prev[index], ...play}
-                    ]);
-                    // reset attempts when roshambo changes
-                    setAttempts([]);
-                  }}
-                />
-              ))}
-              {/* show an additional round there is no winner */}
-              {roshamboWinner ? (
-                <>
-                  {attempts.map(({defense, ...attempt}, index, arr) => {
-                    const skaterIndex = skaters.indexOf(attempt.skater.id);
-                    const {[defense?.skater.id]: letters} = getScore(
-                      arr.slice(0, index + 1)
-                    );
-                    const letter = (
-                      <chakra.td fontWeight="bold" fontSize="2xl">
-                        {attempt.successful &&
-                          !defense.successful &&
-                          SKATE[letters - 1]}
-                      </chakra.td>
-                    );
-                    return (
-                      <tr key={index}>
-                        {skaterIndex > 0 && letter}
-                        <td>
-                          <Stack align={!skaterIndex ? 'flex-end' : null}>
-                            <HStack>
-                              <span>{attempt.trick.name}</span>
-                              <IconButton
-                                size="xs"
-                                icon={<CloseIcon />}
-                                onClick={() =>
-                                  setAttempts(prev => prev.slice(0, index))
-                                }
-                              />
-                            </HStack>
-                            <Checkbox
-                              isChecked={attempt.successful}
-                              onChange={event =>
-                                setAttempts(prev => {
-                                  const {checked} = event.target;
-                                  return [
-                                    ...prev.slice(0, index),
-                                    {
-                                      ...prev[index],
-                                      successful: checked,
-                                      defense: checked
-                                        ? {
-                                            successful: false,
-                                            redos: 0,
-                                            skater: {
-                                              id: skaters[1 - skaterIndex]
-                                            }
-                                          }
-                                        : null
-                                    }
-                                  ];
-                                })
-                              }
-                            >
-                              Was it set?
-                            </Checkbox>
-                            <NumberOfRedos
-                              value={attempt.redos}
-                              onChange={(_, redos) =>
-                                setAttempts(prev =>
-                                  insert(prev, index, {
-                                    ...prev[index],
-                                    redos
-                                  })
-                                )
+          <>
+            {roshambos.map((roshambo, index, arr) => (
+              <RoshamboButtons
+                key={index}
+                skaterIds={skaterIds}
+                round={roshambo}
+                winner={index === arr.length - 1 ? roshamboWinner : null}
+                onChange={play => {
+                  setRoshambos(prev => [
+                    ...prev.slice(0, index),
+                    {...prev[index], ...play}
+                  ]);
+                  // reset attempts when roshambo changes
+                  setAttempts([]);
+                }}
+              />
+            ))}
+            {/* show an additional round there is no winner */}
+            {roshamboWinner ? (
+              <>
+                {attempts.map(({defense, ...attempt}, index, arr) => {
+                  const skaterIndex = skaterIds.indexOf(attempt.skater.id);
+                  const {[defense?.skater.id]: letters} = getScore(
+                    arr.slice(0, index + 1)
+                  );
+                  const letter = (
+                    <chakra.td fontWeight="bold" fontSize="2xl">
+                      {attempt.successful &&
+                        !defense.successful &&
+                        SKATE[letters - 1]}
+                    </chakra.td>
+                  );
+                  return (
+                    <tr key={index}>
+                      {skaterIndex > 0 && letter}
+                      <td>
+                        <Stack align={!skaterIndex ? 'flex-end' : null}>
+                          <HStack>
+                            <span>{attempt.trick.name}</span>
+                            <IconButton
+                              size="xs"
+                              icon={<CloseIcon />}
+                              onClick={() =>
+                                setAttempts(prev => prev.slice(0, index))
                               }
                             />
-                            {defense && (
-                              <>
-                                <Checkbox
-                                  isChecked={defense.successful}
-                                  onChange={event =>
-                                    setAttempts(prev => {
-                                      const {
-                                        defense: prevDefense,
-                                        ...prevAttempt
-                                      } = prev[index];
-                                      return insert(prev, index, {
-                                        ...prevAttempt,
-                                        defense: {
-                                          ...prevDefense,
-                                          successful: event.target.checked
+                          </HStack>
+                          <Checkbox
+                            isChecked={attempt.successful}
+                            onChange={event =>
+                              setAttempts(prev => {
+                                const {checked} = event.target;
+                                return [
+                                  ...prev.slice(0, index),
+                                  {
+                                    ...prev[index],
+                                    successful: checked,
+                                    defense: checked
+                                      ? {
+                                          successful: false,
+                                          redos: 0,
+                                          skater: {
+                                            id: skaterIds[1 - skaterIndex]
+                                          }
                                         }
-                                      });
-                                    })
+                                      : null
                                   }
-                                >
-                                  Was it defended?
-                                </Checkbox>
-                                <NumberOfRedos
-                                  value={defense.redos}
-                                  onChange={(_, redos) =>
-                                    setAttempts(prev => {
-                                      const {
-                                        defense: prevDefense,
-                                        ...prevAttempt
-                                      } = prev[index];
-                                      return insert(prev, index, {
-                                        ...prevAttempt,
-                                        defense: {
-                                          ...prevDefense,
-                                          redos
-                                        }
-                                      });
-                                    })
-                                  }
-                                />
-                              </>
-                            )}
-                          </Stack>
-                        </td>
-                        {!skaterIndex && letter}
-                      </tr>
-                    );
-                  })}
-                  {/* only render next trick selection if the game is still on */}
-                  {!winner && (
-                    <tr>
-                      {offensiveSkaterIndex > 0 && <td />}
-                      <td>
-                        <Flex>
-                          <TrickSelect
-                            abd={abd}
-                            key={attempts.length}
-                            onTrickChange={setTrick}
+                                ];
+                              })
+                            }
+                          >
+                            Was it set?
+                          </Checkbox>
+                          <NumberOfRedos
+                            value={attempt.redos}
+                            onChange={(_, redos) =>
+                              setAttempts(prev =>
+                                insert(prev, index, {
+                                  ...prev[index],
+                                  redos
+                                })
+                              )
+                            }
                           />
-                          <CreateTrickButton setTrick={setTrick} />
-                        </Flex>
+                          {defense && (
+                            <>
+                              <Checkbox
+                                isChecked={defense.successful}
+                                onChange={event =>
+                                  setAttempts(prev => {
+                                    const {
+                                      defense: prevDefense,
+                                      ...prevAttempt
+                                    } = prev[index];
+                                    return insert(prev, index, {
+                                      ...prevAttempt,
+                                      defense: {
+                                        ...prevDefense,
+                                        successful: event.target.checked
+                                      }
+                                    });
+                                  })
+                                }
+                              >
+                                Was it defended?
+                              </Checkbox>
+                              <NumberOfRedos
+                                value={defense.redos}
+                                onChange={(_, redos) =>
+                                  setAttempts(prev => {
+                                    const {
+                                      defense: prevDefense,
+                                      ...prevAttempt
+                                    } = prev[index];
+                                    return insert(prev, index, {
+                                      ...prevAttempt,
+                                      defense: {
+                                        ...prevDefense,
+                                        redos
+                                      }
+                                    });
+                                  })
+                                }
+                              />
+                            </>
+                          )}
+                        </Stack>
                       </td>
-                      {!offensiveSkaterIndex && <td />}
+                      {!skaterIndex && letter}
                     </tr>
-                  )}
-                </>
-              ) : (
-                isRoshamboTied && (
-                  <RoshamboButtons
-                    skaters={skaters}
-                    onChange={play => setRoshambos(prev => [...prev, play])}
-                  />
-                )
-              )}
-            </>
-          )}
+                  );
+                })}
+                {/* only render next trick selection if the game is still on */}
+                {!winner && (
+                  <tr>
+                    {offensiveSkaterIndex > 0 && <td />}
+                    <td>
+                      <Flex>
+                        <TrickSelect
+                          abd={abd}
+                          key={attempts.length}
+                          onTrickChange={setTrick}
+                        />
+                        <CreateTrickButton setTrick={setTrick} />
+                      </Flex>
+                    </td>
+                    {!offensiveSkaterIndex && <td />}
+                  </tr>
+                )}
+              </>
+            ) : (
+              isRoshamboTied && (
+                <RoshamboButtons
+                  skaterIds={skaterIds}
+                  onChange={play => setRoshambos(prev => [...prev, play])}
+                />
+              )
+            )}
+          </>
         </tbody>
       </chakra.table>
     </>

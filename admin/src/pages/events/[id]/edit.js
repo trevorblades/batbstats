@@ -1,26 +1,12 @@
+import CreateGameButton from '../../../components/CreateGameButton';
 import EventSelect from '../../../components/EventSelect';
 import GamesList from '../../../components/GamesList';
 import Header from '../../../components/Header';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {AddIcon} from '@chakra-ui/icons';
-import {Button} from '@chakra-ui/react';
-import {EVENT_FRAGMENT} from '../../../utils';
+import {GET_EVENT} from '../../../utils';
 import {Helmet} from 'react-helmet';
-import {gql, useQuery} from '@apollo/client';
-
-const GET_EVENT = gql`
-  query GetEvent($id: ID!) {
-    event(id: $id) {
-      ...EventFragment
-    }
-    events {
-      id
-      name
-    }
-  }
-  ${EVENT_FRAGMENT}
-`;
+import {useQuery} from '@apollo/client';
 
 export default function EditEvent({params}) {
   const {data, loading, error} = useQuery(GET_EVENT, {
@@ -45,9 +31,7 @@ export default function EditEvent({params}) {
       <Helmet title={event.name} />
       <Header>
         <EventSelect event={event} events={events} path="edit" />
-        <Button leftIcon={<AddIcon />} colorScheme="green" size="sm" ml="auto">
-          New game
-        </Button>
+        <CreateGameButton eventId={event.id} />
       </Header>
       <GamesList games={event.games} />
     </div>
