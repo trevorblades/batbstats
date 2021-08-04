@@ -134,9 +134,9 @@ export function getRoundName(round) {
   // based on that instead of a hardcoded number => string relationship
   switch (round.toString()) {
     case '6':
-      return 'Championship Battle';
-    case '5':
       return 'Third Place Battle';
+    case '5':
+      return 'Championship Battle';
     case '4':
       return 'Semifinal';
     case '3':
