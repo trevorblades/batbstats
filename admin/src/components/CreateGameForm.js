@@ -26,7 +26,7 @@ import {gql, useMutation} from '@apollo/client';
 import {navigate} from 'gatsby';
 
 const CREATE_GAME = gql`
-  mutation CreateGame($input: GameInput!) {
+  mutation CreateGame($input: CreateGameInput!) {
     createGame(input: $input) {
       ...GameFragment
     }

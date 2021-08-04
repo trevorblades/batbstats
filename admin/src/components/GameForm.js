@@ -1,5 +1,5 @@
 import CreateTrickButton from './CreateTrickButton';
-import Header from './Header';
+import Header, {HEADER_HEIGHT} from './Header';
 import NumberOfRedos from './NumberOfRedos';
 import PropTypes from 'prop-types';
 import React, {useMemo, useState} from 'react';
@@ -15,6 +15,7 @@ import {
   IconButton,
   Stack,
   chakra,
+  useColorModeValue,
   useToast
 } from '@chakra-ui/react';
 import {CloseIcon} from '@chakra-ui/icons';
@@ -90,6 +91,12 @@ export default function GameForm({game}) {
         status: 'error',
         title: 'Error saving game',
         description: error.message
+      }),
+    onCompleted: () =>
+      toast({
+        status: 'success',
+        title: 'Game saved',
+        description: 'Your game was saved successfully'
       })
   });
 
@@ -149,6 +156,8 @@ export default function GameForm({game}) {
 
   const title = useMemo(() => getGameTitle(game), [game]);
 
+  const theadBg = useColorModeValue('white', 'gray.800');
+
   function setTrick(trick) {
     setAttempts(prev => [
       ...prev,
@@ -168,71 +177,84 @@ export default function GameForm({game}) {
       <Helmet title={title} />
       <Header>
         {title}
-        <ButtonGroup ml="auto" size="sm">
-          <Button
-            variant="outline"
-            as={GatsbyLink}
-            to={`/events/${game.event.id}/edit`}
-          >
-            Discard changes
-          </Button>
-          <Button
-            isLoading={loading}
-            colorScheme="green"
-            onClick={() =>
-              updateGame({
-                variables: {
-                  id: game.id,
-                  input: {
-                    roshambos: roshambos.flatMap((roshambo, index) =>
-                      Object.entries(roshambo).map(([skaterId, move]) => ({
-                        round: index + 1,
-                        move,
-                        skaterId
-                      }))
-                    ),
-                    attempts: attempts.flatMap(
-                      ({defense, trick, ...offense}) => {
-                        return [offense, defense]
-                          .filter(Boolean)
-                          .map(({skater, ...attempt}, index) => ({
-                            ...attempt,
-                            offense: !index,
-                            skaterId: skater.id,
-                            trickId: trick.id
-                          }));
-                      }
-                    )
+        <HStack ml="auto">
+          <chakra.span fontSize="sm" color="gray.500">
+            Last saved {new Date(game.updatedAt).toLocaleString()}
+          </chakra.span>
+          <ButtonGroup size="sm">
+            <Button
+              variant="outline"
+              as={GatsbyLink}
+              to={`/events/${game.event.id}/edit`}
+            >
+              Back to event
+            </Button>
+            <Button
+              isLoading={loading}
+              colorScheme="green"
+              onClick={() =>
+                updateGame({
+                  variables: {
+                    id: game.id,
+                    input: {
+                      roshambos: roshambos.flatMap((roshambo, index) =>
+                        Object.entries(roshambo).map(([skaterId, move]) => ({
+                          round: index + 1,
+                          move,
+                          skaterId
+                        }))
+                      ),
+                      attempts: attempts.flatMap(
+                        ({defense, trick, ...offense}) => {
+                          return [offense, defense]
+                            .filter(Boolean)
+                            .map(({skater, successful, redos}, index) => ({
+                              successful,
+                              redos,
+                              offense: !index,
+                              skaterId: skater.id,
+                              trickId: trick.id
+                            }));
+                        }
+                      )
+                    }
                   }
-                }
-              })
-            }
-          >
-            Save
-          </Button>
-        </ButtonGroup>
+                })
+              }
+            >
+              Save
+            </Button>
+          </ButtonGroup>
+        </HStack>
       </Header>
-      <Box px={1}></Box>
-      <chakra.table
-        w="full"
-        sx={{
-          tableLayout: 'fixed',
-          td: {
-            px: 2,
-            py: 5,
-            ':not(:last-child)': {
-              textAlign: 'right'
+      <Box px={1} pb={12}>
+        <chakra.table
+          w="full"
+          sx={{
+            tableLayout: 'fixed',
+            td: {
+              px: 2,
+              py: 5,
+              ':not(:last-child)': {
+                textAlign: 'right'
+              }
+            },
+            thead: {
+              pos: 'sticky',
+              top: HEADER_HEIGHT,
+              zIndex: 1,
+              bg: theadBg
             }
-          }
-        }}
-      >
-        <tbody>
-          <tr>
-            {game.skaters.map((skater, index) => (
-              <td key={index}>{skater.fullName}</td>
-            ))}
-          </tr>
-          <>
+          }}
+        >
+          <thead>
+            <tr>
+              {game.skaters.map((skater, index) => (
+                <td key={index}>{skater.fullName}</td>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
             {roshambos.map((roshambo, index, arr) => (
               <RoshamboButtons
                 key={index}
@@ -268,7 +290,7 @@ export default function GameForm({game}) {
                     <tr key={index}>
                       {skaterIndex > 0 && letter}
                       <td>
-                        <Stack align={!skaterIndex ? 'flex-end' : null}>
+                        <Stack align={!skaterIndex && 'flex-end'}>
                           <HStack>
                             <span>{attempt.trick.name}</span>
                             <IconButton
@@ -390,9 +412,9 @@ export default function GameForm({game}) {
                 />
               )
             )}
-          </>
-        </tbody>
-      </chakra.table>
+          </tbody>
+        </chakra.table>
+      </Box>
     </>
   );
 }

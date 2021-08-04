@@ -39,6 +39,7 @@ export const GAME_FRAGMENT = gql`
   fragment GameFragment on Game {
     id
     round
+    updatedAt
     event {
       id
       name

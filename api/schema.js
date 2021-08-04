@@ -8,7 +8,7 @@ import {
   Trick,
   sequelize
 } from './db.js';
-import {DateResolver} from 'graphql-scalars';
+import {DateResolver, DateTimeResolver} from 'graphql-scalars';
 import {EXPECTED_OPTIONS_KEY} from 'dataloader-sequelize';
 import {UserInputError, gql} from 'apollo-server';
 
@@ -79,6 +79,7 @@ export const typeDefs = gql`
     round: Int!
     video: String
     date: Date
+    updatedAt: DateTime!
     result: Result
     event: Event!
     skaters: [Skater!]!
@@ -154,6 +155,7 @@ export const typeDefs = gql`
 
 export const resolvers = {
   Date: DateResolver,
+  DateTime: DateTimeResolver,
   Query: {
     event: (_, {id}) => Event.findByPk(id),
     events: () => Event.findAll({order: ['id']}),
@@ -186,7 +188,8 @@ export const resolvers = {
       const attempts = await Attempt.bulkCreate(input.attempts);
       await game.setAttempts(attempts);
 
-      return game;
+      game.changed('updatedAt', true);
+      return game.save();
     }
   },
   Event: {

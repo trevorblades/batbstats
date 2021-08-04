@@ -83,7 +83,7 @@ export default function CreateTrickButton({setTrick}) {
             )}
             <FormControl isRequired>
               <FormLabel>Trick name</FormLabel>
-              <Input name="name" />
+              <Input name="name" autoFocus />
             </FormControl>
           </ModalBody>
           <ModalFooter>
