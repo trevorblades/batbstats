@@ -40,7 +40,6 @@ export default function CreateSkaterForm({onClose, onSkaterCreate}) {
           countries {
             code
             name
-            emoji
           }
         }
       }
@@ -112,7 +111,7 @@ export default function CreateSkaterForm({onClose, onSkaterCreate}) {
               <option value="">Select a country</option>
               {countries.map(country => (
                 <option key={country.code} value={country.code}>
-                  {country.emoji} {country.name}
+                  {country.name}
                 </option>
               ))}
             </Select>
