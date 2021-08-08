@@ -12,7 +12,6 @@ export default function CreateGameButton({eventId}) {
         leftIcon={<AddIcon />}
         colorScheme="green"
         size="sm"
-        ml="auto"
         onClick={onOpen}
       >
         New game

@@ -4,7 +4,8 @@ import GamesList from '../../../components/GamesList';
 import Header from '../../../components/Header';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {GET_EVENT} from '../../../utils';
+import {Box, Progress, Text} from '@chakra-ui/react';
+import {GET_EVENT, getEventMetadata} from '../../../utils';
 import {Helmet} from 'react-helmet';
 import {useQuery} from '@apollo/client';
 
@@ -26,14 +27,26 @@ export default function EditEvent({params}) {
   }
 
   const {event, events} = data;
+
+  const {rounds, totalGames} = getEventMetadata(event.games);
+  const percentComplete = (event.games.length / totalGames) * 100;
+
   return (
     <div>
       <Helmet title={event.name} />
       <Header>
         <EventSelect event={event} events={events} path="edit" />
+        {isFinite(percentComplete) && (
+          <Box flexGrow={1} mx={4} maxW="md">
+            <Text fontSize="sm" mb={1} lineHeight="none">
+              {Math.round(percentComplete)} % complete
+            </Text>
+            <Progress value={percentComplete} rounded="full" size="xs" />
+          </Box>
+        )}
         <CreateGameButton eventId={event.id} />
       </Header>
-      <GamesList games={event.games} />
+      <GamesList rounds={rounds} />
     </div>
   );
 }

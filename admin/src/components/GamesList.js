@@ -3,11 +3,10 @@ import React from 'react';
 import {Box, Button, List, ListItem, useColorModeValue} from '@chakra-ui/react';
 import {Link as GatsbyLink} from 'gatsby';
 import {HEADER_HEIGHT} from './Header';
-import {getRoundName, getVersus, groupByRound} from '../utils';
+import {getRoundName, getVersus} from '../utils';
 
-export default function GamesList({games}) {
+export default function GamesList({rounds}) {
   const listHeaderBg = useColorModeValue('white', 'gray.800');
-  const rounds = groupByRound(games);
   return (
     <List>
       {Object.entries(rounds).map(([round, games]) => (
@@ -47,5 +46,5 @@ export default function GamesList({games}) {
 }
 
 GamesList.propTypes = {
-  games: PropTypes.array.isRequired
+  rounds: PropTypes.object.isRequired
 };

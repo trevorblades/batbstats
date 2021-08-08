@@ -9,6 +9,7 @@ export default function EventSelect({event, events, path}) {
       w="auto"
       size="sm"
       fontSize="md"
+      mr="auto"
       value={event.id}
       onChange={event =>
         navigate(

@@ -155,16 +155,6 @@ export function getVersus(skaters) {
   return skaters.map(skater => skater.fullName).join(' vs. ');
 }
 
-export function groupByRound(games) {
-  return games.reduce((acc, game) => {
-    const existing = acc[game.round];
-    return {
-      ...acc,
-      [game.round]: existing ? [...existing, game] : [game]
-    };
-  }, {});
-}
-
 export function useCardProps() {
   const bg = useColorModeValue('gray.100', 'gray.700');
   const hoverBg = useColorModeValue('gray.200', 'gray.600');
@@ -177,4 +167,29 @@ export function useCardProps() {
       }
     }
   };
+}
+
+export function getEventMetadata(games) {
+  const rounds = games.reduce((acc, game) => {
+    const existing = acc[game.round];
+    return {
+      ...acc,
+      [game.round]: existing ? [...existing, game] : [game]
+    };
+  }, {});
+
+  // number of rounds is x in the expression "n = 2^x" where n is the number of
+  // games in the first round. so i needed to learn how to solve for exponents
+  // https://www.calculatorsoup.com/calculators/algebra/exponentsolve.php
+  const firstRound = rounds[1]?.length;
+
+  // learned about log2. it's the same as doing log(x) / log(2)
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/log2
+  const numRounds = firstRound === 1 ? 2 : Math.ceil(Math.log2(firstRound)) + 1;
+
+  // summing a geometric sequence
+  // https://www.mathsisfun.com/algebra/sequences-sums-geometric.html
+  const totalGames = (1 - Math.pow(2, numRounds)) / (1 - 2);
+
+  return {rounds, numRounds, totalGames};
 }
