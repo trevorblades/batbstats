@@ -27,8 +27,7 @@ export default function EditEvent({params}) {
   }
 
   const {event, events} = data;
-
-  const {rounds, totalGames} = getEventMetadata(event.games);
+  const {rounds, numRounds, totalGames} = getEventMetadata(event);
   const percentComplete = (event.games.length / totalGames) * 100;
 
   return (
@@ -46,7 +45,7 @@ export default function EditEvent({params}) {
         )}
         <CreateGameButton eventId={event.id} />
       </Header>
-      <GamesList rounds={rounds} />
+      <GamesList rounds={rounds} numRounds={numRounds} />
     </div>
   );
 }

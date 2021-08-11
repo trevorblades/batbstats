@@ -71,7 +71,11 @@ export const typeDefs = gql`
   type Event {
     id: ID!
     name: String!
-    games: [Game!]!
+    games(filter: FilterInput): [Game!]!
+  }
+
+  input FilterInput {
+    round: Int
   }
 
   type Game {
@@ -160,7 +164,7 @@ export const resolvers = {
     event: (_, {id}) => Event.findByPk(id),
     events: () => Event.findAll({order: ['id']}),
     skater: (_, {id}) => Skater.findByPk(id),
-    skaters: () => Skater.findAll({order: ['firstName']}),
+    skaters: () => Skater.findAll({order: ['firstName', 'lastName']}),
     trick: (_, {id}) => Trick.findByPk(id),
     tricks: () => Trick.findAll({order: ['name']}),
     game: (_, {id}) => Game.findByPk(id),
@@ -193,7 +197,11 @@ export const resolvers = {
     }
   },
   Event: {
-    games: event => event.getGames({order: ['round']})
+    games: (event, {filter}) =>
+      event.getGames({
+        where: filter,
+        order: ['round']
+      })
   },
   Game: {
     event: (game, _, {context}) =>

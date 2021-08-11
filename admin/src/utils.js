@@ -43,6 +43,10 @@ export const GAME_FRAGMENT = gql`
     event {
       id
       name
+      # to calculate number of rounds
+      games(filter: {round: 1}) {
+        round
+      }
     }
     skaters {
       id
@@ -130,25 +134,23 @@ export function insert(array, index, item) {
   return [...array.slice(0, index), item, ...array.slice(index + 1)];
 }
 
-export function getRoundName(round) {
-  // TODO: rework to accept a number of rounds and calculate the round name
-  // based on that instead of a hardcoded number => string relationship
-  switch (round.toString()) {
-    case '6':
+export function getRoundName(round, numRounds) {
+  switch (numRounds - round) {
+    case -1:
       return 'Third Place Battle';
-    case '5':
+    case 0:
       return 'Championship Battle';
-    case '4':
+    case 1:
       return 'Semifinal';
-    case '3':
+    case 2:
       return 'Quarterfinal';
     default:
       return `Round ${round}`;
   }
 }
 
-export function getGameTitle(game) {
-  return `${game.event.name}: ${getRoundName(game.round)}`;
+export function getGameTitle(game, numRounds) {
+  return `${game.event.name}: ${getRoundName(game.round, numRounds)}`;
 }
 
 export function getVersus(skaters) {
@@ -169,8 +171,8 @@ export function useCardProps() {
   };
 }
 
-export function getEventMetadata(games) {
-  const rounds = games.reduce((acc, game) => {
+export function getEventMetadata(event) {
+  const rounds = event.games.reduce((acc, game) => {
     const existing = acc[game.round];
     return {
       ...acc,

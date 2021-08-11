@@ -2,12 +2,13 @@ import Header from '../components/Header';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {Helmet} from 'react-helmet';
-import {getGameTitle, getVersus} from '../utils';
+import {getEventMetadata, getGameTitle, getVersus} from '../utils';
 import {graphql} from 'gatsby';
 
 export default function Game({data}) {
   const {game} = data.batbstats;
-  const title = getGameTitle(game);
+  const {numRounds} = getEventMetadata(game.event);
+  const title = getGameTitle(game, numRounds);
   return (
     <>
       <Helmet title={title} />
@@ -30,6 +31,10 @@ export const query = graphql`
         event {
           id
           name
+          # to calculate number of rounds
+          games(filter: {round: 1}) {
+            round
+          }
         }
         skaters {
           id

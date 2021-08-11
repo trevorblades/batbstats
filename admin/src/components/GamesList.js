@@ -5,7 +5,7 @@ import {Link as GatsbyLink} from 'gatsby';
 import {HEADER_HEIGHT} from './Header';
 import {getRoundName, getVersus} from '../utils';
 
-export default function GamesList({rounds}) {
+export default function GamesList({rounds, numRounds}) {
   const listHeaderBg = useColorModeValue('white', 'gray.800');
   return (
     <List>
@@ -22,7 +22,7 @@ export default function GamesList({rounds}) {
             px={4}
             zIndex={1}
           >
-            {getRoundName(round)}
+            {getRoundName(round, numRounds)}
           </ListItem>
           {games.map(game => (
             <ListItem key={game.id}>
@@ -46,5 +46,6 @@ export default function GamesList({rounds}) {
 }
 
 GamesList.propTypes = {
-  rounds: PropTypes.object.isRequired
+  rounds: PropTypes.object.isRequired,
+  numRounds: PropTypes.number.isRequired
 };
