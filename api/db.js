@@ -11,6 +11,7 @@ Skater.init(
   {
     firstName: DataTypes.STRING,
     lastName: DataTypes.STRING,
+    nickname: DataTypes.STRING,
     stance: STANCE_ENUM,
     birthDate: DataTypes.DATE,
     country: DataTypes.STRING

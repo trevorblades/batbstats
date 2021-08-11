@@ -101,6 +101,7 @@ export const typeDefs = gql`
     id: ID!
     firstName: String!
     lastName: String
+    nickname: String
     fullName: String!
     stance: Stance
     birthDate: Date
@@ -252,8 +253,10 @@ export const resolvers = {
     }
   },
   Skater: {
-    fullName: ({firstName, lastName}) =>
-      [firstName, lastName].filter(Boolean).join(' ')
+    fullName: ({firstName, lastName, nickname}) =>
+      [firstName, nickname && `"${nickname}"`, lastName]
+        .filter(Boolean)
+        .join(' ')
   },
   Attempt: {
     trick: attempt => attempt.getTrick(),
