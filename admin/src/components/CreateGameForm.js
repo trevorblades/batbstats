@@ -71,7 +71,12 @@ export default function CreateGameForm({eventId, onClose}) {
         input: {
           round,
           eventId,
-          skaters: skaterIds
+          skaters: skaterIds,
+          // map replacements in/out to their appropriate column name
+          replacements: replacements.map(replacement => ({
+            inId: replacement.in,
+            outId: replacement.out
+          }))
         }
       }
     });

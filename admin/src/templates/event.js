@@ -11,9 +11,7 @@ import {getEventMetadata} from '../utils';
 
 export default function Event({data}) {
   const {event, events} = data.batbstats;
-
-  const {rounds, numRounds, totalGames} = getEventMetadata(event.games);
-
+  const {rounds, numRounds, totalGames} = getEventMetadata(event);
   return (
     <Flex direction="column" h="100vh">
       <Helmet title={event.name} />
@@ -33,6 +31,7 @@ export default function Event({data}) {
           <Box display="inline-block" mx={5}>
             <Bracket
               game={createBracket(rounds[numRounds], numRounds, rounds)[0]}
+              numRounds={numRounds}
             />
           </Box>
         </ScrollContainer>

@@ -71,7 +71,7 @@ Event.hasMany(Game);
 Game.belongsToMany(Skater, {through: 'participants'});
 Skater.belongsToMany(Game, {through: 'participants'});
 
-class Replacement extends Model {}
+export class Replacement extends Model {}
 Replacement.init(
   {},
   {

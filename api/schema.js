@@ -3,6 +3,7 @@ import {
   Attempt,
   Event,
   Game,
+  Replacement,
   Roshambo,
   Skater,
   Trick,
@@ -47,6 +48,12 @@ export const typeDefs = gql`
     round: Int!
     eventId: String!
     skaters: [String!]!
+    replacements: [ReplacementInput!]!
+  }
+
+  input ReplacementInput {
+    inId: String!
+    outId: String!
   }
 
   input UpdateGameInput {
@@ -176,8 +183,8 @@ export const resolvers = {
     createTrick: (_, {input}) => Trick.create(input),
     async createGame(_, args) {
       const {skaters, ...input} = args.input;
-      const game = await Game.create(input);
-      game.setSkaters(skaters);
+      const game = await Game.create(input, {include: Replacement});
+      await game.setSkaters(skaters);
       return game;
     },
     async updateGame(_, {id, input}) {

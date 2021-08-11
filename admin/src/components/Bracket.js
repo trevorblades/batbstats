@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import {Box} from '@chakra-ui/react';
-import {Flex} from '@chakra-ui/layout';
+import {Box, Flex, useColorModeValue} from '@chakra-ui/react';
+import {CheckIcon} from '@chakra-ui/icons';
 import {Link as GatsbyLink} from 'gatsby';
 import {useCardProps} from '../utils';
 
@@ -32,8 +32,10 @@ export function createBracket(games, round, rounds) {
   });
 }
 
-export default function Bracket({game}) {
+export default function Bracket({game, numRounds}) {
   const cardProps = useCardProps();
+  const iconColor = useColorModeValue('green.500', 'green.200');
+
   const bye = game.replacements.find(replacement => replacement.in === null);
   const boxProps = bye
     ? {color: 'gray.500'}
@@ -48,7 +50,7 @@ export default function Bracket({game}) {
         <Flex alignSelf="stretch" align="center">
           <div>
             {game.children.map((child, index) => (
-              <Bracket key={index} game={child} />
+              <Bracket key={index} game={child} numRounds={numRounds} />
             ))}
           </div>
           <Box
@@ -72,22 +74,33 @@ export default function Bracket({game}) {
         {game.skaters.map((skater, index) => {
           const replacement = findReplacement(skater, game.replacements);
           return (
-            <Box
+            <Flex
+              align="center"
               py={1}
               px={2}
-              isTruncated
               key={index}
               borderBottomWidth={1 - index}
             >
-              {bye?.out.id === skater.id ? (
-                <s>{bye.out.fullName}</s>
-              ) : (
-                <>
-                  {replacement && <s>{replacement.out.fullName}</s>}{' '}
-                  {skater.fullName} {bye && '(bye)'}
-                </>
+              <Box isTruncated flexGrow="1" title={skater.fullName}>
+                {bye?.out.id === skater.id ? (
+                  <s>{bye.out.fullName}</s>
+                ) : (
+                  <>
+                    {replacement && <s>{replacement.out.fullName}</s>}{' '}
+                    {skater.fullName} {bye && '(bye)'}
+                  </>
+                )}
+              </Box>
+              {game.result.winner.id === skater.id && (
+                <Flex ml="1">
+                  {game.round === numRounds ? (
+                    '🏆'
+                  ) : (
+                    <CheckIcon fontSize="xs" color={iconColor} />
+                  )}
+                </Flex>
               )}
-            </Box>
+            </Flex>
           );
         })}
       </Box>
@@ -96,5 +109,6 @@ export default function Bracket({game}) {
 }
 
 Bracket.propTypes = {
-  game: PropTypes.object.isRequired
+  game: PropTypes.object.isRequired,
+  numRounds: PropTypes.number.isRequired
 };
