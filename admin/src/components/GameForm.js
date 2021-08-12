@@ -3,7 +3,7 @@ import Header, {HEADER_HEIGHT} from './Header';
 import NumberOfRedos from './NumberOfRedos';
 import PropTypes from 'prop-types';
 import React, {useMemo, useState} from 'react';
-import RoshamboButtons, {ROSHAMBO} from './RoshamboButtons';
+import RoshamboButtons from './RoshamboButtons';
 import TrickSelect from './TrickSelect';
 import {
   Box,
@@ -24,7 +24,9 @@ import {
   SKATE,
   getEventMetadata,
   getGameTitle,
-  insert
+  getRoshamboWinner,
+  insert,
+  reduceRoshambos
 } from '../utils';
 import {Link as GatsbyLink} from 'gatsby';
 import {Helmet} from 'react-helmet';
@@ -58,20 +60,7 @@ export default function GameForm({game}) {
     [game.skaters]
   );
 
-  const [roshambos, setRoshambos] = useState(
-    // reduce flat array of roshambo rounds into roshambo round format
-    // [{[id]: move}]
-    Object.values(
-      game.roshambos.reduce((acc, roshambo) => {
-        const existing = acc[roshambo.round];
-        const next = {[roshambo.skater.id]: roshambo.move};
-        return {
-          ...acc,
-          [roshambo.round]: existing ? {...existing, ...next} : next
-        };
-      }, {})
-    )
-  );
+  const [roshambos, setRoshambos] = useState(reduceRoshambos(game.roshambos));
 
   const [attempts, setAttempts] = useState(
     game.attempts.reduce(
@@ -106,19 +95,10 @@ export default function GameForm({game}) {
       })
   });
 
-  const [roshamboWinner, isRoshamboTied] = useMemo(() => {
-    const lastRound = roshambos[roshambos.length - 1];
-    const [p1, p2] = skaterIds.map(skaterId => lastRound?.[skaterId]);
-
-    // if the round is incomplete or a tie return null
-    const isTied = p1 === p2;
-    if (!p1 || !p2 || isTied) {
-      return [null, isTied];
-    }
-
-    // check to see if p2 is countering p1 and return the appropriate skater id
-    return [skaterIds[Number(ROSHAMBO[p1].counter === p2)], false];
-  }, [roshambos, skaterIds]);
+  const [roshamboWinner, isRoshamboTied] = useMemo(
+    () => getRoshamboWinner(roshambos, skaterIds),
+    [roshambos, skaterIds]
+  );
 
   const winner = useMemo(() => {
     const score = {};

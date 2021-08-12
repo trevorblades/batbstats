@@ -195,3 +195,48 @@ export function getEventMetadata(event) {
 
   return {rounds, numRounds, totalGames};
 }
+
+export const ROSHAMBO = {
+  rock: {
+    emoji: '🪨',
+    counter: 'paper'
+  },
+  paper: {
+    emoji: '📄',
+    counter: 'scissors'
+  },
+  scissors: {
+    emoji: '✂️',
+    counter: 'rock'
+  }
+};
+
+export function reduceRoshambos(roshambos) {
+  // reduce flat array of roshambo rounds into roshambo round format
+  // [{[id]: move}]
+  return Object.values(
+    roshambos.reduce((acc, roshambo) => {
+      const existing = acc[roshambo.round];
+      const next = {[roshambo.skater.id]: roshambo.move};
+      return {
+        ...acc,
+        [roshambo.round]: existing ? {...existing, ...next} : next
+      };
+    }, {})
+  );
+}
+
+// TODO: refactor to get skaterIds from roshambo.skater.id
+export function getRoshamboWinner(roshambos, skaterIds) {
+  const lastRound = roshambos[roshambos.length - 1];
+  const [p1, p2] = skaterIds.map(skaterId => lastRound?.[skaterId]);
+
+  // if the round is incomplete or a tie return null
+  const isTied = p1 === p2;
+  if (!p1 || !p2 || isTied) {
+    return [null, isTied];
+  }
+
+  // check to see if p2 is countering p1 and return the appropriate skater id
+  return [skaterIds[Number(ROSHAMBO[p1].counter === p2)], false];
+}

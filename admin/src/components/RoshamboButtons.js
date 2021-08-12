@@ -1,21 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import {Button, ButtonGroup, chakra} from '@chakra-ui/react';
-
-export const ROSHAMBO = {
-  rock: {
-    emoji: '🪨',
-    counter: 'paper'
-  },
-  paper: {
-    emoji: '📄',
-    counter: 'scissors'
-  },
-  scissors: {
-    emoji: '✂️',
-    counter: 'rock'
-  }
-};
+import {ROSHAMBO} from '../utils';
 
 export default function RoshamboButtons({round, skaterIds, winner, onChange}) {
   return (

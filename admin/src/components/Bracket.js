@@ -91,7 +91,7 @@ export default function Bracket({game, numRounds}) {
                   </>
                 )}
               </Box>
-              {game.result.winner.id === skater.id && (
+              {game.result?.winner.id === skater.id && (
                 <Flex ml="1">
                   {game.round === numRounds ? (
                     '🏆'
