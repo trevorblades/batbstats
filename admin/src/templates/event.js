@@ -7,27 +7,18 @@ import ScrollContainer from 'react-indiana-drag-scroll';
 import {Box, Flex, Heading, Link, Text, useTheme} from '@chakra-ui/react';
 import {Link as GatsbyLink, graphql} from 'gatsby';
 import {Helmet} from 'react-helmet';
-import {ResponsiveBar} from '@nivo/bar';
 import {ResponsivePie} from '@nivo/pie';
+import {ResponsiveScatterPlot} from '@nivo/scatterplot';
+import {ThemeProvider, useTheme as useNivoTheme} from '@nivo/core';
 import {getEventMetadata, getRoshamboWinner, reduceRoshambos} from '../utils';
+
+function ScatterPlot(props) {
+  const theme = useNivoTheme();
+  return <ResponsiveScatterPlot theme={theme} {...props} />;
+}
 
 export default function Event({data}) {
   const {colors} = useTheme();
-
-  const theme = {
-    tooltip: {
-      container: {
-        background: colors.gray[700]
-      }
-    },
-    axis: {
-      ticks: {
-        text: {
-          fill: 'currentcolor'
-        }
-      }
-    }
-  };
 
   const {event, events} = data.batbstats;
   const {rounds, numRounds, totalGames} = getEventMetadata(event);
@@ -79,18 +70,17 @@ export default function Event({data}) {
             }
       };
     }, {})
-  )
-    .map(([id, {name, stance, attempts}]) => {
-      const successfulAttempts = attempts.filter(attempt => attempt.successful);
-      const successRatio = successfulAttempts.length / attempts.length;
-      return {
-        id,
-        name,
-        stance,
-        successRatio: Math.round(successRatio * 1000) / 10
-      };
-    })
-    .sort((a, b) => b.successRatio - a.successRatio);
+  ).map(([id, {name, stance, attempts}]) => {
+    const successfulAttempts = attempts.filter(attempt => attempt.successful);
+    const totalAttempts = attempts.length;
+    return {
+      id,
+      name,
+      stance,
+      totalAttempts,
+      successRatio: successfulAttempts.length / totalAttempts
+    };
+  });
 
   const stances = Object.entries(
     skaters.reduce((acc, skater) => {
@@ -129,6 +119,17 @@ export default function Event({data}) {
     }, {})
   ).map(([id, value]) => ({id, value}));
 
+  const minY = Math.min(...skaters.map(skater => skater.successRatio));
+  const scatterPlotData = skaters.map(skater => ({
+    id: skater.name,
+    data: [
+      {
+        x: skater.totalAttempts,
+        y: skater.successRatio
+      }
+    ]
+  }));
+
   return (
     <Flex direction="column">
       <Helmet title={event.name} />
@@ -144,7 +145,27 @@ export default function Event({data}) {
           <Text>We&apos;re working on it...</Text>
         </Box>
       ) : (
-        <>
+        <ThemeProvider
+          theme={{
+            tooltip: {
+              container: {
+                background: colors.gray[700]
+              }
+            },
+            axis: {
+              ticks: {
+                text: {
+                  fill: 'currentcolor'
+                }
+              },
+              legend: {
+                text: {
+                  fill: 'currentcolor'
+                }
+              }
+            }
+          }}
+        >
           <div>
             <Heading size="md">Most common tricks</Heading>
             <Box h="300px">
@@ -152,24 +173,35 @@ export default function Event({data}) {
                 data={commonTricks}
                 value="numAttempts"
                 id="name"
-                margin={{top: 40, right: 80, bottom: 80, left: 80}}
+                innerRadius={0.5}
+                margin={{top: 40, right: 40, bottom: 40, left: 40}}
                 arcLinkLabelsColor={{from: 'color'}}
                 arcLinkLabelsTextColor="currentcolor"
-                theme={theme}
               />
             </Box>
           </div>
           <div>
             <Heading size="md">Most consistent skaters</Heading>
             <Box h="300px">
-              <ResponsiveBar
-                data={skaters}
+              <ScatterPlot
+                data={scatterPlotData}
                 margin={{top: 40, right: 80, bottom: 80, left: 80}}
-                keys={['successRatio']}
-                theme={theme}
-                indexBy="name"
-                colorBy="indexValue"
-                axisBottom={{tickRotation: -45}}
+                axisLeft={{
+                  legend: 'success rate',
+                  legendPosition: 'middle',
+                  legendOffset: -60
+                }}
+                axisBottom={{
+                  legend: 'total attempts',
+                  legendPosition: 'middle',
+                  legendOffset: 46
+                }}
+                yFormat={value => value.toPrecision(3)}
+                yScale={{
+                  type: 'linear',
+                  min: Math.max(minY - 0.1, 0),
+                  max: 'auto'
+                }}
               />
             </Box>
           </div>
@@ -182,7 +214,6 @@ export default function Event({data}) {
                 margin={{top: 40, right: 80, bottom: 80, left: 80}}
                 arcLinkLabelsColor={{from: 'color'}}
                 arcLinkLabelsTextColor="currentcolor"
-                theme={theme}
               />
             </Box>
           </div>
@@ -194,7 +225,6 @@ export default function Event({data}) {
                 margin={{top: 40, right: 80, bottom: 80, left: 80}}
                 arcLinkLabelsColor={{from: 'color'}}
                 arcLinkLabelsTextColor="currentcolor"
-                theme={theme}
               />
             </Box>
           </div>
@@ -211,7 +241,7 @@ export default function Event({data}) {
               />
             </Box>
           </ScrollContainer>
-        </>
+        </ThemeProvider>
       )}
     </Flex>
   );
