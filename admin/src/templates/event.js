@@ -4,6 +4,7 @@ import Header from '../components/Header';
 import PropTypes from 'prop-types';
 import React, {useMemo} from 'react';
 import ScrollContainer from 'react-indiana-drag-scroll';
+import round from 'lodash/round';
 import {
   Box,
   Flex,
@@ -55,7 +56,7 @@ export default function Event({data}) {
 
   const allAttempts = event.games.flatMap(game => game.attempts);
 
-  const {deadly, common} = allAttempts.reduce(
+  const {common, deadly} = allAttempts.reduce(
     (acc, attempt) => {
       if (attempt.offense ? !attempt.successful : attempt.successful) {
         return acc;
@@ -79,7 +80,7 @@ export default function Event({data}) {
         }
       };
     },
-    {deadly: {}, common: {}}
+    {common: {}, deadly: {}}
   );
 
   const [commonTricks, deadlyTricks] = [common, deadly].map(tricks =>
@@ -87,11 +88,14 @@ export default function Event({data}) {
       .map(([id, {name, attempts}]) => ({
         id,
         name,
-        numAttempts: attempts.length
+        value: attempts.length
       }))
-      .sort((a, b) => b.numAttempts - a.numAttempts)
+      .sort((a, b) => b.value - a.value)
       .slice(0, 10)
   );
+
+  const [mostCommon] = commonTricks;
+  const [deadliest] = deadlyTricks;
 
   const skaters = Object.entries(
     allAttempts.reduce((acc, attempt) => {
@@ -122,7 +126,7 @@ export default function Event({data}) {
     };
   });
 
-  const stances = Object.entries(
+  const stancePopulation = Object.entries(
     skaters.reduce((acc, skater) => {
       const existing = acc[skater.stance];
       return {
@@ -136,16 +140,6 @@ export default function Event({data}) {
       value: skaters.length
     }))
     .sort(sortByStance);
-
-  const winsAfterRoshamboWin = event.games.filter(game => {
-    const skaterIds = game.skaters.map(skater => skater.id);
-    const roshambos = reduceRoshambos(game.roshambos);
-    const [roshamboWinner] = getRoshamboWinner(roshambos, skaterIds);
-    return roshamboWinner === game.result?.winner.id;
-  });
-
-  const roshamboWinRate =
-    Math.round((winsAfterRoshamboWin.length / event.games.length) * 1000) / 10;
 
   const winnerStances = event.games
     .map(game => game.result?.winner.stance)
@@ -162,6 +156,24 @@ export default function Event({data}) {
   )
     .map(([stance, value]) => ({stance, value}))
     .sort(sortByStance);
+
+  // don't need to sort these because stance wins are already sorted
+  const stanceWinsPerCapita = stanceWins.map(({stance, value}, index) => ({
+    stance,
+    value: value / stancePopulation[index].value
+  }));
+
+  const winsAfterRoshamboWin = event.games.filter(game => {
+    const skaterIds = game.skaters.map(skater => skater.id);
+    const roshambos = reduceRoshambos(game.roshambos);
+    const [roshamboWinner] = getRoshamboWinner(roshambos, skaterIds);
+    return roshamboWinner === game.result?.winner.id;
+  });
+
+  const roshamboWinRate = round(
+    (winsAfterRoshamboWin.length / event.games.length) * 100,
+    2
+  );
 
   const minY = Math.min(...skaters.map(skater => skater.successRatio));
   const scatterPlotData = skaters.map(skater => ({
@@ -193,33 +205,38 @@ export default function Event({data}) {
           <SimpleGrid p={6} columns={2} spacing={8}>
             <div>
               <Heading size="md">Most common tricks</Heading>
+              <Text>
+                {round((mostCommon.value / event.games.length) * 100, 2)} % of
+                games had a {mostCommon.name.toLowerCase()} in them.
+              </Text>
               <Box h="300px">
                 <ResponsivePie
                   data={commonTricks}
-                  value="numAttempts"
                   id="name"
                   innerRadius={0.5}
                   margin={{top: 40, right: 40, bottom: 40, left: 40}}
                   arcLinkLabelsColor={{from: 'color'}}
                   arcLinkLabelsTextColor="currentcolor"
                   theme={theme}
-                  colors={{scheme: 'accent'}}
+                  colors={{scheme: 'category10'}}
                 />
               </Box>
             </div>
             <div>
               <Heading size="md">Most deadly tricks</Heading>
+              <Text>
+                {deadliest.name} scored a letter on {deadliest.value} skaters.
+              </Text>
               <Box h="300px">
                 <ResponsivePie
                   data={deadlyTricks}
-                  value="numAttempts"
                   id="name"
                   innerRadius={0.5}
                   margin={{top: 40, right: 40, bottom: 40, left: 40}}
                   arcLinkLabelsColor={{from: 'color'}}
                   arcLinkLabelsTextColor="currentcolor"
                   theme={theme}
-                  colors={{scheme: 'accent'}}
+                  colors={{scheme: 'category10'}}
                 />
               </Box>
             </div>
@@ -246,6 +263,7 @@ export default function Event({data}) {
                     max: 'auto'
                   }}
                   theme={theme}
+                  colors={{scheme: 'category10'}}
                 />
               </Box>
             </Box>
@@ -253,12 +271,13 @@ export default function Event({data}) {
               <Heading size="md">Stance distribution</Heading>
               <Box h="300px">
                 <ResponsivePie
-                  data={stances}
+                  data={stancePopulation}
                   id="stance"
                   margin={{top: 40, right: 80, bottom: 80, left: 80}}
                   arcLinkLabelsColor={{from: 'color'}}
                   arcLinkLabelsTextColor="currentcolor"
                   theme={theme}
+                  colors={{scheme: 'category10'}}
                 />
               </Box>
             </div>
@@ -272,6 +291,22 @@ export default function Event({data}) {
                   arcLinkLabelsColor={{from: 'color'}}
                   arcLinkLabelsTextColor="currentcolor"
                   theme={theme}
+                  colors={{scheme: 'category10'}}
+                />
+              </Box>
+            </div>
+            <div>
+              <Heading size="md">Stance wins per capita</Heading>
+              <Box h="300px">
+                <ResponsivePie
+                  data={stanceWinsPerCapita}
+                  id="stance"
+                  margin={{top: 40, right: 80, bottom: 80, left: 80}}
+                  arcLinkLabelsColor={{from: 'color'}}
+                  arcLinkLabelsTextColor="currentcolor"
+                  theme={theme}
+                  colors={{scheme: 'category10'}}
+                  valueFormat={value => round(value, 2)}
                 />
               </Box>
             </div>
