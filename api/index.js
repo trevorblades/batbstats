@@ -17,5 +17,5 @@ const server = new ApolloServer({
 
 sequelize.sync().then(async () => {
   const {url} = await server.listen({port: process.env.PORT});
-  console.log(`🚀 Server ready at ${url}`);
+  console.log(`🛹 Server ready at ${url}`);
 });

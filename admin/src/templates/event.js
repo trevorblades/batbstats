@@ -2,56 +2,96 @@ import Bracket, {createBracket} from '../components/Bracket';
 import EventSelect from '../components/EventSelect';
 import Header from '../components/Header';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, {useMemo} from 'react';
 import ScrollContainer from 'react-indiana-drag-scroll';
-import {Box, Flex, Heading, Link, Text, useTheme} from '@chakra-ui/react';
+import {
+  Box,
+  Flex,
+  Heading,
+  Link,
+  SimpleGrid,
+  Text,
+  useColorModeValue,
+  useTheme
+} from '@chakra-ui/react';
 import {Link as GatsbyLink, graphql} from 'gatsby';
 import {Helmet} from 'react-helmet';
 import {ResponsivePie} from '@nivo/pie';
 import {ResponsiveScatterPlot} from '@nivo/scatterplot';
-import {ThemeProvider, useTheme as useNivoTheme} from '@nivo/core';
 import {getEventMetadata, getRoshamboWinner, reduceRoshambos} from '../utils';
 
-function ScatterPlot(props) {
-  const theme = useNivoTheme();
-  return <ResponsiveScatterPlot theme={theme} {...props} />;
-}
+const sortByStance = (a, b) =>
+  a.stance === b.stance ? 0 : a.stance > b.stance ? 1 : -1;
 
 export default function Event({data}) {
   const {colors} = useTheme();
+  const tooltipBgShade = useColorModeValue(50, 700);
+
+  const theme = useMemo(
+    () => ({
+      tooltip: {
+        container: {
+          background: colors.gray[tooltipBgShade]
+        }
+      },
+      axis: {
+        ticks: {
+          text: {
+            fill: 'currentcolor'
+          }
+        },
+        legend: {
+          text: {
+            fill: 'currentcolor'
+          }
+        }
+      }
+    }),
+    [colors, tooltipBgShade]
+  );
 
   const {event, events} = data.batbstats;
   const {rounds, numRounds, totalGames} = getEventMetadata(event);
 
   const allAttempts = event.games.flatMap(game => game.attempts);
-  const successfulOffensiveAttempts = allAttempts.filter(
-    attempt => attempt.offense && attempt.successful
-  );
 
-  const commonTricks = Object.entries(
-    successfulOffensiveAttempts.reduce((acc, attempt) => {
-      const existing = acc[attempt.trick.id];
+  const {deadly, common} = allAttempts.reduce(
+    (acc, attempt) => {
+      if (attempt.offense ? !attempt.successful : attempt.successful) {
+        return acc;
+      }
+
+      const key = attempt.offense ? 'common' : 'deadly';
+      const existing = acc[key][attempt.trick.id];
       return {
         ...acc,
-        [attempt.trick.id]: existing
-          ? {
-              ...existing,
-              attempts: [...existing.attempts, attempt]
-            }
-          : {
-              name: attempt.trick.name,
-              attempts: [attempt]
-            }
+        [key]: {
+          ...acc[key],
+          [attempt.trick.id]: existing
+            ? {
+                ...existing,
+                attempts: [...existing.attempts, attempt]
+              }
+            : {
+                name: attempt.trick.name,
+                attempts: [attempt]
+              }
+        }
       };
-    }, [])
-  )
-    .map(([id, {name, attempts}]) => ({
-      id,
-      name,
-      numAttempts: attempts.length
-    }))
-    .sort((a, b) => b.numAttempts - a.numAttempts)
-    .slice(0, 5);
+    },
+    {deadly: {}, common: {}}
+  );
+
+  const [commonTricks, deadlyTricks] = [common, deadly].map(tricks =>
+    Object.entries(tricks)
+      .map(([id, {name, attempts}]) => ({
+        id,
+        name,
+        numAttempts: attempts.length
+      }))
+      .sort((a, b) => b.numAttempts - a.numAttempts)
+      .slice(0, 10)
+  );
 
   const skaters = Object.entries(
     allAttempts.reduce((acc, attempt) => {
@@ -90,10 +130,12 @@ export default function Event({data}) {
         [skater.stance]: existing ? [...existing, skater] : [skater]
       };
     }, {})
-  ).map(([stance, skaters]) => ({
-    stance,
-    value: skaters.length
-  }));
+  )
+    .map(([stance, skaters]) => ({
+      stance,
+      value: skaters.length
+    }))
+    .sort(sortByStance);
 
   const winsAfterRoshamboWin = event.games.filter(game => {
     const skaterIds = game.skaters.map(skater => skater.id);
@@ -117,7 +159,9 @@ export default function Event({data}) {
         [stance]: count + 1
       };
     }, {})
-  ).map(([id, value]) => ({id, value}));
+  )
+    .map(([stance, value]) => ({stance, value}))
+    .sort(sortByStance);
 
   const minY = Math.min(...skaters.map(skater => skater.successRatio));
   const scatterPlotData = skaters.map(skater => ({
@@ -145,94 +189,98 @@ export default function Event({data}) {
           <Text>We&apos;re working on it...</Text>
         </Box>
       ) : (
-        <ThemeProvider
-          theme={{
-            tooltip: {
-              container: {
-                background: colors.gray[700]
-              }
-            },
-            axis: {
-              ticks: {
-                text: {
-                  fill: 'currentcolor'
-                }
-              },
-              legend: {
-                text: {
-                  fill: 'currentcolor'
-                }
-              }
-            }
-          }}
-        >
-          <div>
-            <Heading size="md">Most common tricks</Heading>
-            <Box h="300px">
-              <ResponsivePie
-                data={commonTricks}
-                value="numAttempts"
-                id="name"
-                innerRadius={0.5}
-                margin={{top: 40, right: 40, bottom: 40, left: 40}}
-                arcLinkLabelsColor={{from: 'color'}}
-                arcLinkLabelsTextColor="currentcolor"
-              />
+        <>
+          <SimpleGrid p={6} columns={2} spacing={8}>
+            <div>
+              <Heading size="md">Most common tricks</Heading>
+              <Box h="300px">
+                <ResponsivePie
+                  data={commonTricks}
+                  value="numAttempts"
+                  id="name"
+                  innerRadius={0.5}
+                  margin={{top: 40, right: 40, bottom: 40, left: 40}}
+                  arcLinkLabelsColor={{from: 'color'}}
+                  arcLinkLabelsTextColor="currentcolor"
+                  theme={theme}
+                  colors={{scheme: 'accent'}}
+                />
+              </Box>
+            </div>
+            <div>
+              <Heading size="md">Most deadly tricks</Heading>
+              <Box h="300px">
+                <ResponsivePie
+                  data={deadlyTricks}
+                  value="numAttempts"
+                  id="name"
+                  innerRadius={0.5}
+                  margin={{top: 40, right: 40, bottom: 40, left: 40}}
+                  arcLinkLabelsColor={{from: 'color'}}
+                  arcLinkLabelsTextColor="currentcolor"
+                  theme={theme}
+                  colors={{scheme: 'accent'}}
+                />
+              </Box>
+            </div>
+            <Box gridColumn="1 / 3">
+              <Heading size="md">Most consistent skaters</Heading>
+              <Box h="300px">
+                <ResponsiveScatterPlot
+                  data={scatterPlotData}
+                  margin={{top: 40, right: 80, bottom: 80, left: 80}}
+                  axisLeft={{
+                    legend: 'success rate',
+                    legendPosition: 'middle',
+                    legendOffset: -60
+                  }}
+                  axisBottom={{
+                    legend: 'total attempts',
+                    legendPosition: 'middle',
+                    legendOffset: 46
+                  }}
+                  yFormat={value => value.toPrecision(3)}
+                  yScale={{
+                    type: 'linear',
+                    min: Math.max(minY - 0.1, 0),
+                    max: 'auto'
+                  }}
+                  theme={theme}
+                />
+              </Box>
             </Box>
-          </div>
-          <div>
-            <Heading size="md">Most consistent skaters</Heading>
-            <Box h="300px">
-              <ScatterPlot
-                data={scatterPlotData}
-                margin={{top: 40, right: 80, bottom: 80, left: 80}}
-                axisLeft={{
-                  legend: 'success rate',
-                  legendPosition: 'middle',
-                  legendOffset: -60
-                }}
-                axisBottom={{
-                  legend: 'total attempts',
-                  legendPosition: 'middle',
-                  legendOffset: 46
-                }}
-                yFormat={value => value.toPrecision(3)}
-                yScale={{
-                  type: 'linear',
-                  min: Math.max(minY - 0.1, 0),
-                  max: 'auto'
-                }}
-              />
-            </Box>
-          </div>
-          <div>
-            <Heading size="md">Stance distribution</Heading>
-            <Box h="300px">
-              <ResponsivePie
-                data={stances}
-                id="stance"
-                margin={{top: 40, right: 80, bottom: 80, left: 80}}
-                arcLinkLabelsColor={{from: 'color'}}
-                arcLinkLabelsTextColor="currentcolor"
-              />
-            </Box>
-          </div>
-          <div>
-            <Heading size="md">Wins by stance</Heading>
-            <Box h="300px">
-              <ResponsivePie
-                data={stanceWins}
-                margin={{top: 40, right: 80, bottom: 80, left: 80}}
-                arcLinkLabelsColor={{from: 'color'}}
-                arcLinkLabelsTextColor="currentcolor"
-              />
-            </Box>
-          </div>
-          <div>
-            <Heading size="md">
-              RPS winner wins the game {roshamboWinRate} % of the time
-            </Heading>
-          </div>
+            <div>
+              <Heading size="md">Stance distribution</Heading>
+              <Box h="300px">
+                <ResponsivePie
+                  data={stances}
+                  id="stance"
+                  margin={{top: 40, right: 80, bottom: 80, left: 80}}
+                  arcLinkLabelsColor={{from: 'color'}}
+                  arcLinkLabelsTextColor="currentcolor"
+                  theme={theme}
+                />
+              </Box>
+            </div>
+            <div>
+              <Heading size="md">Wins by stance</Heading>
+              <Box h="300px">
+                <ResponsivePie
+                  data={stanceWins}
+                  id="stance"
+                  margin={{top: 40, right: 80, bottom: 80, left: 80}}
+                  arcLinkLabelsColor={{from: 'color'}}
+                  arcLinkLabelsTextColor="currentcolor"
+                  theme={theme}
+                />
+              </Box>
+            </div>
+            <div>
+              <Heading size="md">
+                RPS winner wins the game {roshamboWinRate} % of the time
+              </Heading>
+            </div>
+          </SimpleGrid>
           <ScrollContainer hideScrollbars={false}>
             <Box display="inline-block" mx={5}>
               <Bracket
@@ -241,7 +289,7 @@ export default function Event({data}) {
               />
             </Box>
           </ScrollContainer>
-        </ThemeProvider>
+        </>
       )}
     </Flex>
   );
