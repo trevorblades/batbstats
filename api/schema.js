@@ -46,6 +46,7 @@ export const typeDefs = gql`
 
   input CreateGameInput {
     round: Int!
+    date: Date
     eventId: String!
     skaters: [String!]!
     replacements: [ReplacementInput!]!
@@ -57,6 +58,7 @@ export const typeDefs = gql`
   }
 
   input UpdateGameInput {
+    date: Date
     roshambos: [RoshamboInput!]!
     attempts: [AttemptInput!]!
   }
@@ -201,6 +203,7 @@ export const resolvers = {
       await game.setAttempts(attempts);
 
       game.changed('updatedAt', true);
+      game.setDataValue('date', input.date);
       return game.save();
     }
   },

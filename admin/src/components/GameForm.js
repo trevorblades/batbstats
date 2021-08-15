@@ -13,6 +13,7 @@ import {
   Flex,
   HStack,
   IconButton,
+  Input,
   Stack,
   chakra,
   useColorModeValue,
@@ -55,6 +56,8 @@ function getScore(attempts) {
 }
 
 export default function GameForm({game}) {
+  const [date, setDate] = useState(game.date || '');
+
   const skaterIds = useMemo(
     () => game.skaters.map(skater => skater.id),
     [game.skaters]
@@ -166,6 +169,14 @@ export default function GameForm({game}) {
       <Helmet title={title} />
       <Header>
         {title}
+        <Input
+          ml="2"
+          w="auto"
+          size="sm"
+          type="date"
+          value={date}
+          onChange={event => setDate(event.target.value)}
+        />
         <HStack ml="auto">
           <chakra.span fontSize="sm" color="gray.500">
             Last saved {new Date(game.updatedAt).toLocaleString()}
@@ -186,6 +197,7 @@ export default function GameForm({game}) {
                   variables: {
                     id: game.id,
                     input: {
+                      date: date || null,
                       roshambos: roshambos.flatMap((roshambo, index) =>
                         Object.entries(roshambo).map(([skaterId, move]) => ({
                           round: index + 1,

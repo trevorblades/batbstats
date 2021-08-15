@@ -36,6 +36,7 @@ export default function GamesList({rounds, numRounds}) {
                 fontWeight="normal"
               >
                 {getVersus(game.skaters)}
+                {game.date && <Box ml="auto">{game.date}</Box>}
               </Button>
             </ListItem>
           ))}

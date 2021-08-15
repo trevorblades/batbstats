@@ -23,6 +23,7 @@ export const TRICK_FRAGMENT = gql`
   fragment TrickFragment on Trick {
     id
     name
+    variation
   }
 `;
 
@@ -39,6 +40,7 @@ export const GAME_FRAGMENT = gql`
   fragment GameFragment on Game {
     id
     round
+    date
     updatedAt
     event {
       id
@@ -93,6 +95,7 @@ export const EVENT_FRAGMENT = gql`
     games {
       id
       round
+      date
       skaters {
         id
         fullName
