@@ -24,6 +24,39 @@ import {getEventMetadata, getRoshamboWinner, reduceRoshambos} from '../utils';
 const sortByStance = (a, b) =>
   a.stance === b.stance ? 0 : a.stance > b.stance ? 1 : -1;
 
+function MyScatterPlot(props) {
+  return (
+    <ResponsiveScatterPlot
+      margin={{top: 40, right: 80, bottom: 80, left: 80}}
+      axisLeft={{
+        legend: 'letters earned',
+        legendPosition: 'middle',
+        legendOffset: -60
+      }}
+      axisBottom={{
+        legend: 'times set',
+        legendPosition: 'middle',
+        legendOffset: 46
+      }}
+      colors={{scheme: 'category10'}}
+      {...props}
+    />
+  );
+}
+
+function MyPie(props) {
+  return (
+    <ResponsivePie
+      innerRadius={0.5}
+      margin={{top: 40, right: 40, bottom: 40, left: 40}}
+      arcLinkLabelsColor={{from: 'color'}}
+      arcLinkLabelsTextColor="currentcolor"
+      colors={{scheme: 'category10'}}
+      {...props}
+    />
+  );
+}
+
 export default function Event({data}) {
   const {colors} = useTheme();
   const tooltipBgShade = useColorModeValue(50, 700);
@@ -82,6 +115,16 @@ export default function Event({data}) {
     },
     {common: {}, deadly: {}}
   );
+
+  const trickData = Object.entries(common).map(([id, {name, attempts}]) => ({
+    id: name,
+    data: [
+      {
+        x: attempts.length,
+        y: id in deadly ? deadly[id].attempts.length : 0
+      }
+    ]
+  }));
 
   const [commonTricks, deadlyTricks] = [common, deadly].map(tricks =>
     Object.entries(tricks)
@@ -202,7 +245,7 @@ export default function Event({data}) {
         </Box>
       ) : (
         <>
-          <SimpleGrid p={6} columns={2} spacing={8}>
+          <SimpleGrid columns={2} spacing={8}>
             <div>
               <Heading size="md">Most common tricks</Heading>
               <Text>
@@ -210,16 +253,7 @@ export default function Event({data}) {
                 games had a {mostCommon.name.toLowerCase()} in them.
               </Text>
               <Box h="300px">
-                <ResponsivePie
-                  data={commonTricks}
-                  id="name"
-                  innerRadius={0.5}
-                  margin={{top: 40, right: 40, bottom: 40, left: 40}}
-                  arcLinkLabelsColor={{from: 'color'}}
-                  arcLinkLabelsTextColor="currentcolor"
-                  theme={theme}
-                  colors={{scheme: 'category10'}}
-                />
+                <MyPie data={commonTricks} id="name" theme={theme} />
               </Box>
             </div>
             <div>
@@ -228,45 +262,39 @@ export default function Event({data}) {
                 {deadliest.name} scored a letter on {deadliest.value} skaters.
               </Text>
               <Box h="300px">
-                <ResponsivePie
-                  data={deadlyTricks}
-                  id="name"
-                  innerRadius={0.5}
-                  margin={{top: 40, right: 40, bottom: 40, left: 40}}
-                  arcLinkLabelsColor={{from: 'color'}}
-                  arcLinkLabelsTextColor="currentcolor"
-                  theme={theme}
-                  colors={{scheme: 'category10'}}
-                />
+                <MyPie data={deadlyTricks} id="name" theme={theme} />
               </Box>
             </div>
-            <Box gridColumn="1 / 3">
-              <Heading size="md">Most consistent skaters</Heading>
-              <Box h="300px">
-                <ResponsiveScatterPlot
-                  data={scatterPlotData}
-                  margin={{top: 40, right: 80, bottom: 80, left: 80}}
-                  axisLeft={{
-                    legend: 'success rate',
-                    legendPosition: 'middle',
-                    legendOffset: -60
-                  }}
-                  axisBottom={{
-                    legend: 'total attempts',
-                    legendPosition: 'middle',
-                    legendOffset: 46
-                  }}
-                  yFormat={value => value.toPrecision(3)}
-                  yScale={{
-                    type: 'linear',
-                    min: Math.max(minY - 0.1, 0),
-                    max: 'auto'
-                  }}
-                  theme={theme}
-                  colors={{scheme: 'category10'}}
-                />
-              </Box>
+          </SimpleGrid>
+          <div>
+            <Heading size="md">Distribution of tricks</Heading>
+            <Box h="300px">
+              <MyScatterPlot
+                data={trickData}
+                theme={theme}
+                legendLeft="letters earned"
+                legendBottom="times set"
+              />
             </Box>
+          </div>
+          <div>
+            <Heading size="md">Most consistent skaters</Heading>
+            <Box h="300px">
+              <MyScatterPlot
+                data={scatterPlotData}
+                theme={theme}
+                yFormat={value => value.toPrecision(3)}
+                yScale={{
+                  type: 'linear',
+                  min: Math.max(minY - 0.1, 0),
+                  max: 'auto'
+                }}
+                legendLeft="success rate"
+                legendBottom="total attempts"
+              />
+            </Box>
+          </div>
+          <SimpleGrid spacing={8} columns={3}>
             <div>
               <Heading size="md">Stance distribution</Heading>
               <Box h="300px">
@@ -310,12 +338,12 @@ export default function Event({data}) {
                 />
               </Box>
             </div>
-            <div>
-              <Heading size="md">
-                RPS winner wins the game {roshamboWinRate} % of the time
-              </Heading>
-            </div>
           </SimpleGrid>
+          <div>
+            <Heading size="md">
+              RPS winner wins the game {roshamboWinRate} % of the time
+            </Heading>
+          </div>
           <ScrollContainer hideScrollbars={false}>
             <Box display="inline-block" mx={5}>
               <Bracket
