@@ -1,5 +1,4 @@
 import {ApolloServer} from 'apollo-server';
-import {ApolloServerPluginLandingPageProductionDefault} from 'apollo-server-core';
 import {DateTimeTypeDefinition, DateTypeDefinition} from 'graphql-scalars';
 import {applyMiddleware} from 'graphql-middleware';
 import {createContext} from 'dataloader-sequelize';
@@ -21,12 +20,7 @@ const server = new ApolloServer({
   schema: applyMiddleware(schema, permissions),
   context() {
     return {context: createContext(sequelize)};
-  },
-  plugins: [
-    ApolloServerPluginLandingPageProductionDefault({
-      graphRef: 'batbstats@current'
-    })
-  ]
+  }
 });
 
 sequelize.sync().then(async () => {
