@@ -1,4 +1,5 @@
 import {ApolloServer} from 'apollo-server';
+import {ApolloServerPluginLandingPageGraphQLPlayground} from 'apollo-server-core';
 import {DateTimeTypeDefinition, DateTypeDefinition} from 'graphql-scalars';
 import {applyMiddleware} from 'graphql-middleware';
 import {createContext} from 'dataloader-sequelize';
@@ -20,7 +21,8 @@ const server = new ApolloServer({
   schema: applyMiddleware(schema, permissions),
   context() {
     return {context: createContext(sequelize)};
-  }
+  },
+  plugins: [ApolloServerPluginLandingPageGraphQLPlayground()]
 });
 
 sequelize.sync().then(async () => {
