@@ -3,8 +3,7 @@
     "node": "14"
   },
   "scripts": {
-    "dev": "nodemon -r dotenv/config index.js",
-    "start": "node index.js"
+    "start": "nodemon -r dotenv/config index.js"
   },
   "type": "module",
   "eslintConfig": {
