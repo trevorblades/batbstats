@@ -23,6 +23,7 @@
     "@emotion/styled": "^11.3.0",
     "@mpth/react-no-ssr": "^1.0.1",
     "@nivo/core": "^0.73.0",
+    "@nivo/geo": "^0.73.0",
     "@nivo/pie": "^0.73.0",
     "@nivo/scatterplot": "^0.73.0",
     "@svgr/webpack": "^5.5.0",

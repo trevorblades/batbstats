@@ -15,47 +15,15 @@ import {
   useColorModeValue,
   useTheme
 } from '@chakra-ui/react';
+import {Choropleth, Pie, ScatterPlot} from '../components/charts';
 import {Link as GatsbyLink, graphql} from 'gatsby';
 import {Helmet} from 'react-helmet';
-import {ResponsivePie} from '@nivo/pie';
-import {ResponsiveScatterPlot} from '@nivo/scatterplot';
+import {ThemeProvider} from '@nivo/core';
 import {getEventMetadata, getRoshamboWinner, reduceRoshambos} from '../utils';
+import {groupBy} from 'lodash';
 
 const sortByStance = (a, b) =>
   a.stance === b.stance ? 0 : a.stance > b.stance ? 1 : -1;
-
-function MyScatterPlot(props) {
-  return (
-    <ResponsiveScatterPlot
-      margin={{top: 40, right: 80, bottom: 80, left: 80}}
-      axisLeft={{
-        legend: 'letters earned',
-        legendPosition: 'middle',
-        legendOffset: -60
-      }}
-      axisBottom={{
-        legend: 'times set',
-        legendPosition: 'middle',
-        legendOffset: 46
-      }}
-      colors={{scheme: 'category10'}}
-      {...props}
-    />
-  );
-}
-
-function MyPie(props) {
-  return (
-    <ResponsivePie
-      innerRadius={0.5}
-      margin={{top: 40, right: 40, bottom: 40, left: 40}}
-      arcLinkLabelsColor={{from: 'color'}}
-      arcLinkLabelsTextColor="currentcolor"
-      colors={{scheme: 'category10'}}
-      {...props}
-    />
-  );
-}
 
 export default function Event({data}) {
   const {colors} = useTheme();
@@ -116,15 +84,31 @@ export default function Event({data}) {
     {common: {}, deadly: {}}
   );
 
-  const trickData = Object.entries(common).map(([id, {name, attempts}]) => ({
-    id: name,
-    data: [
-      {
-        x: attempts.length,
-        y: id in deadly ? deadly[id].attempts.length : 0
-      }
-    ]
-  }));
+  const attemptsByTrick = groupBy(allAttempts, 'trick.name');
+
+  const trickData = Object.entries(attemptsByTrick).map(([name, attempts]) => {
+    const offensiveAttempts = attempts.filter(attempt => attempt.offense);
+    const successfulOffensiveAttempts = offensiveAttempts.filter(
+      attempt => attempt.successful
+    );
+
+    const defensiveAttempts = attempts.filter(attempt => !attempt.offense);
+    const unsuccessfulDefensiveAttempts = defensiveAttempts.filter(
+      attempt => !attempt.successful
+    );
+
+    return {
+      id: name,
+      data: [
+        {
+          x: offensiveAttempts.length,
+          y:
+            defensiveAttempts.length &&
+            unsuccessfulDefensiveAttempts.length / defensiveAttempts.length
+        }
+      ]
+    };
+  });
 
   const [commonTricks, deadlyTricks] = [common, deadly].map(tricks =>
     Object.entries(tricks)
@@ -151,19 +135,16 @@ export default function Event({data}) {
               attempts: [...existing.attempts, attempt]
             }
           : {
-              name: attempt.skater.fullName,
-              stance: attempt.skater.stance,
+              ...attempt.skater,
               attempts: [attempt]
             }
       };
     }, {})
-  ).map(([id, {name, stance, attempts}]) => {
+  ).map(([, {attempts, ...skater}]) => {
     const successfulAttempts = attempts.filter(attempt => attempt.successful);
     const totalAttempts = attempts.length;
     return {
-      id,
-      name,
-      stance,
+      ...skater,
       totalAttempts,
       successRatio: successfulAttempts.length / totalAttempts
     };
@@ -229,6 +210,13 @@ export default function Event({data}) {
     ]
   }));
 
+  const geoData = Object.entries(groupBy(skaters, 'country')).map(
+    ([country, skaters]) => ({
+      id: country,
+      value: skaters.length
+    })
+  );
+
   return (
     <Flex direction="column">
       <Helmet title={event.name} />
@@ -244,7 +232,7 @@ export default function Event({data}) {
           <Text>We&apos;re working on it...</Text>
         </Box>
       ) : (
-        <>
+        <ThemeProvider theme={theme}>
           <SimpleGrid columns={2} spacing={8}>
             <div>
               <Heading size="md">Most common tricks</Heading>
@@ -253,7 +241,7 @@ export default function Event({data}) {
                 games had a {mostCommon.name.toLowerCase()} in them.
               </Text>
               <Box h="300px">
-                <MyPie data={commonTricks} id="name" theme={theme} />
+                <Pie data={commonTricks} id="name" />
               </Box>
             </div>
             <div>
@@ -262,27 +250,35 @@ export default function Event({data}) {
                 {deadliest.name} scored a letter on {deadliest.value} skaters.
               </Text>
               <Box h="300px">
-                <MyPie data={deadlyTricks} id="name" theme={theme} />
+                <Pie data={deadlyTricks} id="name" />
               </Box>
             </div>
           </SimpleGrid>
           <div>
             <Heading size="md">Distribution of tricks</Heading>
             <Box h="300px">
-              <MyScatterPlot
+              <ScatterPlot
                 data={trickData}
-                theme={theme}
                 legendLeft="letters earned"
                 legendBottom="times set"
               />
             </Box>
           </div>
           <div>
+            <Heading size="md">Skater origin</Heading>
+            <Box h="500px">
+              <Choropleth
+                colors="nivo"
+                domain={[0, skaters.length]}
+                data={geoData}
+              />
+            </Box>
+          </div>
+          <div>
             <Heading size="md">Most consistent skaters</Heading>
             <Box h="300px">
-              <MyScatterPlot
+              <ScatterPlot
                 data={scatterPlotData}
-                theme={theme}
                 yFormat={value => value.toPrecision(3)}
                 yScale={{
                   type: 'linear',
@@ -298,42 +294,21 @@ export default function Event({data}) {
             <div>
               <Heading size="md">Stance distribution</Heading>
               <Box h="300px">
-                <ResponsivePie
-                  data={stancePopulation}
-                  id="stance"
-                  margin={{top: 40, right: 80, bottom: 80, left: 80}}
-                  arcLinkLabelsColor={{from: 'color'}}
-                  arcLinkLabelsTextColor="currentcolor"
-                  theme={theme}
-                  colors={{scheme: 'category10'}}
-                />
+                <Pie data={stancePopulation} id="stance" />
               </Box>
             </div>
             <div>
               <Heading size="md">Wins by stance</Heading>
               <Box h="300px">
-                <ResponsivePie
-                  data={stanceWins}
-                  id="stance"
-                  margin={{top: 40, right: 80, bottom: 80, left: 80}}
-                  arcLinkLabelsColor={{from: 'color'}}
-                  arcLinkLabelsTextColor="currentcolor"
-                  theme={theme}
-                  colors={{scheme: 'category10'}}
-                />
+                <Pie data={stanceWins} id="stance" />
               </Box>
             </div>
             <div>
               <Heading size="md">Stance wins per capita</Heading>
               <Box h="300px">
-                <ResponsivePie
+                <Pie
                   data={stanceWinsPerCapita}
                   id="stance"
-                  margin={{top: 40, right: 80, bottom: 80, left: 80}}
-                  arcLinkLabelsColor={{from: 'color'}}
-                  arcLinkLabelsTextColor="currentcolor"
-                  theme={theme}
-                  colors={{scheme: 'category10'}}
                   valueFormat={value => round(value, 2)}
                 />
               </Box>
@@ -352,7 +327,7 @@ export default function Event({data}) {
               />
             </Box>
           </ScrollContainer>
-        </>
+        </ThemeProvider>
       )}
     </Flex>
   );
@@ -412,8 +387,9 @@ export const query = graphql`
             }
             skater {
               id
-              fullName
+              name: fullName
               stance
+              country
             }
           }
         }
