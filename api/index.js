@@ -22,6 +22,7 @@ const server = new ApolloServer({
   context() {
     return {context: createContext(sequelize)};
   },
+  introspection: true,
   plugins: [ApolloServerPluginLandingPageGraphQLPlayground()]
 });
 
