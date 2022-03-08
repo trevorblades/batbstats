@@ -1,4 +1,5 @@
 import GameForm from '../../../components/GameForm';
+import NoSSR from '@mpth/react-no-ssr';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {GAME_FRAGMENT} from '../../../utils';
@@ -13,9 +14,9 @@ const GET_GAME = gql`
   ${GAME_FRAGMENT}
 `;
 
-export default function EditGame({params}) {
+function GetGame({variables}) {
   const {data, loading, error} = useQuery(GET_GAME, {
-    variables: {id: params.id}
+    variables
   });
 
   if (loading) {
@@ -31,6 +32,18 @@ export default function EditGame({params}) {
   }
 
   return <GameForm game={data.game} />;
+}
+
+GetGame.propTypes = {
+  variables: PropTypes.object.isRequired
+};
+
+export default function EditGame({params}) {
+  return (
+    <NoSSR>
+      <GetGame variables={{id: params.id}} />
+    </NoSSR>
+  );
 }
 
 EditGame.propTypes = {

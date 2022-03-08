@@ -2,6 +2,7 @@ import CreateGameButton from '../../../components/CreateGameButton';
 import EventSelect from '../../../components/EventSelect';
 import GamesList from '../../../components/GamesList';
 import Header from '../../../components/Header';
+import NoSSR from '@mpth/react-no-ssr';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {Box, Progress, Text} from '@chakra-ui/react';
@@ -9,10 +10,8 @@ import {GET_EVENT, getEventMetadata} from '../../../utils';
 import {Helmet} from 'react-helmet';
 import {useQuery} from '@apollo/client';
 
-export default function EditEvent({params}) {
-  const {data, loading, error} = useQuery(GET_EVENT, {
-    variables: {id: params.id}
-  });
+function GetEvent({variables}) {
+  const {data, loading, error} = useQuery(GET_EVENT, {variables});
 
   if (loading) {
     return <div>Loading...</div>;
@@ -47,6 +46,18 @@ export default function EditEvent({params}) {
       </Header>
       <GamesList rounds={rounds} numRounds={numRounds} />
     </div>
+  );
+}
+
+GetEvent.propTypes = {
+  variables: PropTypes.object.isRequired
+};
+
+export default function EditEvent({params}) {
+  return (
+    <NoSSR>
+      <GetEvent variables={{id: params.id}} />
+    </NoSSR>
   );
 }
 
