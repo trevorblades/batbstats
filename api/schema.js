@@ -99,6 +99,7 @@ export const typeDefs = gql`
     attempts: [Attempt!]!
     roshambos: [Roshambo!]!
     replacements: [Replacement!]!
+    opponent: Skater
   }
 
   type Result {
@@ -115,6 +116,7 @@ export const typeDefs = gql`
     stance: Stance
     birthDate: Date
     country: String
+    games: [Game!]!
   }
 
   enum Stance {
@@ -260,13 +262,40 @@ export const resolvers = {
         winner: skater,
         lettersAgainst: 0
       };
+    },
+    async opponent(game) {
+      if (!game.participants) {
+        return null;
+      }
+
+      const [opponent] = await game.getSkaters({
+        where: {
+          id: {
+            [Sequelize.Op.not]: game.participants.skaterId
+          }
+        }
+      });
+      return opponent;
     }
   },
   Skater: {
     fullName: ({firstName, lastName, nickname}) =>
       [firstName, nickname && `"${nickname}"`, lastName]
         .filter(Boolean)
-        .join(' ')
+        .join(' '),
+    async games(skater) {
+      const games = await skater.getGames({
+        include: [Replacement]
+      });
+      return games.filter(
+        game =>
+          // filter out games where the skater got replaced
+          !game.replacements.length ||
+          !game.replacements.some(
+            replacement => replacement.outId === skater.id
+          )
+      );
+    }
   },
   Attempt: {
     trick: attempt => attempt.getTrick(),
