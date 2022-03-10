@@ -132,6 +132,7 @@ export const typeDefs = gql`
     flip: Int!
     shuv: Int!
     other: Boolean!
+    attempts: [Attempt!]!
   }
 
   enum Variation {
@@ -301,6 +302,9 @@ export const resolvers = {
     trick: attempt => attempt.getTrick(),
     skater: (attempt, _, {context}) =>
       attempt.getSkater({[EXPECTED_OPTIONS_KEY]: context})
+  },
+  Trick: {
+    attempts: trick => trick.getAttempts()
   },
   Roshambo: {
     skater: (roshambo, _, {context}) =>
