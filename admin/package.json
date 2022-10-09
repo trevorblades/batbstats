@@ -1,0 +1,52 @@
+{
+  "name": "admin",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "clean": "gatsby clean",
+    "start": "gatsby develop",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "eslintConfig": {
+    "extends": "@trevorblades/eslint-config/react"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@apollo/client": "^3.3.21",
+    "@chakra-ui/gatsby-plugin": "^2.0.1",
+    "@chakra-ui/icons": "^1.0.14",
+    "@chakra-ui/react": "^1.6.5",
+    "@emotion/react": "^11.4.0",
+    "@emotion/styled": "^11.3.0",
+    "@mpth/react-no-ssr": "^1.0.1",
+    "@nivo/core": "^0.73.0",
+    "@nivo/geo": "^0.73.0",
+    "@nivo/pie": "^0.73.0",
+    "@nivo/scatterplot": "^0.73.0",
+    "@svgr/webpack": "^5.5.0",
+    "downshift": "^6.1.5",
+    "framer-motion": "^4.1.17",
+    "fuse.js": "^6.4.6",
+    "gatsby": "^3.11.0",
+    "gatsby-plugin-manifest": "^3.10.0",
+    "gatsby-plugin-react-helmet": "^4.10.0",
+    "gatsby-plugin-svgr": "^3.0.0-beta.0",
+    "gatsby-source-graphql": "^3.10.0",
+    "gatsby-theme-apollo": "^3.1.1",
+    "graphql": "^15.5.1",
+    "isomorphic-fetch": "^3.0.0",
+    "lodash": "^4.17.21",
+    "prop-types": "^15.7.2",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-helmet": "^6.1.0",
+    "react-indiana-drag-scroll": "^2.0.1"
+  },
+  "devDependencies": {
+    "@trevorblades/eslint-config": "^7.2.3",
+    "eslint": "^7.31.0"
+  }
+}

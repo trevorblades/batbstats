@@ -1,36 +1,32 @@
-const jwt = require('jsonwebtoken');
-const {ApolloServer} = require('apollo-server');
-const {resolvers, typeDefs} = require('./schema');
-const knex = require('knex');
+import {ApolloServer} from 'apollo-server';
+import {ApolloServerPluginLandingPageGraphQLPlayground} from 'apollo-server-core';
+import {DateTimeTypeDefinition, DateTypeDefinition} from 'graphql-scalars';
+import {applyMiddleware} from 'graphql-middleware';
+import {createContext} from 'dataloader-sequelize';
+import {deny, shield} from 'graphql-shield';
+import {makeExecutableSchema} from '@graphql-tools/schema';
+import {resolvers, typeDefs} from './schema.js';
+import {sequelize} from './db.js';
 
-const db = knex(process.env.DATABASE_URL);
-
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-  introspection: true,
-  playground: true,
-  async context({req}) {
-    const context = {db};
-
-    if (req.headers.authorization) {
-      const matches = req.headers.authorization.match(/bearer (.+)/i);
-      if (matches) {
-        try {
-          const {sub} = jwt.verify(matches[1], process.env.JWT_SECRET);
-          context.user = await db('users')
-            .where('id', sub)
-            .first();
-        } catch (error) {
-          // let errors pass
-        }
-      }
-    }
-
-    return context;
-  }
+const schema = makeExecutableSchema({
+  typeDefs: [DateTypeDefinition, DateTimeTypeDefinition, typeDefs],
+  resolvers
 });
 
-server.listen({port: process.env.PORT}).then(({url}) => {
-  console.log(`🚀 Server ready at ${url}`);
+const permissions = shield({
+  Mutation: deny
+});
+
+const server = new ApolloServer({
+  schema: applyMiddleware(schema, permissions),
+  context() {
+    return {context: createContext(sequelize)};
+  },
+  introspection: true,
+  plugins: [ApolloServerPluginLandingPageGraphQLPlayground()]
+});
+
+sequelize.sync().then(async () => {
+  const {url} = await server.listen({port: process.env.PORT});
+  console.log(`🛹 Server ready at ${url}`);
 });

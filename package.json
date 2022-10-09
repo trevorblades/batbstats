@@ -1,9 +1,0 @@
-{
-  "eslintConfig": {
-    "extends": "@trevorblades"
-  },
-  "devDependencies": {
-    "@trevorblades/eslint-config": "^7.1.0",
-    "eslint": "^7.0.0"
-  }
-}
