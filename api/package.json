@@ -1,9 +1,10 @@
 {
   "engines": {
-    "node": "14"
+    "node": "18"
   },
   "scripts": {
-    "start": "nodemon -r dotenv/config index.js"
+    "start": "nodemon -r dotenv/config index.js",
+    "pgsync": "railway run pgsync tricks,skaters,events,games,participants,replacements,roshambos,attempts --jobs 1"
   },
   "type": "module",
   "eslintConfig": {
@@ -29,6 +30,7 @@
     "sequelize": "^6.6.5"
   },
   "devDependencies": {
+    "@railway/cli": "^2.0.13",
     "@trevorblades/eslint-config": "^7.2.3",
     "dotenv": "^8.2.0",
     "eslint": "^7.31.0",
